@@ -70,7 +70,6 @@ module.exports = {
       '@babel/runtime-corejs2/regenerator/index.js',
 
       'axios',
-      'bootstrap',
       'final-form',
       'jquery',
       'multireducer',

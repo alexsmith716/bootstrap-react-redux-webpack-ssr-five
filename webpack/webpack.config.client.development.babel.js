@@ -59,7 +59,8 @@ configuration.output.publicPath = `http://${host}:${port}/dist/`;
 // to ensure the polyfills are loaded first
 configuration.entry.main.push(
   'webpack-hot-middleware/client?path=http://localhost:3001/__webpack_hmr',
-  'bootstrap-loader',
+  path.resolve(__dirname, '../client/assets/scss/bootstrap/scssConfig.scss'),
+  'bootstrap',
   './client/index.js'
 );
 
@@ -99,6 +100,9 @@ configuration.module.rules.push(
             path: 'postcss.config.js'
           }
         }
+      },
+      {
+        loader: 'resolve-url-loader'
       },
       {
         loader: 'sass-loader',

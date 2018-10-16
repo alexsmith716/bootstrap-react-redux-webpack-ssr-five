@@ -19,6 +19,11 @@ import { isLoaded as isInfoLoaded, load as loadInfo } from '../../redux/modules/
 import { Notifs, InfoBar } from '../../components';
 import config from '../../../config/config';
 
+// import 'bootstrap';
+// import '../../assets/scss/bootstrap/preBootstrapCustomizations.scss';
+// import '../../assets/scss/bootstrap/bootstrapCustomizations.scss';
+// import '../../assets/scss/app/theme.scss';
+
 // --------------------------------------------------------------------------
 // HOC: apply HOCs outside the component definition so that the resulting component is created only once. 
 // Then, its identity will be consistent across renders
@@ -144,19 +149,6 @@ class App extends Component {
     const stylesScss1 = require('./scss/AppScss1.scss');
     const stylesScss2 = require('./scss/AppScss2.scss');
     const stylesCss1 = require('./css/AppCss1.css');
-    // const iconBar30 = require('./img/icon-bar-30.svg');
-    // <img src={iconBar30} width="30" height="30" alt=""/>
-    // <span className="navbar-toggler-icon"></span>
-    // <span className={`fa fa-bars ${stylesScss1.faBars}`}></span>
-
-    // <li className="nav-item dropdown">
-    //   <a className="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">About</a>
-    //   <div className="dropdown-menu" aria-labelledby="dropdown01">
-    //     <Link to='/about/about-one' className="dropdown-item js-scroll-trigger">AboutOne</Link>
-    //     <Link to='/about/about-two' className="dropdown-item js-scroll-trigger">AboutTwo</Link>
-    //     <Link to='/about/about-three' className="dropdown-item js-scroll-trigger">AboutThree</Link>
-    //   </div>
-    // </li>
 
     return (
 
