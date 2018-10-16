@@ -59,7 +59,7 @@ configuration.stats = {
 // );
 
 configuration.entry.main.push(
-  path.resolve(__dirname, '../client/assets/scss/bootstrap/scssConfig.scss'),
+  path.resolve(__dirname, '../client/assets/scss/bootstrap/bootstrap.global.scss'),
   'bootstrap',
   './client/index.js',
 );
@@ -120,7 +120,16 @@ configuration.module.rules.push(
         loader: 'css-loader',
         options: {
           modules: true,
-          localIdentName: '[name]__[local]__[hash:base64:5]',
+          // localIdentName: '[name]__[local]__[hash:base64:5]',
+          getLocalIdent: (loaderContext, localIdentName, localName, options) => {
+            const fileName = path.basename(loaderContext.resourcePath)
+            if (fileName.indexOf('global.scss') !== -1) {
+              return localName
+            } else {
+              const name = fileName.replace(/\.[^/.]+$/, "")
+              return `${name}__${localName}`
+            }
+          },
           importLoaders: 2,
           sourceMap: true,
         }
@@ -151,7 +160,7 @@ configuration.module.rules.push(
           resources: [
             path.resolve(configuration.context, 'client/assets/scss/app/functions.scss'),
             path.resolve(configuration.context, 'client/assets/scss/app/variables.scss'),
-            path.resolve(configuration.context, 'client/assets/scss/app/mixins.scss'),
+            path.resolve(configuration.context, 'client/assets/scss/app/mixins.scss')
           ],
         },
       },
@@ -293,6 +302,12 @@ configuration.optimization = {
 configuration.plugins.push(
 
   new CleanWebpackPlugin([bundleAnalyzerPath,assetsPath,serverPath], { root: configuration.context }),
+
+  // new webpack.LoaderOptionsPlugin({
+  //   options: {
+  //     context: __dirname,
+  //   }
+  // }),
 
   // new ExtractCssChunks(),
   new ExtractCssChunks({
