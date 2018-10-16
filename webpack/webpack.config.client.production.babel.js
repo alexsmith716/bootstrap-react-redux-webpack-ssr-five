@@ -5,12 +5,13 @@ const config = require('../config/config');
 const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+// const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const { clientConfiguration } = require('universal-webpack');
+// const { clientConfiguration } = require('universal-webpack');
 const settings = require('./universal-webpack-settings');
 const configuration = require('./webpack.config');
 
@@ -51,8 +52,15 @@ configuration.stats = {
 // https://webpack.js.org/concepts/entry-points/#single-entry-shorthand-syntax
 // Passing an array of file paths to entry property creates a 'multi-main entry'
 // injects multiple 'dependent' files together and graph 'their dependencies' into one 'chunk' (main)
+
+// configuration.entry.main.push(
+//   'bootstrap-loader',
+//   './client/index.js',
+// );
+
 configuration.entry.main.push(
-  'bootstrap-loader',
+  path.resolve(__dirname, '../client/assets/scss/bootstrap/scssConfig.scss'),
+  'bootstrap',
   './client/index.js',
 );
 
@@ -107,7 +115,7 @@ configuration.module.rules.push(
   {
     test: /\.(scss)$/,
     use: [
-      MiniCssExtractPlugin.loader,
+      ExtractCssChunks.loader,
       {
         loader: 'css-loader',
         options: {
@@ -127,11 +135,14 @@ configuration.module.rules.push(
         }
       },
       {
+        loader: 'resolve-url-loader'
+      },
+      {
         loader: 'sass-loader',
         options: {
           outputStyle: 'expanded',
           sourceMap: true,
-          sourceMapContents: true
+          sourceMapContents: true,
         }
       },
       {
@@ -149,7 +160,7 @@ configuration.module.rules.push(
   {
     test: /\.(css)$/,
     use: [
-      MiniCssExtractPlugin.loader,
+      ExtractCssChunks.loader,
       {
         loader : 'css-loader',
         options: {
@@ -283,25 +294,29 @@ configuration.plugins.push(
 
   new CleanWebpackPlugin([bundleAnalyzerPath,assetsPath,serverPath], { root: configuration.context }),
 
-  new MiniCssExtractPlugin({
-    // For long term caching (according to 'mini-css-extract-plugin' docs)
+  // new ExtractCssChunks(),
+  new ExtractCssChunks({
     filename: '[name].[contenthash].css',
     // chunkFilename: '[name].[contenthash].chunk.css',
+    hot: false,
+    orderWarning: true,
+    // reloadAll: true,
+    cssModules: true
   }),
+
+  // new MiniCssExtractPlugin({
+  //   // For long term caching (according to 'mini-css-extract-plugin' docs)
+  //   filename: '[name].[contenthash].css',
+  //   // chunkFilename: '[name].[contenthash].chunk.css',
+  // }),
 
   // post-process your chunks by merging them
   // https://webpack.js.org/plugins/limit-chunk-count-plugin/
   // will create 1 css chunk ('main.css')
-  new webpack.optimize.LimitChunkCountPlugin({
-    maxChunks: 1,
-    // minChunkSize: 1000
-  }),
-
-  // https://webpack.js.org/plugins/internal-plugins/#occurenceorderplugin
-  // Order the modules and chunks by occurrence. 
-  // This saves space, because often referenced modules and chunks get smaller ids.
-  // preferEntry If true, references in entry chunks have higher priority
-  // new webpack.optimize.OccurrenceOrderPlugin(),
+  // new webpack.optimize.LimitChunkCountPlugin({
+  //   maxChunks: 1,
+  //   // minChunkSize: 1000
+  // }),
 
   new webpack.DefinePlugin({
     'process.env.NODE_ENV': '"production"',
@@ -338,19 +353,19 @@ configuration.plugins.push(
     navigateFallback: '/dist/index.html'
   }),
 
-  // new BundleAnalyzerPlugin({
-  //   analyzerMode: 'static',
-  //   reportFilename: '../../analyzers/bundleAnalyzer/client-production.html',
-  //   // analyzerMode: 'server',
-  //   // analyzerPort: 8888,
-  //   // defaultSizes: 'parsed',
-  //   openAnalyzer: false,
-  //   generateStatsFile: false
-  // })
+  new BundleAnalyzerPlugin({
+    analyzerMode: 'static',
+    reportFilename: '../../analyzers/bundleAnalyzer/client-production.html',
+    // analyzerMode: 'server',
+    // analyzerPort: 8888,
+    // defaultSizes: 'parsed',
+    openAnalyzer: false,
+    generateStatsFile: false
+  })
 );
 
 // console.log('>>>>>>>>>>>>>>>>>>> WCCPB CLIENT configuration: ', configuration)
-const configurationClient = clientConfiguration(configuration, settings)
-// console.log('>>>>>>>>>>>>>>>>>>> WCCPB CLIENT configurationClient: ', configurationClient)
+// const configurationClient = clientConfiguration(configuration, settings)
+// export default configurationClient;
+export default configuration;
 
-export default configurationClient;
