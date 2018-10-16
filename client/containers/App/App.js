@@ -20,9 +20,7 @@ import { Notifs, InfoBar } from '../../components';
 import config from '../../../config/config';
 
 // import 'bootstrap';
-// import '../../assets/scss/bootstrap/preBootstrapCustomizations.scss';
-// import '../../assets/scss/bootstrap/bootstrapCustomizations.scss';
-// import '../../assets/scss/app/theme.scss';
+// import '../../assets/scss/bootstrap/scssConfig.scss';
 
 // --------------------------------------------------------------------------
 // HOC: apply HOCs outside the component definition so that the resulting component is created only once. 
