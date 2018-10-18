@@ -3,7 +3,7 @@ const fs = require('fs');
 const webpack = require('webpack');
 const path = require('path');
 
-const rootPath = path.resolve(__dirname, '..');
+const rootPath = path.resolve(__dirname, '../');
 const assetsPath = path.resolve(rootPath, './build/static/dist');
 
 module.exports = {

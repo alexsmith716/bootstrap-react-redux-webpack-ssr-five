@@ -3,10 +3,13 @@
 // const { setDevFileServer } = require('./devserver');
 // module.exports = setDevFileServer(configServer);
 
-const { serverConfiguration } = require('universal-webpack');
-const settings = require('./universal-webpack-settings');
+// const { serverConfiguration } = require('universal-webpack');
+// const settings = require('./universal-webpack-settings');
 const configuration = require('./webpack.config');
 const path = require('path');
+
+configuration.name = 'server';
+configuration.target = 'node';
 
 configuration.module.rules.push(
   {
@@ -19,7 +22,16 @@ configuration.module.rules.push(
         loader: 'css-loader',
         options: {
           modules: true,
-          localIdentName: '[name]__[local]__[hash:base64:5]',
+          // localIdentName: '[name]__[local]__[hash:base64:5]',
+          getLocalIdent: (loaderContext, localIdentName, localName, options) => {
+            const fileName = path.basename(loaderContext.resourcePath)
+            if (fileName.indexOf('global.scss') !== -1) {
+              return localName
+            } else {
+              const name = fileName.replace(/\.[^/.]+$/, "")
+              return `${name}__${localName}`
+            }
+          },
           importLoaders: 2,
           sourceMap: true,
         }
@@ -32,6 +44,9 @@ configuration.module.rules.push(
             path: 'postcss.config.js'
           }
         }
+      },
+      {
+        loader: 'resolve-url-loader'
       },
       {
         loader: 'sass-loader',
@@ -81,7 +96,8 @@ configuration.module.rules.push(
 );
 
 // console.log('>>>>>>>>>>>>>> WEBPACK SERVER DEV > CONFIG >>>>>>>>>>>>>>>:', configuration)
-const configurationServer = serverConfiguration(configuration, settings);
+// const configurationServer = serverConfiguration(configuration, settings);
 // console.log('>>>>>>>>>>>>>> WEBPACK SERVER DEV > CONFIG > UW >>>>>>>>>>:', configurationServer)
 
-module.exports = configurationServer;
+// module.exports = configurationServer;
+module.exports = configuration;

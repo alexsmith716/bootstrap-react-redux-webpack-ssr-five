@@ -11,8 +11,6 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-// const { clientConfiguration } = require('universal-webpack');
-const settings = require('./universal-webpack-settings');
 const configuration = require('./webpack.config');
 
 const { ReactLoadablePlugin } = require('react-loadable/webpack');
@@ -37,17 +35,12 @@ function recursiveIssuer(m) {
   }
 }
 
-// source maps appear working in chrome and firefox
+// configuration.name = 'client';
+// configuration.target = 'web';
+configuration.mode = 'production';
 
 configuration.devtool = 'source-map';
 // configuration.devtool = 'hidden-source-map'; // stack trace info only
-
-configuration.stats = {
-  // assets: true,
-  // cached: true,
-  // entrypoints: false,
-  // children: false,
-}
 
 // https://webpack.js.org/concepts/entry-points/#single-entry-shorthand-syntax
 // Passing an array of file paths to entry property creates a 'multi-main entry'
@@ -110,6 +103,11 @@ configuration.output.chunkFilename = '[name].[chunkhash].chunk.js';
 // output.publicPath: specifies the public URL of the output directory
 // output.publicPath: value is prefixed to every URL created by the runtime or loaders
 configuration.output.publicPath = '/dist/';
+
+// https://webpack.js.org/configuration/stats/#src/components/Sidebar/Sidebar.jsx
+// https://webpack.js.org/api/stats/#src/components/Sidebar/Sidebar.jsx
+// https://webpack.js.org/api/node/#stats-object
+configuration.stats = 'verbose'; // Output everything 
 
 configuration.module.rules.push(
   {
@@ -368,19 +366,17 @@ configuration.plugins.push(
     navigateFallback: '/dist/index.html'
   }),
 
-  new BundleAnalyzerPlugin({
-    analyzerMode: 'static',
-    reportFilename: '../../analyzers/bundleAnalyzer/client-production.html',
-    // analyzerMode: 'server',
-    // analyzerPort: 8888,
-    // defaultSizes: 'parsed',
-    openAnalyzer: false,
-    generateStatsFile: false
-  })
+  // new BundleAnalyzerPlugin({
+  //   analyzerMode: 'static',
+  //   reportFilename: '../../analyzers/bundleAnalyzer/client-production.html',
+  //   // analyzerMode: 'server',
+  //   // analyzerPort: 8888,
+  //   // defaultSizes: 'parsed',
+  //   openAnalyzer: false,
+  //   generateStatsFile: false
+  // })
 );
 
-// console.log('>>>>>>>>>>>>>>>>>>> WCCPB CLIENT configuration: ', configuration)
-// const configurationClient = clientConfiguration(configuration, settings)
-// export default configurationClient;
-export default configuration;
-
+console.log('>>>>>>>>>>>>>>>>>>> WCCPB CLIENT configuration: ', configuration)
+// export default configuration;
+module.exports = configuration;
