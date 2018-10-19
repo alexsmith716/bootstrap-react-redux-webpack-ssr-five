@@ -5,11 +5,12 @@ const config = require('../config/config');
 const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-// const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+// https://github.com/FormidableLabs/webpack-stats-plugin
+const { StatsWriterPlugin } = require('webpack-stats-plugin');
 
 const configuration = require('./webpack.config');
 
@@ -107,7 +108,7 @@ configuration.output.publicPath = '/dist/';
 // https://webpack.js.org/configuration/stats/#src/components/Sidebar/Sidebar.jsx
 // https://webpack.js.org/api/stats/#src/components/Sidebar/Sidebar.jsx
 // https://webpack.js.org/api/node/#stats-object
-configuration.stats = 'verbose'; // Output everything 
+configuration.stats = 'verbose'; // Output everything
 
 configuration.module.rules.push(
   {
@@ -301,21 +302,26 @@ configuration.plugins.push(
 
   new CleanWebpackPlugin([bundleAnalyzerPath,assetsPath,serverPath], { root: configuration.context }),
 
+  new StatsWriterPlugin({
+    filename: 'stats.json',
+    fields: null // children[0]
+  }),
+
   // new webpack.LoaderOptionsPlugin({
   //   options: {
   //     context: __dirname,
   //   }
   // }),
 
-  // new ExtractCssChunks(),
-  new ExtractCssChunks({
-    filename: '[name].[contenthash].css',
-    // chunkFilename: '[name].[contenthash].chunk.css',
-    hot: false,
-    orderWarning: true,
-    // reloadAll: true,
-    cssModules: true
-  }),
+  new ExtractCssChunks(),
+  // new ExtractCssChunks({
+  //   filename: '[name].[contenthash].css',
+  //   // chunkFilename: '[name].[contenthash].chunk.css',
+  //   hot: false,
+  //   orderWarning: true,
+  //   // reloadAll: true,
+  //   cssModules: true
+  // }),
 
   // new MiniCssExtractPlugin({
   //   // For long term caching (according to 'mini-css-extract-plugin' docs)
@@ -377,6 +383,6 @@ configuration.plugins.push(
   // })
 );
 
-console.log('>>>>>>>>>>>>>>>>>>> WCCPB CLIENT configuration: ', configuration)
+// console.log('>>>>>>>>>>>>>>>>>>> WCCPB CLIENT configuration: ', configuration)
 // export default configuration;
 module.exports = configuration;

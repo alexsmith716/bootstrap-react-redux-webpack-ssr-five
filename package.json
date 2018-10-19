@@ -19,8 +19,7 @@
     "prod:server": "NODE_ENV=production PORT=8080 APIPORT=3030 node ./bin/server.js",
     "prod:api": "NODE_ENV=production APIPORT=3030 node ./bin/api.js",
     "prod:client:build": "NODE_ENV=production webpack --mode production --display-error-details --config ./webpack/webpack.config.client.production.babel.js",
-    "prod:build:stats": "NODE_ENV=production webpack --profile --json > webpack-assets.json --mode production --config ./webpack/webpack.config.client.production.babel.js",
-    "stats": "webpack --profile --json > compilation-stats.json",
+    "prod:build:stats": "NODE_ENV=production webpack --profile --json > stats.json --mode production --config ./webpack/webpack.config.client.production.babel.js",
     "dlls": "webpack --display-error-details --config webpack/dllplugin.vendor.config.js",
     "prettier": "prettier-eslint --write --eslint-config-path .eslintrc './+(bin)/**/*.js'",
     "lint": "eslint -c .eslintrc bin && flow",
@@ -189,7 +188,8 @@
     "webpack-cli": "^3.1.2",
     "webpack-dev-middleware": "^3.4.0",
     "webpack-flush-chunks": "^2.0.3",
-    "webpack-hot-middleware": "^2.24.3"
+    "webpack-hot-middleware": "^2.24.3",
+    "webpack-stats-plugin": "^0.2.1"
   },
   "husky": {
     "hooks": {
