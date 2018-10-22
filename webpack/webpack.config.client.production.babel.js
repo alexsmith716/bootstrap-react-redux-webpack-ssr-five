@@ -1,5 +1,6 @@
-const webpack = require('webpack');
+const fs = require('fs');
 const path = require('path');
+const webpack = require('webpack');
 const config = require('../config/config');
 
 const TerserPlugin = require('terser-webpack-plugin');
@@ -23,6 +24,23 @@ const serverPath = path.resolve(configuration.context, './build/server');
 // reuseExistingChunk: allows to reuse existing chunks instead of creating a new one when modules match exactly.
 // Chunks can be configured. There are 3 values possible "initial", "async" and "all". 
 // When configured the optimization only selects initial chunks, on-demand chunks or all chunks.
+
+// ==============================================================================================
+
+const babelrc = fs.readFileSync('./.babelrc', 'utf8');
+let prodconfig = {};
+
+try {
+  prodconfig = JSON.parse(babelrc);
+  if (Array.isArray(prodconfig.plugins)) {
+    // prodconfig.plugins.push('universal-import');
+  }
+  console.error('>>>>>>>>>>>>>>>>>>> WCCPB > SUCCESS: parsing .babelrc !!: ', prodconfig)
+} catch (err) {
+  console.error('>>>>>>>>>>>>>>>>>>> WCCPB > ERROR: parsing .babelrc: ', err)
+}
+
+const babelrcObject = Object.assign({}, prodconfig);
 
 // ==============================================================================================
 
@@ -105,12 +123,15 @@ configuration.output.chunkFilename = '[name].[chunkhash].chunk.js';
 // output.publicPath: value is prefixed to every URL created by the runtime or loaders
 configuration.output.publicPath = '/dist/';
 
-// https://webpack.js.org/configuration/stats/#src/components/Sidebar/Sidebar.jsx
-// https://webpack.js.org/api/stats/#src/components/Sidebar/Sidebar.jsx
-// https://webpack.js.org/api/node/#stats-object
-configuration.stats = 'verbose'; // Output everything
+// configuration.stats = 'verbose';
 
 configuration.module.rules.push(
+  {
+    test: /\.jsx?$/,
+    loader: 'babel-loader',
+    exclude: /node_modules(\/|\\)(?!(@feathersjs))/,
+    options: babelrcObject
+  },
   {
     test: /\.(scss)$/,
     use: [
@@ -211,9 +232,10 @@ configuration.optimization = {
   ],
   // Code Splitting: Prevent Duplication: Use the SplitChunksPlugin to dedupe and split chunks.
   splitChunks: {
-    automaticNameDelimiter: '.',
+    // automaticNameDelimiter: '.',
     // 'splitChunks.cacheGroups' inherits and/or overrides any options from splitChunks
     // 'test', 'priority' and 'reuseExistingChunk' can only be configured on 'splitChunks.cacheGroups'
+    // chunks: 'initial',
     cacheGroups: {
       // no difference between the builds of below 'optimization.splitChunks.cacheGroups' objects
       // going with the default for now and moving on
@@ -245,6 +267,7 @@ configuration.optimization = {
       // unbelievable i still have not completely nailed down the workings between webpack && mini-css-extract-plugin
       vendors: {
         test: /[\\/]node_modules[\\/]/,
+        name: 'vendors',
         priority: -10
       },
       default: {
@@ -291,9 +314,9 @@ configuration.optimization = {
   // adds an additional chunk to each entrypoint containing only the runtime
   // runtimeChunk: true
   // creates a runtime file to be shared for all generated chunks
-  // runtimeChunk: {
-  //   name: 'runtime'
-  // }
+  runtimeChunk: {
+    name: 'bootstrap'
+  }
 };
 
 // ==============================================================================================
@@ -304,7 +327,10 @@ configuration.plugins.push(
 
   new StatsWriterPlugin({
     filename: 'stats.json',
-    fields: null // children[0]
+    fields: null,
+    // transform(data, opts) {
+    //   return JSON.stringify(data);
+    // }
   }),
 
   // new webpack.LoaderOptionsPlugin({
@@ -322,6 +348,8 @@ configuration.plugins.push(
   //   // reloadAll: true,
   //   cssModules: true
   // }),
+  new webpack.optimize.ModuleConcatenationPlugin(),
+  new webpack.optimize.OccurrenceOrderPlugin(),
 
   // new MiniCssExtractPlugin({
   //   // For long term caching (according to 'mini-css-extract-plugin' docs)
@@ -372,15 +400,15 @@ configuration.plugins.push(
     navigateFallback: '/dist/index.html'
   }),
 
-  // new BundleAnalyzerPlugin({
-  //   analyzerMode: 'static',
-  //   reportFilename: '../../analyzers/bundleAnalyzer/client-production.html',
-  //   // analyzerMode: 'server',
-  //   // analyzerPort: 8888,
-  //   // defaultSizes: 'parsed',
-  //   openAnalyzer: false,
-  //   generateStatsFile: false
-  // })
+  new BundleAnalyzerPlugin({
+    analyzerMode: 'static',
+    reportFilename: '../../analyzers/bundleAnalyzer/client-production.html',
+    // analyzerMode: 'server',
+    // analyzerPort: 8888,
+    // defaultSizes: 'parsed',
+    openAnalyzer: false,
+    generateStatsFile: false
+  })
 );
 
 // console.log('>>>>>>>>>>>>>>>>>>> WCCPB CLIENT configuration: ', configuration)
