@@ -2,16 +2,19 @@
 require('@babel/polyfill');
 
 const fs = require('fs');
-const babelrc = fs.readFileSync('./.babelrc');
-const config = JSON.parse(babelrc);
+
+const babelrc = fs.readFileSync('./.babelrc', 'utf8');
+let config;
 
 try {
+  config = JSON.parse(babelrc);
   if (Array.isArray(config.plugins)) {
     config.plugins.push('dynamic-import-node');
-    console.log('>>>>>>>>>>>>>>>> SERVER.BABEL > GOOD !!! parsing .babelrc !!!');
+    // config.plugins.push(['universal-import', {'babelServer': true}]);
   }
+  console.error('>>>>>>>>>>>>>>>>>>> server.babel > SUCCESS: parsing .babelrc !!: ', config)
 } catch (err) {
-  console.log('>>>>>>>>>>>>>>>> SERVER.BABEL > ERROR !!! parsing .babelrc > err: ', err);
+  console.error('>>>>>>>>>>>>>>>>>>> server.babel > Error parsing .babelrc: ', err)
 }
 
 require('@babel/register')(config);

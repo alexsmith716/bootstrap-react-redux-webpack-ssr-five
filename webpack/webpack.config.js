@@ -22,11 +22,11 @@ module.exports = {
   module: {
 
     rules: [
-      {
-        test: /\.jsx?$/,
-        loader: 'babel-loader',
-        exclude: /node_modules(\/|\\)(?!(@feathersjs))/
-      },
+      // {
+      //   test: /\.jsx?$/,
+      //   loader: 'babel-loader',
+      //   exclude: /node_modules(\/|\\)(?!(@feathersjs))/
+      // },
       {
         test: /\.(jpg|jpeg|gif|png)$/,
         loader: 'url-loader',
