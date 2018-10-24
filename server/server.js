@@ -118,28 +118,30 @@ if (__DEVELOPMENT__) {
 }
 
 app.use((req, res) => {
-  console.log('>>>>>>>>>>>>>>>>> SERVER > APP > USE !!! <<<<<<<<<<<<<<<<<');
+
+  // const gs = getStats();
+  // console.log('>>>>>>>>>>>>>>>>> renderClientStats > getStats(): ', gs)
+
+  clearChunks();
+
+  const chunkNames = flushChunkNames();
+  const { js, styles, cssHash, scripts, stylesheets } = flushChunks(getStats(), { chunkNames });
+
+  console.log('>>>>>>>>>>>>>>>>> renderClientStats > req.path: ', req.path)
+  console.log('>>>>>>>>>>>>>>>>> renderClientStats > chunkNames: ', chunkNames)
+  console.log('>>>>>>>>>>>>>>>>> renderClientStats > js: ', js)
+  console.log('>>>>>>>>>>>>>>>>> renderClientStats > scripts: ', scripts)
+  console.log('>>>>>>>>>>>>>>>>> renderClientStats > stylesheets: ', stylesheets)
+
+  // >>>>>>>>>>>>>>>>> renderClientStats > req.path:  /
+  // >>>>>>>>>>>>>>>>> renderClientStats > chunkNames:  []
+  // >>>>>>>>>>>>>>>>> renderClientStats > js:  { toString: [Function: toString] }
+  // >>>>>>>>>>>>>>>>> renderClientStats > scripts:  [ 'bootstrap.5de8ed1ad9607da14ec0.bundle.js', 'main.59e6aaae336101753abc.chunk.js' ]
+  // >>>>>>>>>>>>>>>>> renderClientStats > stylesheets:  [ 'main.css' ]
+
+  res.status(200).send('SERVER > Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
+
 });
-// app.use((req, res) => {
-// 
-//   clearChunks();
-// 
-//   const chunkNames = flushChunkNames();
-//   const { js, styles, cssHash, scripts, stylesheets } = flushChunks(webpackStats, { chunkNames });
-// 
-//   console.log('>>>>>>>>>>>>>>>>> renderClientStats > req.path: ', req.path)
-//   console.log('>>>>>>>>>>>>>>>>> renderClientStats > chunkNames: ', chunkNames)
-//   console.log('>>>>>>>>>>>>>>>>> renderClientStats > js: ', js)
-//   console.log('>>>>>>>>>>>>>>>>> renderClientStats > scripts: ', scripts)
-//   console.log('>>>>>>>>>>>>>>>>> renderClientStats > stylesheets: ', stylesheets)
-// 
-//   // >>>>>>>>>>>>>>>>> renderClientStats > req.path:  /
-//   // >>>>>>>>>>>>>>>>> renderClientStats > chunkNames:  []
-//   // >>>>>>>>>>>>>>>>> renderClientStats > js:  { toString: [Function: toString] }
-//   // >>>>>>>>>>>>>>>>> renderClientStats > scripts:  [ 'bootstrap.5de8ed1ad9607da14ec0.bundle.js', 'main.59e6aaae336101753abc.chunk.js' ]
-//   // >>>>>>>>>>>>>>>>> renderClientStats > stylesheets:  [ 'main.css' ]
-// 
-// });
 
 (async () => {
   if (config.port) {
