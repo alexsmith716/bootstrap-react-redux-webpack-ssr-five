@@ -10,8 +10,8 @@ const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-// https://github.com/FormidableLabs/webpack-stats-plugin
 const { StatsWriterPlugin } = require('webpack-stats-plugin');
+// const StatsPlugin = require('stats-webpack-plugin');
 
 const configuration = require('./webpack.config');
 
@@ -123,7 +123,7 @@ configuration.output.chunkFilename = '[name].[chunkhash].chunk.js';
 // output.publicPath: value is prefixed to every URL created by the runtime or loaders
 configuration.output.publicPath = '/dist/';
 
-// configuration.stats = 'verbose';
+configuration.stats = 'verbose';
 
 configuration.module.rules.push(
   {
@@ -324,6 +324,11 @@ configuration.optimization = {
 configuration.plugins.push(
 
   new CleanWebpackPlugin([bundleAnalyzerPath,assetsPath,serverPath], { root: configuration.context }),
+
+  // new StatsPlugin('stats.json', {
+  //   chunkModules: true,
+  //   exclude: [/node_modules[\\\/]react/]
+  // }),
 
   new StatsWriterPlugin({
     filename: 'stats.json',

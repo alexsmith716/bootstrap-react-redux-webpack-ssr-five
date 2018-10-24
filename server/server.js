@@ -44,10 +44,12 @@ import { parse as parseUrl } from 'url';
 import { createApp } from './app';
 import apiClient from './utils/apiClient';
 
-// import { getChunks, waitChunks } from './utils/chunks';
+import { getStats, waitStats } from './utils/stats';
 
 import renderClientStats from './renderClientStats';
 const outputPath = path.resolve(__dirname, '..');
+
+import webpack from 'webpack';
 
 import { clearChunks, flushChunkNames } from 'react-universal-component/server';
 import flushChunks from 'webpack-flush-chunks';
@@ -61,10 +63,10 @@ const loadableChunksPath = path.join(__dirname, '..', 'static', 'dist', 'loadabl
 // /Users/../bootstrap-redux-react-loadable-webpack-dllplugin/build/public/assets/loadable-chunks.json
 console.log('>>>>>>>>>>>>>>>>> SERVER > loadableChunksPath +++++++++: ', loadableChunksPath);
 
-// const clientStatsPath = path.join(__dirname, '..', 'static', 'dist', 'stats.json');
-// console.log('>>>>>>>>>>>>>>>>> SERVER > clientStatsPath +++++++++: ', clientStatsPath);
-const webpackStats = require('../build/static/dist/stats.json')
-// console.log('>>>>>>>>>>>>>>>>> SERVER > clientStatsPath +++++++++: ', webpackStats);
+const webpackStatsPath = path.join(__dirname, '..', 'build', 'static', 'dist', 'stats.json');
+console.log('>>>>>>>>>>>>>>>>> SERVER > webpackStatsPath +++++++++: ', webpackStatsPath);
+
+const clientConfigProd = require('../webpack/webpack.config.client.production.babel.js');
 
 // ###########################################################################
 // ######## ------------------- CONFIGURE MONGOOSE -------------------- ######
@@ -109,37 +111,53 @@ process.on('unhandledRejection', (error, promise) => {
 const app = new express();
 const server = http.createServer(app);
 
+if (__DEVELOPMENT__) {
+  console.log('>>>>>>>>>>>>>>>>> SERVER > __DEVELOPMENT__ ?: ', __DEVELOPMENT__);
+} else {
+  console.log('>>>>>>>>>>>>>>>>> SERVER > __DEVELOPMENT__ ?: ', __DEVELOPMENT__);
+}
+
 app.use((req, res) => {
-
-  clearChunks();
-
-  const chunkNames = flushChunkNames();
-  const { js, styles, cssHash, scripts, stylesheets } = flushChunks(webpackStats, { chunkNames });
-
-  console.log('>>>>>>>>>>>>>>>>> renderClientStats > req.path: ', req.path)
-  console.log('>>>>>>>>>>>>>>>>> renderClientStats > chunkNames: ', chunkNames)
-  console.log('>>>>>>>>>>>>>>>>> renderClientStats > js: ', js)
-  console.log('>>>>>>>>>>>>>>>>> renderClientStats > scripts: ', scripts)
-  console.log('>>>>>>>>>>>>>>>>> renderClientStats > stylesheets: ', stylesheets)
-
-  // >>>>>>>>>>>>>>>>> renderClientStats > req.path:  /
-  // >>>>>>>>>>>>>>>>> renderClientStats > chunkNames:  []
-  // >>>>>>>>>>>>>>>>> renderClientStats > js:  { toString: [Function: toString] }
-  // >>>>>>>>>>>>>>>>> renderClientStats > scripts:  [ 'bootstrap.5de8ed1ad9607da14ec0.bundle.js', 'main.59e6aaae336101753abc.chunk.js' ]
-  // >>>>>>>>>>>>>>>>> renderClientStats > stylesheets:  [ 'main.css' ]
-
+  console.log('>>>>>>>>>>>>>>>>> SERVER > APP > USE !!! <<<<<<<<<<<<<<<<<');
 });
+// app.use((req, res) => {
+// 
+//   clearChunks();
+// 
+//   const chunkNames = flushChunkNames();
+//   const { js, styles, cssHash, scripts, stylesheets } = flushChunks(webpackStats, { chunkNames });
+// 
+//   console.log('>>>>>>>>>>>>>>>>> renderClientStats > req.path: ', req.path)
+//   console.log('>>>>>>>>>>>>>>>>> renderClientStats > chunkNames: ', chunkNames)
+//   console.log('>>>>>>>>>>>>>>>>> renderClientStats > js: ', js)
+//   console.log('>>>>>>>>>>>>>>>>> renderClientStats > scripts: ', scripts)
+//   console.log('>>>>>>>>>>>>>>>>> renderClientStats > stylesheets: ', stylesheets)
+// 
+//   // >>>>>>>>>>>>>>>>> renderClientStats > req.path:  /
+//   // >>>>>>>>>>>>>>>>> renderClientStats > chunkNames:  []
+//   // >>>>>>>>>>>>>>>>> renderClientStats > js:  { toString: [Function: toString] }
+//   // >>>>>>>>>>>>>>>>> renderClientStats > scripts:  [ 'bootstrap.5de8ed1ad9607da14ec0.bundle.js', 'main.59e6aaae336101753abc.chunk.js' ]
+//   // >>>>>>>>>>>>>>>>> renderClientStats > stylesheets:  [ 'main.css' ]
+// 
+// });
 
 (async () => {
   if (config.port) {
+    try {
+      const wsp = await waitStats(webpackStatsPath);
+      // console.log('>>>>>>>>>>>>>>>>> SERVER > waitStats > webpackStats: ', wsp);
+    } catch (error) {
+      console.error('>>>>>>>>>>>>>>>>> SERVER > Preload Error ------:', err);
+    }
     server.listen(config.port, err => {
       if (err) {
-        console.error('>>>>>>>>>> SERVER Error ------:', err);
+        console.error('>>>>>>>>>>>>>>>>> SERVER > ERROR:', err);
       }
-      console.info('>>>>>>>>>> SERVER is running on host/port ------:', config.host, config.port);
+      console.info('>>>>>>>>>>>>>>>>> SERVER > Running on Host:', config.host);
+      console.info('>>>>>>>>>>>>>>>>> SERVER > Running on Port:', config.port);
     });
   } else {
-    console.error('>>>>>>>>>> SERVER Missing config.port <<<<<<<<<<<<<');
+    console.error('>>>>>>>>>>>>>>>>> SERVER > Missing config.port <<<<<<<<<<<<<');
   }
 })();
 
