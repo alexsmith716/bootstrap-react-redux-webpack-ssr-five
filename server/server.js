@@ -33,8 +33,8 @@ import createStore from '../client/redux/createStore';
 
 import { ConnectedRouter } from 'connected-react-router';
 import { renderRoutes } from 'react-router-config';
-import Loadable from 'react-loadable';
-import { getBundles } from 'react-loadable/webpack';
+// import Loadable from 'react-loadable';
+// import { getBundles } from 'react-loadable/webpack';
 import { trigger } from 'redial';
 
 import Html from './utils/Html';
@@ -46,7 +46,6 @@ import apiClient from './utils/apiClient';
 
 import { getStats, waitStats } from './utils/stats';
 
-import renderClientStats from './renderClientStats';
 const outputPath = path.resolve(__dirname, '..');
 
 import webpack from 'webpack';
@@ -59,9 +58,8 @@ import flushChunks from 'webpack-flush-chunks';
 // ######## ---------- SPECIFY LOADABLE COMPONENTS PATH --------------- ######
 // ###########################################################################
 
-const loadableChunksPath = path.join(__dirname, '..', 'static', 'dist', 'loadable-chunks.json');
-// /Users/../bootstrap-redux-react-loadable-webpack-dllplugin/build/public/assets/loadable-chunks.json
-console.log('>>>>>>>>>>>>>>>>> SERVER > loadableChunksPath +++++++++: ', loadableChunksPath);
+// const loadableChunksPath = path.join(__dirname, '..', 'static', 'dist', 'loadable-chunks.json');
+// console.log('>>>>>>>>>>>>>>>>> SERVER > loadableChunksPath +++++++++: ', loadableChunksPath);
 
 const webpackStatsPath = path.join(__dirname, '..', 'build', 'static', 'dist', 'stats.json');
 console.log('>>>>>>>>>>>>>>>>> SERVER > webpackStatsPath +++++++++: ', webpackStatsPath);
@@ -108,8 +106,7 @@ process.on('unhandledRejection', (error, promise) => {
   console.error('>>>>>>>>>>>>>>>>> SERVER > process > unhandledRejection > error:', error);
 });
 
-const app = new express();
-const server = http.createServer(app);
+// ================================
 
 if (__DEVELOPMENT__) {
   console.log('>>>>>>>>>>>>>>>>> SERVER > __DEVELOPMENT__ ?: ', __DEVELOPMENT__);
@@ -117,31 +114,305 @@ if (__DEVELOPMENT__) {
   console.log('>>>>>>>>>>>>>>>>> SERVER > __DEVELOPMENT__ ?: ', __DEVELOPMENT__);
 }
 
-app.use((req, res) => {
+// ================================
 
-  // const gs = getStats();
-  // console.log('>>>>>>>>>>>>>>>>> renderClientStats > getStats(): ', gs)
+const targetUrl = `http://${config.apiHost}:${config.apiPort}`;
+const app = new express();
+const server = http.createServer(app);
 
-  clearChunks();
+const proxy = httpProxy.createProxyServer({
+  target: targetUrl,
+  ws: true
+});
 
-  const chunkNames = flushChunkNames();
-  const { js, styles, cssHash, scripts, stylesheets } = flushChunks(getStats(), { chunkNames });
+const normalizePort = (val)  => {
+  const port = parseInt(val, 10);
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+  return false;
+};
 
-  console.log('>>>>>>>>>>>>>>>>> renderClientStats > req.path: ', req.path)
-  console.log('>>>>>>>>>>>>>>>>> renderClientStats > chunkNames: ', chunkNames)
-  console.log('>>>>>>>>>>>>>>>>> renderClientStats > js: ', js)
-  console.log('>>>>>>>>>>>>>>>>> renderClientStats > scripts: ', scripts)
-  console.log('>>>>>>>>>>>>>>>>> renderClientStats > stylesheets: ', stylesheets)
+const port = normalizePort(config.port);
+app.set('port', port);
 
-  // >>>>>>>>>>>>>>>>> renderClientStats > req.path:  /
-  // >>>>>>>>>>>>>>>>> renderClientStats > chunkNames:  []
-  // >>>>>>>>>>>>>>>>> renderClientStats > js:  { toString: [Function: toString] }
-  // >>>>>>>>>>>>>>>>> renderClientStats > scripts:  [ 'bootstrap.5de8ed1ad9607da14ec0.bundle.js', 'main.59e6aaae336101753abc.chunk.js' ]
-  // >>>>>>>>>>>>>>>>> renderClientStats > stylesheets:  [ 'main.css' ]
+app.use(morgan('dev'));
+// app.use(helmet());
+// app.use(helmet.xssFilter());
+// app.use(headers);
 
-  res.status(200).send('SERVER > Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
+// #########################################################################
+
+app.use(cookieParser()); // parse cookie header and populate req.cookies
+app.use(compression()); // compress request response bodies
+
+app.use(favicon(path.join(__dirname, '..', 'build', 'static', 'favicon.ico')))
+app.use('/manifest.json', (req, res) => res.sendFile(path.join(__dirname, '..', 'build', 'static', 'manifest.json')));
+
+// #########################################################################
+
+app.use('/dist/service-worker.js', (req, res, next) => {
+  console.log('>>>>>>>>>>>>>>>>> SERVER > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ service-worker $$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
+  res.setHeader('Service-Worker-Allowed', '/');
+  res.setHeader('Cache-Control', 'no-store');
+  return next();
+});
+
+// #########################################################################
+
+app.use('/dist/dlls/:dllName.js', (req, res, next) => {
+  console.log('>>>>>>>>>>>>>>>>> SERVER > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ DLLs $$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
+  fs.access(
+    path.join(__dirname, '..', 'static', 'dist', 'dlls', `${req.params.dllName}.js`),
+    fs.constants.R_OK,
+    err => (err ? res.send(`console.log('No dll file found (${req.originalUrl})')`) : next())
+  );
+});
+
+// #########################################################################
+
+app.use(express.static(path.join(__dirname, '..', 'static')));
+
+// #########################################################################
+
+// app.use(headers);
+app.use((req, res, next) => {
+  res.setHeader('X-Forwarded-For', req.ip);
+  return next();
+});
+
+// #########################################################################
+
+app.use((req, res, next) => {
+  console.log('>>>>>>>>>>>>>>>>> SERVER > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ IN > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
+  // console.log('>>>>>>>>>>>>>>>>> SERVER > REQ.ip +++++++++++++: ', req.ip);
+  console.log('>>>>>>>>>>>>>>>>> SERVER > REQ.method +++++++++++++++: ', req.method);
+  console.log('>>>>>>>>>>>>>>>>> SERVER > REQ.url ++++++++++++++++++: ', req.url);
+  console.log('>>>>>>>>>>>>>>>>> SERVER > REQ.path ++++++++++++++++++: ', req.path);
+  // console.log('>>>>>>>>>>>>>>>>> SERVER > REQ.headers ++++++++++++++: ', req.headers);
+  // console.log('>>>>>>>>>>>>>>>>> SERVER > REQ.cookies ++++++++++++++: ', req.cookies);
+  // console.log('>>>>>>>>>>>>>>>>> SERVER > REQ.session ++++++++: ', req.session);
+  // console.log('>>>>>>>>>>>>>>>>> SERVER > REQ.params +++++++++: ', req.params);
+  console.log('>>>>>>>>>>>>>>>>> SERVER > REQ.originalUrl ++++: ', req.originalUrl);
+  console.log('>>>>>>>>>>>>>>>>> SERVER > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ IN < $$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
+  return next();
+});
+
+// ##################################################################################################################
+// ########## ------------------------------------------ API --------------------------------------------- ##########
+// ##################################################################################################################
+
+// PORT (3030)
+// proxy any requests to '/api/*' >>>>>>>>> the API server
+// all the data fetching calls from client go to '/api/*'
+// #########################################################################
+
+
+app.use('/api', (req, res) => {
+  console.log('>>>>>>>>>>>>>>>>> SERVER > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ /API $$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
+  proxy.web(req, res, { target: targetUrl });
+});
+
+app.use('/ws', (req, res) => {
+  console.log('>>>>>>>>>>>>>>>>> SERVER > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ /WS $$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
+  proxy.web(req, res, { target: `${targetUrl}/ws` });
+});
+
+console.log('>>>>>>>>>>>>>>>>> SERVER > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ / $$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
+
+proxy.on('error', (error, req, res) => {
+
+  if (error.code !== 'ECONNRESET') {
+    console.error('proxy error', error);
+  }
+
+  if (!res.headersSent) {
+    res.writeHead(500, { 'content-type': 'application/json' });
+  }
+
+  const json = {
+    error: 'proxy_error',
+    reason: error.message
+  };
+
+  res.end(JSON.stringify(json));
+});
+
+// ##################################################################################################################
+// ########## ---------------------------------------- SERVER -------------------------------------------- ##########
+// ##################################################################################################################
+
+// app.use((req, res) => {
+app.use(async (req, res) => {
+
+  console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > SetUpComponent !! START !! $$$$$$$$$$$$$$$$$$$$$$');
+
+  // ###########################################################################
+  // ######## ----- CONFIGURE SERVER FOR API COMM (REST/AXIOS-AJAX) ----- ######
+  // ###########################################################################
+
+  // passing session cookie (req)
+  const providers = {
+    app: createApp(req),
+    client: apiClient(req)
+  };
+  // console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > providers.app !!: ', providers.app);
+  // console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > providers.client !!: ', providers.client);
+
+
+  // ###########################################################################
+  // ######## ----------- CREATE NON-DOM HISTORY OBJECT ----------------- ######
+  // ###########################################################################
+
+  // manage session history
+  // API to manage the history stack, navigate, confirm navigation and persist state between sessions
+  // history object is mutable
+  // create non-dom 'createMemoryHistory()' method
+  // create method with option 'initialEntries'
+  // option 'initialEntries' assigned value 'req.originalUrl' (requested URL)
+  const history = createMemoryHistory({ initialEntries: [req.originalUrl] });
+
+  console.log('>>>>>>>>>>>>>>>>>>> SERVER.JS > APP LOADER > history: ', history)
+
+
+  // ###########################################################################
+  // ######## ------- SET THE CURRENT USER DEPENDING ON THE ------------- ######
+  // ######## ---------- STATE OF COOKIE CREATED ON CLIENT ------------ ########
+  // ###########################################################################
+
+  // redux-persist-cookie-storage: redux persist cookie
+  // Read-only mode: using getStoredState()
+  // create cookie jar 'Cookies()'
+  // pass 'cookie jar' to Redux Persist storage 'NodeCookiesWrapper()'
+  const cookieJar = new NodeCookiesWrapper(new Cookies(req, res)); // node module for getting and setting HTTP cookies
+
+  const persistConfig = {
+    key: 'root',
+    storage: new CookieStorage(cookieJar),
+    stateReconciler: (inboundState, originalState) => originalState,
+    whitelist: ['auth', 'info',]
+  };
+
+  let preloadedState;
+
+  // read stored cookies: getStoredState()
+  // preloadedState:
+  //    {
+  //    auth: {loaded: false,loading: false,error: {}},
+  //    info: {loaded: true,loading: false,data: {message: 'This came from the api server',time: 1530540780215}}
+  //    }
+
+  try {
+    // Returns a promise of restored state (getStoredState())
+    preloadedState = await getStoredState(persistConfig);
+    console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > preloadedState !! 1111111111');
+  } catch (e) {
+    preloadedState = {};
+    console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > preloadedState !! 222222222');
+  }
+  console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > preloadedState !! =======================: ', preloadedState);
+
+  // ###########################################################################
+  // ######## -------------------- CREATE STORE ----------------------- ########
+  // ###########################################################################
+
+  const store = createStore({
+    history,
+    data: preloadedState,
+    helpers: providers
+  });
+
+  store.subscribe(() =>
+    console.log('>>>>>>>>>>>>>>>>>>> SERVER.JS > APP LOADER > store.getState(): ', store.getState())
+  )
+
+  // ------------------------------------------------------------------------------------------------------
+
+  try {
+
+    const { components, match, params } = await asyncMatchRoutes(routes, req.path);
+
+    const locals = {
+      ...providers,
+      store,
+      match,
+      params,
+      history,
+      location: history.location
+    };
+
+    await trigger( 'fetch', components, locals);
+
+    const context = {};
+
+    const component = (
+      <Provider store={store} {...providers}>
+        <ConnectedRouter history={history}>
+          <StaticRouter location={req.originalUrl} context={context}>
+            <ReduxAsyncConnect routes={routes} store={store} helpers={providers}>
+              {renderRoutes(routes)}
+            </ReduxAsyncConnect>
+          </StaticRouter>
+        </ConnectedRouter>
+      </Provider>
+    );
+    
+    console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > ==================== component: ', component);
+
+    const content = ReactDOM.renderToString(component);
+
+    // ------------------------------------------------------------------------------------------------------
+
+    // ###########################################################################
+    // ######## ----------- RETURN/FLUSH WEBPACK-COMPILED CHUNKS ---------- ######
+    // ###########################################################################
+
+    clearChunks();
+
+    const chunkNames = flushChunkNames();
+
+    console.log('>>>>>>>>>>>>>>>>> SERVER > APP.USE > chunkNames: ', chunkNames);
+
+    const { js, styles, cssHash, scripts, stylesheets } = flushChunks(getStats(), { chunkNames });
+
+    console.log('>>>>>>>>>>>>>>>>> SERVER > APP.USE > flushChunks > js: ', js);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > APP.USE > flushChunks > scripts: ', scripts);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > APP.USE > flushChunks > stylesheets: ', stylesheets);
+
+    // const scripts = flushFiles(getStats(), { chunkNames, filter: file => file.endsWith('.js') });
+    // const styles = flushFiles(getStats(), { chunkNames, filter: file => file.endsWith('.css') });
+
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > APP.USE > flushFiles > scripts: ', scripts.length);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > APP.USE > flushFiles > styles: ', styles.length);
+
+    // ------------------------------------------------------------------------------------------------------
+
+    console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > context: ', context);
+
+    if (context.url) {
+      return res.redirect(301, context.url);
+    }
+
+    // ------------------------------------------------------------------------------------------------------
+
+    res.status(200).send('SERVER > Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
+
+
+  } catch (error) {
+    console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > TRY > ERROR > error: ', error);
+    res.status(500).send('SERVER > Response Ended For Testing!!!!!!! Status 500!!!!!!!!!');
+    // res.status(500);
+    // hydrate();
+  }
 
 });
+
+// #########################################################################
 
 (async () => {
   if (config.port) {

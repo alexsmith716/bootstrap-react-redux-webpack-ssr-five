@@ -15,7 +15,7 @@ const { StatsWriterPlugin } = require('webpack-stats-plugin');
 
 const configuration = require('./webpack.config');
 
-const { ReactLoadablePlugin } = require('react-loadable/webpack');
+// const { ReactLoadablePlugin } = require('react-loadable/webpack');
 
 const bundleAnalyzerPath = path.resolve(configuration.context, './build/analyzers/bundleAnalyzer');
 const assetsPath = path.resolve(configuration.context, './build/static/dist');
@@ -264,7 +264,6 @@ configuration.optimization = {
       // that's a main difference compared to 'faceyspacey/universal-demo'
       // 'faceyspacey/universal-demo' loads css on-demand
       // tried many configs but so far default config works
-      // unbelievable i still have not completely nailed down the workings between webpack && mini-css-extract-plugin
       vendors: {
         test: /[\\/]node_modules[\\/]/,
         name: 'vendors',
@@ -344,17 +343,15 @@ configuration.plugins.push(
   //   }
   // }),
 
-  new ExtractCssChunks(),
-  // new ExtractCssChunks({
-  //   filename: '[name].[contenthash].css',
-  //   // chunkFilename: '[name].[contenthash].chunk.css',
-  //   hot: false,
-  //   orderWarning: true,
-  //   // reloadAll: true,
-  //   cssModules: true
-  // }),
-  new webpack.optimize.ModuleConcatenationPlugin(),
-  new webpack.optimize.OccurrenceOrderPlugin(),
+  // new ExtractCssChunks(),
+  new ExtractCssChunks({
+    filename: '[name].[contenthash].css',
+    // chunkFilename: '[name].[contenthash].chunk.css',
+    hot: false,
+    orderWarning: true,
+    // reloadAll: true,
+    cssModules: true
+  }),
 
   // new MiniCssExtractPlugin({
   //   // For long term caching (according to 'mini-css-extract-plugin' docs)
@@ -371,7 +368,7 @@ configuration.plugins.push(
   // }),
 
   new webpack.DefinePlugin({
-    'process.env.NODE_ENV': '"production"',
+    'process.env': { NODE_ENV: JSON.stringify('production') },
     __CLIENT__: true,
     __SERVER__: false,
     __DEVELOPMENT__: false,
@@ -379,9 +376,9 @@ configuration.plugins.push(
     __DLLS__: false
   }),
 
-  new ReactLoadablePlugin({
-    filename: path.join(assetsPath, 'loadable-chunks.json')
-  }),
+  // vnew ReactLoadablePlugin({
+  // v  filename: path.join(assetsPath, 'loadable-chunks.json')
+  // v}),
 
   new HtmlWebpackPlugin({
     filename: 'index.html',
