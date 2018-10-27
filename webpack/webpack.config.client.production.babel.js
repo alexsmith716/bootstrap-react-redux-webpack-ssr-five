@@ -32,9 +32,10 @@ let prodconfig = {};
 
 try {
   prodconfig = JSON.parse(babelrc);
-  if (Array.isArray(prodconfig.plugins)) {
-    // prodconfig.plugins.push('universal-import');
-  }
+  // if (Array.isArray(prodconfig.plugins)) {
+  //   //. prodconfig.plugins.push('universal-import');
+  //   // prodconfig.plugins.push(["css-modules-transform", {"generateScopedName": "[name]__[local]"}]);
+  // }
   console.error('>>>>>>>>>>>>>>>>>>> WCCPB > SUCCESS: parsing .babelrc !!: ', prodconfig)
 } catch (err) {
   console.error('>>>>>>>>>>>>>>>>>>> WCCPB > ERROR: parsing .babelrc: ', err)
@@ -55,9 +56,8 @@ function recursiveIssuer(m) {
 }
 
 // configuration.name = 'client';
-// configuration.target = 'web';
+configuration.target = 'web';
 configuration.mode = 'production';
-
 configuration.devtool = 'source-map';
 // configuration.devtool = 'hidden-source-map'; // stack trace info only
 
@@ -71,9 +71,9 @@ configuration.devtool = 'source-map';
 // );
 
 configuration.entry.main.push(
-  path.resolve(__dirname, '../client/assets/scss/bootstrap/bootstrap.global.scss'),
+  './client/assets/scss/bootstrap/bootstrap.global.scss',
   'bootstrap',
-  './client/index.js',
+  './client/index.js'
 );
 
 // ---------------------------------------------------------------------------------------
@@ -123,7 +123,7 @@ configuration.output.chunkFilename = '[name].[chunkhash].chunk.js';
 // output.publicPath: value is prefixed to every URL created by the runtime or loaders
 configuration.output.publicPath = '/dist/';
 
-configuration.stats = 'verbose';
+// configuration.stats = 'verbose';
 
 configuration.module.rules.push(
   {
@@ -413,6 +413,24 @@ configuration.plugins.push(
   })
 );
 
-// console.log('>>>>>>>>>>>>>>>>>>> WCCPB CLIENT configuration: ', configuration)
+// console.log('>>>>>>>>>>>>>>>>>>> WCCPB CLIENT configuration: ', configuration);
+console.log('>>>>>>>>>>>>>>>>>>> WCCPB CLIENT configuration.module.rulesXXXXXXXXXX: ', configuration.module.rules[5].options);
+console.log('>>>>>>>>>>>>>>>>>>> WCCPB CLIENT configuration.module.rules: ', configuration.module.rules);
 // export default configuration;
 module.exports = configuration;
+
+// {
+//     presets: ['@babel/preset-react', ['@babel/preset-env', [Object]], '@babel/preset-flow'],
+//     plugins: [
+//         ['@babel/plugin-transform-runtime', [Object]],
+//         ['@babel/plugin-proposal-decorators', [Object]], 
+//         'react-hot-loader/babel', 
+//         '@babel/plugin-syntax-dynamic-import', 
+//         ['@babel/plugin-proposal-class-properties', [Object]], 
+//         '@babel/plugin-proposal-export-namespace-from', 
+//         '@babel/plugin-proposal-export-default-from', 
+//         '@babel/plugin-proposal-object-rest-spread', 
+//         'universal-import', 
+//         ['css-modules-transform', [Object]]
+//     ]
+// }

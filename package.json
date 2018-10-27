@@ -103,7 +103,8 @@
     "serialize-javascript": "^1.5.0",
     "serve-favicon": "^2.5.0",
     "socket.io-client": "^2.1.1",
-    "url": "^0.11.0"
+    "url": "^0.11.0",
+    "webpack-flush-chunks": "^2.0.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.2",
@@ -128,7 +129,9 @@
     "babel-eslint": "^10.0.1",
     "babel-jest": "^23.4.2",
     "babel-loader": "^8.0.4",
+    "babel-plugin-css-modules-transform": "^1.6.1",
     "babel-plugin-dynamic-import-node": "^2.2.0",
+    "babel-plugin-dynamic-import-webpack": "^1.1.0",
     "babel-plugin-universal-import": "^3.1.2",
     "chai": "^4.1.2",
     "clean-webpack-plugin": "^0.1.19",
@@ -192,7 +195,6 @@
     "webpack-bundle-analyzer": "^3.0.3",
     "webpack-cli": "^3.1.2",
     "webpack-dev-middleware": "^3.4.0",
-    "webpack-flush-chunks": "^2.0.3",
     "webpack-hot-middleware": "^2.24.3",
     "webpack-pwa-manifest": "^3.7.1",
     "webpack-stats-plugin": "^0.2.1"
