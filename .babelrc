@@ -11,7 +11,6 @@
   "plugins": [
     ["@babel/plugin-transform-runtime",{"corejs": 2}],
     ["@babel/plugin-proposal-decorators", { "legacy": true }],
-    "react-loadable/babel",
     "react-hot-loader/babel",
     "@babel/plugin-syntax-dynamic-import",
     ["@babel/plugin-proposal-class-properties", { "loose": true }],

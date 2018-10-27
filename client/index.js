@@ -12,7 +12,7 @@ import { ReduxAsyncConnect, Provider } from '../shared';
 import asyncMatchRoutes from '../server/utils/asyncMatchRoutes';
 
 import { AppContainer as HotEnabler } from 'react-hot-loader';
-import Loadable from 'react-loadable';
+// import Loadable from 'react-loadable';
 
 import routes from '../shared/routes';
 import isOnline from '../server/utils/isOnline';
@@ -166,7 +166,7 @@ initSocket();
     );
   };
 
-  await Loadable.preloadReady();
+   // await Loadable.preloadReady();
   await hydrate(routes);
 
   // ==============================================================================================

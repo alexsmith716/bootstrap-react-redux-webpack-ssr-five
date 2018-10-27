@@ -1,18 +1,28 @@
 import React from 'react';
-import Loadable from 'react-loadable';
 
-const AboutLoadable = Loadable({
+import universal from 'react-universal-component';
+import universalImport from 'babel-plugin-universal-import/universalImport.js';
+import path from 'path';
 
-  // regarding optional 'webpackChunkName':
-  // allows the pulling of multiple split points into a single bundle
-  // split points with the same name will be grouped
-  // each split point generates a separate bundle
+// const AboutLoadable = universal(() => import(/* webpackChunkName: 'about' */ './About'));
 
-  loader: () => import('./About' /* webpackChunkName: 'about' */).then(module => module.default),
-  // loader: () => import('./About').then(module => module.default),
-
-  loading: () => <div>Loading</div>
-
-});
+const AboutLoadable = universal(universalImport({
+  chunkName: () => 'about',
+  path: () => path.join(__dirname, './About.js'),
+  resolve: () => require.resolveWeak('./About.js'),
+  load: () => Promise.all([
+    import( /* webpackChunkName: 'about' */ './About.js')
+  ]).then(proms => proms[0])
+}))
 
 export default AboutLoadable;
+
+
+// import Loadable from 'react-loadable';
+// 
+// const AboutLoadable = Loadable({
+//   loader: () => import('./About' /* webpackChunkName: 'about' */).then(module => module.default),
+//   loading: () => <div>Loading</div>
+// });
+// 
+// export default AboutLoadable;

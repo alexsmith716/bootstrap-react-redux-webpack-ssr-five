@@ -364,7 +364,7 @@ app.use(async (req, res) => {
     
     console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > ==================== component: ', component);
 
-    const content = ReactDOM.renderToString(component);
+    // const content = ReactDOM.renderToString(component);
 
     // ------------------------------------------------------------------------------------------------------
 
