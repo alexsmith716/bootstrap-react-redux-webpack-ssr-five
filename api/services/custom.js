@@ -1,5 +1,6 @@
 import _ from 'lodash';
-import { SOCKET_KEY } from '@feathersjs/socketio';
+import feathers from '@feathersjs/feathers';
+const { SOCKET_KEY } = require('@feathersjs/socketio');
 
 export default function customService(app) {
 

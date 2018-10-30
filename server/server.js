@@ -50,9 +50,32 @@ const outputPath = path.resolve(__dirname, '..');
 
 import webpack from 'webpack';
 
-import { clearChunks, flushChunkNames } from 'react-universal-component/server';
-import flushChunks from 'webpack-flush-chunks';
+// import { clearChunks, flushChunkNames } from 'react-universal-component/server';
+// import flushChunks from 'webpack-flush-chunks';
 // import { flushFiles } from 'webpack-flush-chunks'
+
+import serverRender from './render';
+
+// ================================
+
+if (__DEVELOPMENT__) {
+  console.log('>>>>>>>>>>>>>>>>> SERVER > __DEVELOPMENT__ ?: ', __DEVELOPMENT__);
+} else {
+  console.log('>>>>>>>>>>>>>>>>> SERVER > __DEVELOPMENT__ ?: ', __DEVELOPMENT__);
+}
+
+// ###########################################################################
+// ######## ----------------- CATCH UNCAUGHT ERRORS ------------------- ######
+// ###########################################################################
+
+// catch uncaught errors at a global level:
+// promises swallow errors without a catch() statement
+// always call .catch() on your promises
+// 'unhandledrejection' event is fired when a Promise is rejected but there is no rejection handler to deal with the rejection
+process.on('unhandledRejection', (error, promise) => {
+  console.error('>>>>>>>>>>>>>>>>> SERVER > process > unhandledRejection > promise:', promise);
+  console.error('>>>>>>>>>>>>>>>>> SERVER > process > unhandledRejection > error:', error);
+});
 
 // ###########################################################################
 // ######## ---------- SPECIFY LOADABLE COMPONENTS PATH --------------- ######
@@ -92,27 +115,6 @@ mongoose.connect(dbURL, mongooseOptions).then(
 
 // https://mongoosejs.com/docs/connections.html#multiple_connections
 // mongoose.createConnection('mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database][?options]]', options);
-
-// ###########################################################################
-// ######## ----------------- CATCH UNCAUGHT ERRORS ------------------- ######
-// ###########################################################################
-
-// catch uncaught errors at a global level:
-// promises swallow errors without a catch() statement
-// always call .catch() on your promises
-// 'unhandledrejection' event is fired when a Promise is rejected but there is no rejection handler to deal with the rejection
-process.on('unhandledRejection', (error, promise) => {
-  console.error('>>>>>>>>>>>>>>>>> SERVER > process > unhandledRejection > promise:', promise);
-  console.error('>>>>>>>>>>>>>>>>> SERVER > process > unhandledRejection > error:', error);
-});
-
-// ================================
-
-if (__DEVELOPMENT__) {
-  console.log('>>>>>>>>>>>>>>>>> SERVER > __DEVELOPMENT__ ?: ', __DEVELOPMENT__);
-} else {
-  console.log('>>>>>>>>>>>>>>>>> SERVER > __DEVELOPMENT__ ?: ', __DEVELOPMENT__);
-}
 
 // ================================
 
@@ -247,8 +249,7 @@ proxy.on('error', (error, req, res) => {
 // ########## ---------------------------------------- SERVER -------------------------------------------- ##########
 // ##################################################################################################################
 
-// app.use((req, res) => {
-app.use(async (req, res) => {
+app.use(async (req, res, next) => {
 
   console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > SetUpComponent !! START !! $$$$$$$$$$$$$$$$$$$$$$');
 
@@ -364,7 +365,11 @@ app.use(async (req, res) => {
     
     console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > ==================== component: ', component);
 
-    // const content = ReactDOM.renderToString(component);
+    // Render the React element to its initial HTML ++++++++
+    // Returns an HTML String ++++++++++++++++++++++++++++++
+    const content = ReactDOM.renderToString(component);
+
+    console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > ==================== content: ', content);
 
     // ------------------------------------------------------------------------------------------------------
 
@@ -372,31 +377,32 @@ app.use(async (req, res) => {
     // ######## ----------- RETURN/FLUSH WEBPACK-COMPILED CHUNKS ---------- ######
     // ###########################################################################
 
-    clearChunks();
+    // clearChunks();
 
-    const chunkNames = flushChunkNames();
+    // const chunkNames = flushChunkNames();
 
-    console.log('>>>>>>>>>>>>>>>>> SERVER > APP.USE > chunkNames: ', chunkNames);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > APP.USE > chunkNames: ', chunkNames);
 
-    const { js, styles, cssHash, scripts, stylesheets } = flushChunks(getStats(), { chunkNames });
+    // const clientStats = getStats();
+    // const { js, styles, cssHash, scripts, stylesheets } = flushChunks(clientStats, { chunkNames });
 
-    console.log('>>>>>>>>>>>>>>>>> SERVER > APP.USE > flushChunks > js: ', js);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > APP.USE > flushChunks > scripts: ', scripts);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > APP.USE > flushChunks > stylesheets: ', stylesheets);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > APP.USE > flushChunks > js: ', js);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > APP.USE > flushChunks > scripts: ', scripts);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > APP.USE > flushChunks > stylesheets: ', stylesheets);
 
-    // const scripts = flushFiles(getStats(), { chunkNames, filter: file => file.endsWith('.js') });
-    // const styles = flushFiles(getStats(), { chunkNames, filter: file => file.endsWith('.css') });
+    // // const scripts = flushFiles(getStats(), { chunkNames, filter: file => file.endsWith('.js') });
+    // // const styles = flushFiles(getStats(), { chunkNames, filter: file => file.endsWith('.css') });
 
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > APP.USE > flushFiles > scripts: ', scripts.length);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > APP.USE > flushFiles > styles: ', styles.length);
+    // // console.log('>>>>>>>>>>>>>>>>> SERVER > APP.USE > flushFiles > scripts: ', scripts.length);
+    // // console.log('>>>>>>>>>>>>>>>>> SERVER > APP.USE > flushFiles > styles: ', styles.length);
 
-    // ------------------------------------------------------------------------------------------------------
+    // // ------------------------------------------------------------------------------------------------------
 
-    console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > context: ', context);
+    // console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > context: ', context);
 
-    if (context.url) {
-      return res.redirect(301, context.url);
-    }
+    // if (context.url) {
+    //   return res.redirect(301, context.url);
+    // }
 
     // ------------------------------------------------------------------------------------------------------
 

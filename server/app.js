@@ -1,7 +1,7 @@
 import feathers from '@feathersjs/feathers';
-import rest from '@feathersjs/rest-client';
-import socketio from '@feathersjs/socketio-client';
-import authentication from '@feathersjs/authentication-client';
+const rest = require('@feathersjs/rest-client');
+const socketio = require('@feathersjs/socketio-client');
+const auth = require('@feathersjs/authentication-client');
 import io from 'socket.io-client';
 import axios from 'axios';
 import config from '../config/config';
@@ -41,7 +41,7 @@ const host = clientUrl => (__SERVER__ ? `http://${config.apiHost}:${config.apiPo
 const configureApp = transport =>
   feathers()
     .configure(transport)
-    .configure(authentication({ storage }));
+    .configure(auth({ storage }));
 
 // ===================================================================================
 

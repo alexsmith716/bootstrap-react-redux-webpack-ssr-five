@@ -19,9 +19,6 @@ import { isLoaded as isInfoLoaded, load as loadInfo } from '../../redux/modules/
 import { Notifs, InfoBar } from '../../components';
 import config from '../../../config/config';
 
-// import 'bootstrap';
-// import '../../assets/scss/bootstrap/scssConfig.scss';
-
 // --------------------------------------------------------------------------
 // HOC: apply HOCs outside the component definition so that the resulting component is created only once. 
 // Then, its identity will be consistent across renders
