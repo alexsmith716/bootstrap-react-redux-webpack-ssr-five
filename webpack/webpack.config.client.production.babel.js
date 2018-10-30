@@ -15,8 +15,6 @@ const { StatsWriterPlugin } = require('webpack-stats-plugin');
 
 const configuration = require('./webpack.config');
 
-// const { ReactLoadablePlugin } = require('react-loadable/webpack');
-
 const bundleAnalyzerPath = path.resolve(configuration.context, './build/analyzers/bundleAnalyzer');
 const assetsPath = path.resolve(configuration.context, './build/static/dist');
 const serverPath = path.resolve(configuration.context, './build/server');
@@ -33,7 +31,7 @@ let prodconfig = {};
 try {
   prodconfig = JSON.parse(babelrc);
   // if (Array.isArray(prodconfig.plugins)) {
-  //   //. prodconfig.plugins.push('universal-import');
+  //   // prodconfig.plugins.push('universal-import');
   //   // prodconfig.plugins.push(["css-modules-transform", {"generateScopedName": "[name]__[local]"}]);
   // }
   console.error('>>>>>>>>>>>>>>>>>>> WCCPB > SUCCESS: parsing .babelrc !!: ', prodconfig)
@@ -134,6 +132,7 @@ configuration.module.rules.push(
   },
   {
     test: /\.(scss)$/,
+    exclude: /node_modules/,
     use: [
       ExtractCssChunks.loader,
       {
@@ -376,10 +375,6 @@ configuration.plugins.push(
     __DLLS__: false
   }),
 
-  // vnew ReactLoadablePlugin({
-  // v  filename: path.join(assetsPath, 'loadable-chunks.json')
-  // v}),
-
   new HtmlWebpackPlugin({
     filename: 'index.html',
     template: path.join(configuration.context, './server/pwa.js')
@@ -414,23 +409,7 @@ configuration.plugins.push(
 );
 
 // console.log('>>>>>>>>>>>>>>>>>>> WCCPB CLIENT configuration: ', configuration);
-console.log('>>>>>>>>>>>>>>>>>>> WCCPB CLIENT configuration.module.rulesXXXXXXXXXX: ', configuration.module.rules[5].options);
-console.log('>>>>>>>>>>>>>>>>>>> WCCPB CLIENT configuration.module.rules: ', configuration.module.rules);
+// console.log('>>>>>>>>>>>>>>>>>>> WCCPB CLIENT configuration.module.rules[5].options: ', configuration.module.rules[5].options);
+// console.log('>>>>>>>>>>>>>>>>>>> WCCPB CLIENT configuration.module.rules: ', configuration.module.rules);
 // export default configuration;
 module.exports = configuration;
-
-// {
-//     presets: ['@babel/preset-react', ['@babel/preset-env', [Object]], '@babel/preset-flow'],
-//     plugins: [
-//         ['@babel/plugin-transform-runtime', [Object]],
-//         ['@babel/plugin-proposal-decorators', [Object]], 
-//         'react-hot-loader/babel', 
-//         '@babel/plugin-syntax-dynamic-import', 
-//         ['@babel/plugin-proposal-class-properties', [Object]], 
-//         '@babel/plugin-proposal-export-namespace-from', 
-//         '@babel/plugin-proposal-export-default-from', 
-//         '@babel/plugin-proposal-object-rest-spread', 
-//         'universal-import', 
-//         ['css-modules-transform', [Object]]
-//     ]
-// }
