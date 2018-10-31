@@ -50,7 +50,8 @@ import webpack from 'webpack';
 
 // import { clearChunks, flushChunkNames } from 'react-universal-component/server';
 // import flushChunks from 'webpack-flush-chunks';
-// import { flushFiles } from 'webpack-flush-chunks'
+// import { flushFiles } from 'webpack-flush-chunks';
+// import { getStats } from './utils/stats';
 
 import serverRender from './render';
 
@@ -361,7 +362,7 @@ app.use(async (req, res, next) => {
       </Provider>
     );
     
-    console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > ==================== component: ', component);
+    //console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > ==================== component: ', component);
 
     res.locals.component = component;
 
@@ -370,7 +371,7 @@ app.use(async (req, res, next) => {
 
   } catch (error) {
     console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > TRY > ERROR > error: ', error);
-    res.status(500).send('SERVER > Response Ended For Testing!!!!!!! Status 500!!!!!!!!!');
+    // res.status(500).send('SERVER > Response Ended For Testing!!!!!!! Status 500!!!!!!!!!');
     // res.status(500);
     // hydrate();
   }
