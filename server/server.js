@@ -44,9 +44,7 @@ import { parse as parseUrl } from 'url';
 import { createApp } from './app';
 import apiClient from './utils/apiClient';
 
-import { getStats, waitStats } from './utils/stats';
-
-const outputPath = path.resolve(__dirname, '..');
+import { waitStats } from './utils/stats';
 
 import webpack from 'webpack';
 
@@ -365,48 +363,9 @@ app.use(async (req, res, next) => {
     
     console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > ==================== component: ', component);
 
-    // Render the React element to its initial HTML ++++++++
-    // Returns an HTML String ++++++++++++++++++++++++++++++
-    const content = ReactDOM.renderToString(component);
+    res.locals.component = component;
 
-    console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > ==================== content: ', content);
-
-    // ------------------------------------------------------------------------------------------------------
-
-    // ###########################################################################
-    // ######## ----------- RETURN/FLUSH WEBPACK-COMPILED CHUNKS ---------- ######
-    // ###########################################################################
-
-    // clearChunks();
-
-    // const chunkNames = flushChunkNames();
-
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > APP.USE > chunkNames: ', chunkNames);
-
-    // const clientStats = getStats();
-    // const { js, styles, cssHash, scripts, stylesheets } = flushChunks(clientStats, { chunkNames });
-
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > APP.USE > flushChunks > js: ', js);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > APP.USE > flushChunks > scripts: ', scripts);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > APP.USE > flushChunks > stylesheets: ', stylesheets);
-
-    // // const scripts = flushFiles(getStats(), { chunkNames, filter: file => file.endsWith('.js') });
-    // // const styles = flushFiles(getStats(), { chunkNames, filter: file => file.endsWith('.css') });
-
-    // // console.log('>>>>>>>>>>>>>>>>> SERVER > APP.USE > flushFiles > scripts: ', scripts.length);
-    // // console.log('>>>>>>>>>>>>>>>>> SERVER > APP.USE > flushFiles > styles: ', styles.length);
-
-    // // ------------------------------------------------------------------------------------------------------
-
-    // console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > context: ', context);
-
-    // if (context.url) {
-    //   return res.redirect(301, context.url);
-    // }
-
-    // ------------------------------------------------------------------------------------------------------
-
-    res.status(200).send('SERVER > Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
+    return next();
 
 
   } catch (error) {
@@ -417,6 +376,8 @@ app.use(async (req, res, next) => {
   }
 
 });
+
+app.use(serverRender());
 
 // #########################################################################
 

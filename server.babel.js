@@ -12,8 +12,8 @@ try {
     // config.plugins.push("dynamic-import-node");
     // config.plugins.push(["dynamic-import-node", { "noInterop": true }]);
     // config.plugins.push("dynamic-import-webpack");
-    config.plugins.push(["universal-import", {"babelServer": true}]);
     config.plugins.push(["css-modules-transform", {"generateScopedName": "[name]__[local]"}]);
+    config.plugins.push(["universal-import", {"babelServer": true}]);
   }
   console.error('>>>>>>>>>>>>>>>>>>> server.babel > SUCCESS: parsing .babelrc !!: ', config)
 } catch (err) {
