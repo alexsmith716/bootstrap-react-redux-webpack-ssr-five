@@ -384,10 +384,6 @@ app.use(async (req, res, next) => {
     
     console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADERSS > ==================== component: ', component);
 
-    const content = ReactDOM.renderToString(component);
-
-    // console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > ===================================== content: ', content);
-
     // ------------------------------------------------------------------------------------------------------
 
     console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > context: ', context);
@@ -415,48 +411,66 @@ app.use(async (req, res, next) => {
 
     // ------------------------------------------------------------------------------------------------------
 
+    const content = ReactDOM.renderToString(component);
+
+    // console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > ===================================== content: ', content);
+
+    // ------------------------------------------------------------------------------------------------------
+
     const clientStats = getStats();
-    // console.log('>>>>>>>>>>>>>>>>> RENDER > clientStats: ', clientStats);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > clientStats: ', clientStats);
     clearChunks();
     const chunkNames = flushChunkNames();
+    console.log('>>>>>>>>>>>>>>>>> SERVER > chunkNames: ', chunkNames);
 
-    const {
-      // react components:
-      Js, // javascript chunks
-      Styles, // external stylesheets
-      Css, // raw css
+    // const scripts = flushFiles(clientStats, { chunkNames, filter: 'js' });
+    // const styles = flushFiles(clientStats, { chunkNames, filter: 'css' });
 
-      // strings:
-      js, // javascript chunks
-      styles, // external stylesheets
-      css, // raw css
+    // scripts:  [ 'bootstrap.ba1b422eeb0d78f07d43.bundle.js', 'main.f8c3be17197dd531d4b5.chunk.js' ]
+    // stylesheets:  [ 'main.aa610604945cbff30901.css' ]
+    const { js, styles, cssHash, scripts, stylesheets } = flushChunks( clientStats, { chunkNames } )
 
-      // arrays of file names (not including publicPath):
-      scripts,
-      stylesheets,
-      
-      publicPath
-    } = flushChunks(clientStats, {
-      chunkNames,
-      before: ['bootstrap'],
-      after: ['main'],
-      rootDir: path.join(__dirname, '..'),
-      outputPath
-    })
+    // const {
+    //   // react components:
+    //   Js, // javascript chunks
+    //   Styles, // external stylesheets
+    //   Css, // raw css
 
-    console.log('>>>>>>>>>>>>>>>>> RENDER > chunkNames: ', chunkNames);
-    console.log('>>>>>>>>>>>>>>>>> RENDER > flushChunks > JS: ', Js);
-    console.log('>>>>>>>>>>>>>>>>> RENDER > flushChunks > STYLES: ', Styles);
-    console.log('>>>>>>>>>>>>>>>>> RENDER > flushChunks > CSS: ', Css);
-    console.log('>>>>>>>>>>>>>>>>> RENDER > flushChunks > js: ', js);
-    console.log('>>>>>>>>>>>>>>>>> RENDER > flushChunks > styles: ', styles);
-    console.log('>>>>>>>>>>>>>>>>> RENDER > flushChunks > css: ', css);
-    console.log('>>>>>>>>>>>>>>>>> RENDER > flushChunks > scripts: ', scripts);
-    console.log('>>>>>>>>>>>>>>>>> RENDER > flushChunks > stylesheets: ', stylesheets);
+    //   // strings:
+    //   js, // javascript chunks
+    //   styles, // external stylesheets
+    //   css, // raw css
 
-    console.log('>>>>>>>>>>>>>>>> RENDER > ==================== content!!!!!!: ', content);
-    res.status(200).send('RENDER > Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
+    //   // arrays of file names (not including publicPath):
+    //   scripts,
+    //   stylesheets,
+    //   
+    //   publicPath
+    // } = flushChunks(clientStats, {
+    //   chunkNames,
+    //   before: ['bootstrap'],
+    //   after: ['main'],
+    //   rootDir: path.join(__dirname, '..'),
+    //   outputPath
+    // })
 
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > JS: ', Js);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > STYLES: ', Styles);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > CSS: ', Css);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > js: ', js);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > styles: ', styles);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > css: ', css);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > cssHash: ', cssHash);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > scripts: ', scripts);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > stylesheets: ', stylesheets);
+
+    console.log('>>>>>>>>>>>>>>>> SERVER > ==================== content!!!!!!: ', content);
+
+    // const html = <Html assets={webpackAssets} store={store} content={content} bundles={scripts} />;
+    // const ssrHtml = `<!doctype html>${ReactDOM.renderToString(html)}`;
+    // console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > RESPOND TO CLIENT !! > ReactDOM.renderToString(html):', ssrHtml);
+
+    res.status(200).send('SERVER > Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
 
   } catch (error) {
     console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > TRY > ERROR > error: ', error);

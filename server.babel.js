@@ -9,11 +9,14 @@ let config;
 try {
   config = JSON.parse(babelrc);
   if (Array.isArray(config.plugins)) {
-    // config.plugins.push("dynamic-import-node");
-    // config.plugins.push(["dynamic-import-node", { "noInterop": true }]);
-    // config.plugins.push("dynamic-import-webpack");
-    config.plugins.push(["universal-import", {"babelServer": true}]);
-    config.plugins.push(["css-modules-transform", {"extensions": [".css", ".scss"], "generateScopedName": "[name]__[local]"}]);
+    // config.plugins.push('dynamic-import-node');
+    // config.plugins.push(['dynamic-import-node', { 'noInterop': true }]);
+    // config.plugins.push('dynamic-import-webpack');
+    config.plugins.push(['universal-import', { 'babelServer': true }]);
+    config.plugins.push(['css-modules-transform', {
+      'extensions': ['.jpeg', '.jpg', '.png', '.gif', '.woff', '.woff2', '.ttf', '.eot', '.svg', '.css', '.scss'], 
+      'generateScopedName': '[name]__[local]'
+    }]);
   }
   console.error('>>>>>>>>>>>>>>>>>>> server.babel > SUCCESS: parsing .babelrc !!: ', config)
 } catch (err) {
