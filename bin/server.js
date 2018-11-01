@@ -1,6 +1,8 @@
 // @flow
 
-require('../server.babel');
+const voo = require('../server.babel');
+
+console.error('>>>>>>>>>>>>>>>>>>> BIN > SERVER > server.babel: ', voo);
 
 global.__CLIENT__ = false;
 global.__SERVER__ = true;

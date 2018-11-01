@@ -11,25 +11,22 @@ const outputPath = path.resolve(__dirname, '..');
 
 export default () => (req, res) => {
 
-  const clientStats = getStats();
-
-  // console.log('>>>>>>>>>>>>>>>>> RENDER > clientStats: ', clientStats);
-
-  clearChunks();
-
-  // console.log('>>>>>>>>>>>>>>>> RENDER > res.locals.component: ', res.locals.component);
+  console.log('>>>>>>>>>>>>>>>> RENDER > res.locals.component: ', res.locals.component);
 
   try {
 
     const content = ReactDOM.renderToString(res.locals.component);
+
+    const clientStats = getStats();
+
+    // console.log('>>>>>>>>>>>>>>>>> RENDER > clientStats: ', clientStats);
+
+    clearChunks();
+
     const chunkNames = flushChunkNames();
 
     console.log('>>>>>>>>>>>>>>>>> RENDER > chunkNames: ', chunkNames);
 
-    // const { js, styles, cssHash, scripts, stylesheets } = flushChunks(clientStats, { chunkNames });
-
-    // scripts:  [ 'bootstrap.ba1b422eeb0d78f07d43.bundle.js', 'main.79445e7c1a264b870f34.chunk.js' ]
-    // stylesheets:  [ 'main.aa610604945cbff30901.css' ]
     const {
       // react components:
       Js, // javascript chunks

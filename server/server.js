@@ -362,7 +362,7 @@ app.use(async (req, res, next) => {
       </Provider>
     );
     
-    //console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > ==================== component: ', component);
+    console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADERSS > ==================== component: ', component);
 
     res.locals.component = component;
 
