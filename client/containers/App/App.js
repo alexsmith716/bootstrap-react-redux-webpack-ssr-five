@@ -4,7 +4,10 @@ import PropTypes from 'prop-types';
 
 import { withRouter } from 'react-router';
 import { push } from 'connected-react-router';
+
+// https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 import renderRoutes from 'react-router-config/renderRoutes';
+
 import { provideHooks } from 'redial';
 import { connect } from 'react-redux';
 
@@ -215,7 +218,9 @@ class App extends Component {
               />
             </div>
           )}
+
           {renderRoutes(route.routes)}
+
         </div>
 
         <div className={stylesScss1.appInfoBar}>
