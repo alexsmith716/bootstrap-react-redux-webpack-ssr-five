@@ -48,12 +48,12 @@ import { waitStats } from './utils/stats';
 
 import webpack from 'webpack';
 
-// import { clearChunks, flushChunkNames } from 'react-universal-component/server';
-// import flushChunks from 'webpack-flush-chunks';
-// import { flushFiles } from 'webpack-flush-chunks';
-// import { getStats } from './utils/stats';
+import { clearChunks, flushChunkNames } from 'react-universal-component/server';
+import flushChunks from 'webpack-flush-chunks';
+import { flushFiles } from 'webpack-flush-chunks';
+import { getStats } from './utils/stats';
 
-import serverRender from './render';
+const outputPath = path.resolve(__dirname, '..');
 
 // ================================
 
@@ -331,6 +331,26 @@ app.use(async (req, res, next) => {
     console.log('>>>>>>>>>>>>>>>>>>> SERVER.JS > APP LOADER > store.getState(): ', store.getState())
   )
 
+  // ###########################################################################
+  // ######## ----------------- function hydrate ---------------------- ########
+  // ###########################################################################
+
+  function hydrate() {
+    res.write('<!doctype html>');
+    // ReactDOM.renderToNodeStream():
+    // Returns a Readable stream that outputs an HTML string
+    // HTML output by this stream is exactly equal to what ReactDOM.renderToString() returns
+    ReactDOM.renderToNodeStream(<Html assets={webpackAssets} store={store} />).pipe(res);
+  }
+
+  if (__DISABLE_SSR__) {
+    return hydrate();
+  }
+
+  // ###########################################################################
+  // ######## ----------------- TRY SUCESSFUL SSR ---------------------- #######
+  // ###########################################################################
+
   // ------------------------------------------------------------------------------------------------------
 
   try {
@@ -364,21 +384,87 @@ app.use(async (req, res, next) => {
     
     console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADERSS > ==================== component: ', component);
 
-    res.locals.component = component;
+    const content = ReactDOM.renderToString(component);
 
-    return next();
+    // console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > ===================================== content: ', content);
+
+    // ------------------------------------------------------------------------------------------------------
+
+    console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > context: ', context);
+
+    // test context prop to find out what the result of rendering was
+    // context.url ? the app redirected
+    // 301: status.redirect
+    // send a redirect from the server
+    if (context.url) {
+      return res.redirect(301, context.url);
+    }
+
+    const locationState = store.getState().router.location;
+
+    // console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > store.getState: ', store.getState());
+    // console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > locationState: ', locationState);
+
+    // decodeURIComponent: decode percent-encoded characters in the query string
+    // parses a URL Query String into a collection of key and value pairs
+    // 'foo=bar&abc=xyz&abc=123' >>>> '{foo: 'bar',abc: ['xyz', '123']}'
+    // https://nodejs.org/api/all.html#querystring_querystring_parse_str_sep_eq_options
+    if (decodeURIComponent(req.originalUrl) !== decodeURIComponent(locationState.pathname + locationState.search)) {
+      return res.redirect(301, locationState.pathname);
+    }
+
+    // ------------------------------------------------------------------------------------------------------
+
+    const clientStats = getStats();
+    // console.log('>>>>>>>>>>>>>>>>> RENDER > clientStats: ', clientStats);
+    clearChunks();
+    const chunkNames = flushChunkNames();
+
+    const {
+      // react components:
+      Js, // javascript chunks
+      Styles, // external stylesheets
+      Css, // raw css
+
+      // strings:
+      js, // javascript chunks
+      styles, // external stylesheets
+      css, // raw css
+
+      // arrays of file names (not including publicPath):
+      scripts,
+      stylesheets,
+      
+      publicPath
+    } = flushChunks(clientStats, {
+      chunkNames,
+      before: ['bootstrap'],
+      after: ['main'],
+      rootDir: path.join(__dirname, '..'),
+      outputPath
+    })
+
+    console.log('>>>>>>>>>>>>>>>>> RENDER > chunkNames: ', chunkNames);
+    console.log('>>>>>>>>>>>>>>>>> RENDER > flushChunks > JS: ', Js);
+    console.log('>>>>>>>>>>>>>>>>> RENDER > flushChunks > STYLES: ', Styles);
+    console.log('>>>>>>>>>>>>>>>>> RENDER > flushChunks > CSS: ', Css);
+    console.log('>>>>>>>>>>>>>>>>> RENDER > flushChunks > js: ', js);
+    console.log('>>>>>>>>>>>>>>>>> RENDER > flushChunks > styles: ', styles);
+    console.log('>>>>>>>>>>>>>>>>> RENDER > flushChunks > css: ', css);
+    console.log('>>>>>>>>>>>>>>>>> RENDER > flushChunks > scripts: ', scripts);
+    console.log('>>>>>>>>>>>>>>>>> RENDER > flushChunks > stylesheets: ', stylesheets);
+
+    console.log('>>>>>>>>>>>>>>>> RENDER > ==================== content!!!!!!: ', content);
+    res.status(200).send('RENDER > Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
 
 
   } catch (error) {
     console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > TRY > ERROR > error: ', error);
-    // res.status(500).send('SERVER > Response Ended For Testing!!!!!!! Status 500!!!!!!!!!');
-    // res.status(500);
-    // hydrate();
+    res.status(500);
+    hydrate();
   }
 
 });
-
-app.use(serverRender());
 
 // #########################################################################
 
