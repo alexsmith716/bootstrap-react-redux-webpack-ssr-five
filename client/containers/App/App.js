@@ -22,6 +22,10 @@ import { isLoaded as isInfoLoaded, load as loadInfo } from '../../redux/modules/
 import { Notifs, InfoBar } from '../../components';
 import config from '../../../config/config';
 
+import stylesScss1 from './scss/AppScss1.scss';
+import stylesScss2 from './scss/AppScss2.scss';
+import stylesCss1 from './css/AppCss1.css';
+
 // --------------------------------------------------------------------------
 // HOC: apply HOCs outside the component definition so that the resulting component is created only once. 
 // Then, its identity will be consistent across renders
@@ -144,9 +148,9 @@ class App extends Component {
 
     const { notifs, route } = this.props;
     const { user } = this.state;
-    const stylesScss1 = require('./scss/AppScss1.scss');
-    const stylesScss2 = require('./scss/AppScss2.scss');
-    const stylesCss1 = require('./css/AppCss1.css');
+    // const stylesScss1 = require('./scss/AppScss1.scss');
+    // const stylesScss2 = require('./scss/AppScss2.scss');
+    // const stylesCss1 = require('./css/AppCss1.css');
 
     return (
 

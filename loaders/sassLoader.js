@@ -1,8 +1,6 @@
 const sass = require('node-sass');
 const path = require('path');
 
-console.log('>>>>>>>>>>>>>>>>>>>>>>>>> sassLoader.js <<<<<<<<<<<<<<<<<<<<<<<<');
-
 module.exports = (data, file) => {
 
   try {
@@ -12,7 +10,6 @@ module.exports = (data, file) => {
   }
 
 };
-
 
 // module.exports = function processSass(data, filename) {
 //   var result;

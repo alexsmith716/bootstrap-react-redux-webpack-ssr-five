@@ -193,7 +193,7 @@ configuration.module.rules.push(
         loader : 'css-loader',
         options: {
           modules: true,
-          localIdentName: '[name]__[local]__[hash:base64:5]',
+          localIdentName: '[name]__[local]',
           importLoaders: 1,
           sourceMap: true
         }
