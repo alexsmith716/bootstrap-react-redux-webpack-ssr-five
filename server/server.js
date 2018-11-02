@@ -50,7 +50,7 @@ import webpack from 'webpack';
 
 import { clearChunks, flushChunkNames } from 'react-universal-component/server';
 import flushChunks from 'webpack-flush-chunks';
-import { flushFiles } from 'webpack-flush-chunks';
+// import { flushFiles } from 'webpack-flush-chunks';
 import { getStats } from './utils/stats';
 
 const outputPath = path.resolve(__dirname, '..');
