@@ -34,7 +34,7 @@ try {
   //   // prodconfig.plugins.push('universal-import');
   //   // prodconfig.plugins.push(["css-modules-transform", {"generateScopedName": "[name]__[local]"}]);
   // }
-  console.error('>>>>>>>>>>>>>>>>>>> WCCPB > SUCCESS: parsing .babelrc !!: ', prodconfig)
+  // console.error('>>>>>>>>>>>>>>>>>>> WCCPB > SUCCESS: parsing .babelrc !!: ', prodconfig)
 } catch (err) {
   console.error('>>>>>>>>>>>>>>>>>>> WCCPB > ERROR: parsing .babelrc: ', err)
 }

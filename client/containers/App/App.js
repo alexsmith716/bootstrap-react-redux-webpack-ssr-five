@@ -22,10 +22,6 @@ import { isLoaded as isInfoLoaded, load as loadInfo } from '../../redux/modules/
 import { Notifs, InfoBar } from '../../components';
 import config from '../../../config/config';
 
-import stylesScss1 from './scss/AppScss1.scss';
-import stylesScss2 from './scss/AppScss2.scss';
-import stylesCss1 from './css/AppCss1.css';
-
 // --------------------------------------------------------------------------
 // HOC: apply HOCs outside the component definition so that the resulting component is created only once. 
 // Then, its identity will be consistent across renders
@@ -148,13 +144,13 @@ class App extends Component {
 
     const { notifs, route } = this.props;
     const { user } = this.state;
-    // const stylesScss1 = require('./scss/AppScss1.scss');
-    // const stylesScss2 = require('./scss/AppScss2.scss');
-    // const stylesCss1 = require('./css/AppCss1.css');
+
+    const styles = require('./styles/App.scss');
+    const stylesCss = require('./css/AppCss1.css');
 
     return (
 
-      <div className={stylesScss1.app}>
+      <div className={styles.app}>
 
         <Helmet {...config.app.head} />
 
@@ -162,7 +158,7 @@ class App extends Component {
 
           <div className="container">
 
-            <Link to='/' className={`navbar-brand js-scroll-trigger ${stylesScss1.brand}`}>Election App</Link>
+            <Link to='/' className={`navbar-brand js-scroll-trigger ${styles.brand}`}>Election App</Link>
 
             <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
               <span className="navbar-toggler-icon"></span>
@@ -195,7 +191,7 @@ class App extends Component {
 
                 <li className="nav-item">
                   <a className="nav-link font-norwester" href="#">
-                    <span className={`fa fa-fw fa-headphones ${stylesScss2.colorGoldLocal}`}></span><span className={stylesScss2.testColorFont}>Headphones!</span></a>
+                    <span className={`fa fa-fw fa-headphones ${styles.colorGoldLocal}`}></span><span className={styles.testColorFont}>Headphones!</span></a>
                 </li>
 
                 <li className="nav-item dropdown">
@@ -212,11 +208,11 @@ class App extends Component {
           </div>
         </nav>
 
-        <div className={stylesScss1.appContent}>
+        <div className={styles.appContent}>
           {notifs.global && (
             <div>
               <Notifs
-                className={stylesScss1.notifs}
+                className={styles.notifs}
                 namespace="global"
                 NotifComponent={props => <div>{props.message}</div>}
               />
@@ -227,15 +223,15 @@ class App extends Component {
 
         </div>
 
-        <div className={stylesScss1.appInfoBar}>
+        <div className={styles.appInfoBar}>
           <InfoBar />
         </div>
 
-        <div className={stylesScss1.footer}>
+        <div className={styles.footer}>
           <div className="container h-100">
-            <div className={`h-100 d-flex flex-column justify-content-center align-items-center ${stylesScss1.flexContainer}`}>
+            <div className={`h-100 d-flex flex-column justify-content-center align-items-center ${styles.flexContainer}`}>
               <div>Copyright &copy; 2018 · Election App 2018</div>
-              <div><span className={`fa fa-headphones fa-padding ${stylesScss2.colorGoldLocal}`}></span><span className={`font-norwester ${stylesScss2.colorGoldLocal}`}>Footer Headphones!</span></div>
+              <div><span className={`fa fa-headphones fa-padding ${styles.colorGoldLocal}`}></span><span className={`font-norwester ${styles.colorGoldLocal}`}>Footer Headphones!</span></div>
             </div>
           </div>
         </div>
@@ -253,7 +249,7 @@ class App extends Component {
 
                 <p>Modal is working. This paragraph's font and the above modal-title's font is using Bootstrap's default font. It is the default 'global' font for this app. It is overriding Bootstrap's default font 'font-family-sans-serif'. It's a hard to read font but easily recognizable for development purposes.</p>
 
-                <p className={stylesScss2.specialAppFontColor}>This paragraph's '@font-face' is 'Old English'.</p>
+                <p className={styles.specialAppFontColor}>This paragraph's '@font-face' is 'Old English'.</p>
 
                 <p className="font-roboto-mono-V4-latin-regular">This paragraph's '@font-face' is 'roboto-mono-v4-latin-regular'.</p>
 
@@ -269,13 +265,13 @@ class App extends Component {
 
                 <p className="font-sourcesanspro-regular-webfont">This paragraph's '@font-face' is 'sourcesanspro-regular-webfont'.</p>
 
-                <p className={`color-springgreen ${stylesScss2.montserratLightFontGlobalToLocal}`}>This paragraph's '@font-face' is 'MontserratLight'. It is scoped Global to Local.</p>
+                <p className={`color-springgreen ${styles.montserratLightFontGlobalToLocal}`}>This paragraph's '@font-face' is 'MontserratLight'. It is scoped Global to Local.</p>
 
                 <p className="color-orangered font-opensans-bold-webfont">This paragraph's '@font-face' is 'OpenSans-Bold-webfont' It is scoped Global.</p>
 
-                <p className={stylesCss1.colorCrimsonCssLocal}>This paragraph's color is 'colorCrimsonCssLocal'. It is scoped Local fom 'AppCss1.css'.</p>
+                <p className={stylesCss.colorCrimsonCssLocal}>This paragraph's color is 'colorCrimsonCssLocal'. It is scoped Local fom 'AppCss1.css'.</p>
 
-                <p className={stylesScss2.coloredText2Local}>This paragraph's color is 'coloredText2Local'. It is scoped Local fom 'AppScss2.scss'.</p>
+                <p className={styles.coloredText2Local}>This paragraph's color is 'coloredText2Local'. It is scoped Local fom 'AppScss2.scss'.</p>
 
               </div>
 

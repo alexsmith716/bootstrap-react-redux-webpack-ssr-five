@@ -1,10 +1,4 @@
 
-// Bootstrap Navbar rendered height affected by size of the content (brand, links, text, padding)
-// Viewport Height (vh) – A percentage of the full viewport height
-// 10vh will resolve to 10% of the current viewport height
-// min-height: #{'calc(100vh - ' + calculate-rem($footer-height) + ')'}; // exclude the height of footer
-// min-height: #{'calc(100vh - ' + calculate-rem(277px) + ')'};
-
 .app {
   .brand {
     color: #00BFFF;

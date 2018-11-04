@@ -327,9 +327,9 @@ app.use(async (req, res, next) => {
     helpers: providers
   });
 
-  store.subscribe(() =>
-    console.log('>>>>>>>>>>>>>>>>>>> SERVER.JS > APP LOADER > store.getState(): ', store.getState())
-  )
+  // store.subscribe(() =>
+  //   console.log('>>>>>>>>>>>>>>>>>>> SERVER.JS > APP LOADER > store.getState(): ', store.getState())
+  // )
 
   // ###########################################################################
   // ######## ----------------- function hydrate ---------------------- ########
@@ -382,11 +382,11 @@ app.use(async (req, res, next) => {
       </Provider>
     );
     
-    console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADERSS > ==================== component: ', component);
+    // console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADERSS > ==================== component: ', component);
 
     // ------------------------------------------------------------------------------------------------------
 
-    console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > context: ', context);
+    // console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > context: ', context);
 
     // test context prop to find out what the result of rendering was
     // context.url ? the app redirected
@@ -412,8 +412,6 @@ app.use(async (req, res, next) => {
     // ------------------------------------------------------------------------------------------------------
 
     const content = ReactDOM.renderToString(component);
-
-    // console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > ===================================== content: ', content);
 
     // ------------------------------------------------------------------------------------------------------
 
