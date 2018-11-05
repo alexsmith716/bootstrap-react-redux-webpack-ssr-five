@@ -25,6 +25,11 @@ try {
 
 require('@babel/register')(config);
 
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Plugins run before Presets
+// Plugin ordering is first to last
+// Preset ordering is reversed (last to first)
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 // https://github.com/css-modules/css-modules-require-hook#processoropts-object
 // https://github.com/michalkvasnicak/babel-plugin-css-modules-transform
