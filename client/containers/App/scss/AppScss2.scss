@@ -1,4 +1,6 @@
 
+// @import '../../../assets/scss/app/sharedresources.scss';
+
 .colorMarginStyleLocal {
   margin-top: calculate-rem(30px);
   color: #5c6ac4;
@@ -36,6 +38,6 @@
   @include old-english-font;
 }
 
-.sharedVarColorRutgersScarletXXX {
+.sharedVarColorRutgersScarletXX {
   color: $shared-var-color-rutgers-scarletx;
 }

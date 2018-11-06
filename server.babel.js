@@ -17,7 +17,6 @@ try {
       "extensions": [".css", ".scss"], 
       "generateScopedName": "[name]__[local]",
     }]);
-    // config.plugins.push(["universal-import", { "babelServer": true }]);
   }
   console.error('>>>>>>>>>>>>>>>>>>> server.babel > SUCCESS: parsing .babelrc !!: ', config)
 } catch (err) {
