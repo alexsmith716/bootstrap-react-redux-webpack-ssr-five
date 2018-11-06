@@ -35,3 +35,7 @@
   color: #EE00EE; // magenta 2
   @include old-english-font;
 }
+
+.sharedVarColorRutgersScarletXXX {
+  color: $shared-var-color-rutgers-scarletx;
+}

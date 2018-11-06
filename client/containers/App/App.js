@@ -247,7 +247,7 @@ class App extends Component {
               </div>
               <div className="modal-body">
 
-                <p>Modal is working. This paragraph's font and the above modal-title's font is using Bootstrap's default font. It is the default 'global' font for this app. It is overriding Bootstrap's default font 'font-family-sans-serif'. It's a hard to read font but easily recognizable for development purposes.</p>
+                <p className={styles.sharedVarColorRutgersScarletXXX}>Modal is working. This paragraph's font and the above modal-title's font is using Bootstrap's default font. It is the default 'global' font for this app. It is overriding Bootstrap's default font 'font-family-sans-serif'. It's a hard to read font but easily recognizable for development purposes.</p>
 
                 <p className={styles.specialAppFontColor}>This paragraph's '@font-face' is 'Old English'.</p>
 
