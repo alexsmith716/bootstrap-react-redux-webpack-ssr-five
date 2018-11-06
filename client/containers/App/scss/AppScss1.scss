@@ -30,7 +30,8 @@
   position: absolute;
   bottom: 0;
   width: 100%;
-  background-color: #0000FF;
+  // background-color: #0000FF;
+  background-color: $shared-var-color-syracuse-orange;
   // @extend %footerHeight;
   height: calculate-rem($footer-height);
   .flexContainer {

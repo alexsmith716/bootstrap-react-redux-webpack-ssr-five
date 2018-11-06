@@ -468,6 +468,8 @@ app.use(async (req, res, next) => {
     // const ssrHtml = `<!doctype html>${ReactDOM.renderToString(html)}`;
     // console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > RESPOND TO CLIENT !! > ReactDOM.renderToString(html):', ssrHtml);
 
+    // res.status(200).send(ssrHtml);
+
     res.status(200).send('SERVER > Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
 
   } catch (error) {
