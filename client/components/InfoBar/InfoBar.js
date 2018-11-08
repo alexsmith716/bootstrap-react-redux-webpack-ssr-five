@@ -27,7 +27,7 @@ class InfoBar extends Component {
   render() {
 
     const { info, load } = this.props; // eslint-disable-line no-shadow
-    const styles = require('./InfoBar.scss');
+    const styles = require('./scss/InfoBar.scss');
 
     // console.log('>>>>>>>>>>>>>>>> InfoBar > render() > info:', info);
     // console.log('>>>>>>>>>>>>>>>> InfoBar > render() > load:', load);
