@@ -4,13 +4,25 @@ import serialize from 'serialize-javascript';
 import Helmet from 'react-helmet';
 import config from '../../config/config';
 
-const Html = ({ assets, store, content, bundles }) => {
+const Html = ({ assets, store, content }) => {
 
-  console.log('>>>>>> HTML.JS > assets: ', assets);
+  console.log('>>>>>> HTML.JS > assets!!: ', assets);
   // console.log('>>>>>> HTML.JS > assets.styles length: ', Object.keys(assets.styles).length);
   // console.log('#######################>>>>>> HTML.JS > store: ', store);
   // console.log('>>>>>> HTML.JS > content: ', content);
-  console.log('>>>>>> HTML.JS > bundles: ', bundles);
+
+  // {
+  //   scripts: ['bootstrap.1028857055655ec25286.bundle.js', 'main.336c632fd2d3509b6828.chunk.js'],
+  //   stylesheets: ['main.fa8250340286f1b7318e.css'],
+  //   publicPath: '/dist',
+  //   outputPath: undefined,
+  //   cssHashRaw: {
+  //     about: '/dist/about.59a596b6240bc975e9d7.css',
+  //     main: '/dist/main.fa8250340286f1b7318e.css'
+  //   },
+  //   CssHash: [Function: CssHash],
+  //   cssHash: {toString: [Function: toString]}
+  // }
 
   const head = Helmet.renderStatic();
 
@@ -34,23 +46,6 @@ const Html = ({ assets, store, content, bundles }) => {
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="manifest" href="/manifest.json" />
 
-        {/* (>>>>>>> STYLES - will be present only in production) */}
-        {assets.styles 
-          && Object.keys(assets.styles).map(style => (
-            <link
-              href={assets.styles[style]}
-              key={style}
-              media="screen, projection"
-              rel="stylesheet"
-              type="text/css"
-              charSet="UTF-8"
-            />
-          ))}
-
-        {/* (will be present only in development mode) */}
-        {assets.styles && Object.keys(assets.styles).length === 0 ? (
-          <style dangerouslySetInnerHTML={{ __html: '#content{display:none}' }} />
-        ) : null}
       </head>
 
       <body>
@@ -65,21 +60,6 @@ const Html = ({ assets, store, content, bundles }) => {
             charSet="UTF-8"
           />
         )}
-
-        {/* {assets.javascript && <script src={assets.javascript.runtime} charSet="UTF-8" />} */}
-        {/* {assets.javascript && <script src={assets.javascript.vendor} charSet="UTF-8" />} */}
-
-        {/* (will be present only in development mode) */}
-        { __DLLS__ && <script key="dlls__vendor" src="/dist/dlls/dll__vendor.js" charSet="UTF-8" /> }
-
-        {assets.javascript && <script src={assets.javascript.main} charSet="UTF-8" />}
-
-        {bundles.map(bundle => bundle && <script src={config.assetsPath + bundle.file} key={bundle.id} />)}
-
-        {/* (will be present only in development mode) */}
-        {assets.styles && Object.keys(assets.styles).length === 0 ? (
-          <script dangerouslySetInnerHTML={{ __html: 'document.getElementById("content").style.display="block";' }} />
-        ) : null}
 
       </body>
     </html>

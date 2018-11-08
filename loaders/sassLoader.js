@@ -39,24 +39,3 @@ module.exports = (data, file) => {
 // }
 
 // >>>>>>>>>>>>>>>>>>> SASSLOADER.JS > file:  ../bootstrap-react-redux-webpack-ssr-five/client/containers/App/css/AppCss1.css
-
-// =========================================================================================================
-
-// module.exports = (data, file) => {
-//   sass.render({
-//     // data: `@import "../../../assets/scss/app/sharedresources.scss";`,
-//     // data: '@import "../client/assets/scss/app/sharedresources.scss";',
-//     data: data,
-//     file: file,
-//     // includePaths: ['./client/assets/scss/app/']
-//   }, function(error, result) {
-//     if (error) {
-//       console.log('>>>>>>>>>>>>>>>>>>> SASSLOADER.JS > error: ', error);
-//     }
-//     else {
-//       console.log('>>>>>>>>>>>>>>>>>>> SASSLOADER.JS > result: ', result.css.toString());
-//       return result.css.toString('utf8');
-//     }
-//   });
-// };
-// 
