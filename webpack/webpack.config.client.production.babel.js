@@ -30,11 +30,10 @@ let prodconfig = {};
 
 try {
   prodconfig = JSON.parse(babelrc);
-  // if (Array.isArray(prodconfig.plugins)) {
-  //   // prodconfig.plugins.push('universal-import');
-  //   // prodconfig.plugins.push(["css-modules-transform", {"generateScopedName": "[name]__[local]"}]);
-  // }
-  // console.error('>>>>>>>>>>>>>>>>>>> WCCPB > SUCCESS: parsing .babelrc !!: ', prodconfig)
+    if (Array.isArray(prodconfig.plugins)) {
+      prodconfig.plugins.push('universal-import');
+    }
+    console.error('>>>>>>>>>>>>>>>>>>> WCCPB > SUCCESS: parsing .babelrc !!: ', prodconfig)
 } catch (err) {
   console.error('>>>>>>>>>>>>>>>>>>> WCCPB > ERROR: parsing .babelrc: ', err)
 }
