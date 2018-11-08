@@ -231,10 +231,16 @@ configuration.optimization = {
   ],
   // Code Splitting: Prevent Duplication: Use the SplitChunksPlugin to dedupe and split chunks.
   splitChunks: {
-    // automaticNameDelimiter: '.',
     // 'splitChunks.cacheGroups' inherits and/or overrides any options from splitChunks
     // 'test', 'priority' and 'reuseExistingChunk' can only be configured on 'splitChunks.cacheGroups'
-    // chunks: 'initial',
+    // all below config objects for 'optimization.splitChunks' are defaults
+    chunks: 'async',
+    minSize: 30000,
+    minChunks: 1,
+    maxAsyncRequests: 5,
+    maxInitialRequests: 3,
+    automaticNameDelimiter: '~',
+    name: true,
     cacheGroups: {
       // no difference between the builds of below 'optimization.splitChunks.cacheGroups' objects
       // going with the default for now and moving on

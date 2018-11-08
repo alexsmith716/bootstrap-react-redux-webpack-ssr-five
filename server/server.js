@@ -417,6 +417,13 @@ app.use(async (req, res, next) => {
 
     const clientStats = getStats();
     // console.log('>>>>>>>>>>>>>>>>> SERVER > clientStats: ', clientStats);
+
+    // ------------------------------------------------------------------------------------------------------
+
+    // flushChunks and flushFiles: called immediately after ReactDOMServer.renderToString. 
+    // They are used in server-rendering to extract the minimal amount of chunks to send to the client, 
+    // thereby solving a missing piece for code-splitting: server-side rendering
+
     clearChunks();
     const chunkNames = flushChunkNames();
     console.log('>>>>>>>>>>>>>>>>> SERVER > chunkNames: ', chunkNames);
@@ -426,9 +433,9 @@ app.use(async (req, res, next) => {
 
     // scripts:  [ 'bootstrap.ba1b422eeb0d78f07d43.bundle.js', 'main.f8c3be17197dd531d4b5.chunk.js' ]
     // stylesheets:  [ 'main.aa610604945cbff30901.css' ]
-    const { js, styles, cssHash, scripts, stylesheets } = flushChunks( clientStats, { chunkNames } )
+    // const { js, styles, cssHash, scripts, stylesheets } = flushChunks( clientStats, { chunkNames } )
 
-    // const {
+    // const assets = {
     //   // react components:
     //   Js, // javascript chunks
     //   Styles, // external stylesheets
@@ -439,38 +446,35 @@ app.use(async (req, res, next) => {
     //   styles, // external stylesheets
     //   css, // raw css
 
-    //   // arrays of file names (not including publicPath):
+    //   cssHash,
     //   scripts,
-    //   stylesheets,
-    //   
-    //   publicPath
-    // } = flushChunks(clientStats, {
-    //   chunkNames,
-    //   before: ['bootstrap'],
-    //   after: ['main'],
-    //   rootDir: path.join(__dirname, '..'),
-    //   outputPath
-    // })
+    //   stylesheets
+    // } = flushChunks( clientStats, { chunkNames } )
 
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > JS: ', Js);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > STYLES: ', Styles);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > CSS: ', Css);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > js: ', js);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > styles: ', styles);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > css: ', css);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > cssHash: ', cssHash);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > scripts: ', scripts);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > stylesheets: ', stylesheets);
+    const assets = flushChunks( clientStats, { chunkNames } )
+
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > JS: ', assets.Js);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > STYLES: ', assets.Styles);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > CSS: ', assets.Css);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > js: ', assets.js);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > styles: ', assets.styles);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > css: ', assets.css);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > cssHash: ', assets.cssHash);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > scripts: ', assets.scripts);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > stylesheets: ', assets.stylesheets);
+
+    // >>>>>>>>>>>>>>>>> SERVER > chunkNames:  []
+    // >>>>>>>>>>>>>>>>> SERVER > flushChunks > scripts:  [ 'bootstrap.1028857055655ec25286.bundle.js', 'main.336c632fd2d3509b6828.chunk.js' ]
+    // >>>>>>>>>>>>>>>>> SERVER > flushChunks > stylesheets:  [ 'main.fa8250340286f1b7318e.css' ]
 
     console.log('>>>>>>>>>>>>>>>> SERVER > ==================== content!!!!!!: ', content);
 
-    // const html = <Html assets={webpackAssets} store={store} content={content} bundles={scripts} />;
-    // const ssrHtml = `<!doctype html>${ReactDOM.renderToString(html)}`;
-    // console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > RESPOND TO CLIENT !! > ReactDOM.renderToString(html):', ssrHtml);
+    const html = <Html assets={assets} store={store} content={content} />;
+    const ssrHtml = `<!doctype html>${ReactDOM.renderToString(html)}`;
+    console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > RESPOND TO CLIENT !! > ReactDOM.renderToString(html):', ssrHtml);
 
-    // res.status(200).send(ssrHtml);
-
-    res.status(200).send('SERVER > Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
+    res.status(200).send(ssrHtml);
+    // res.status(200).send('SERVER > Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
 
   } catch (error) {
     console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > TRY > ERROR > error: ', error);
