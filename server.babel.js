@@ -14,7 +14,7 @@ try {
     config.plugins.push(["universal-import", { "babelServer": true }]);
     config.plugins.push(["css-modules-transform", {
       "preprocessCss": "./loaders/sassLoader.js",
-      "extensions": [".css", ".scss"], 
+      "extensions": [".css", ".scss", ".jpg", ".jpeg", ".gif", ".png", ".svg"], 
       "generateScopedName": "[name]__[local]",
     }]);
   }

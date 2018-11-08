@@ -416,7 +416,7 @@ app.use(async (req, res, next) => {
     // ------------------------------------------------------------------------------------------------------
 
     const clientStats = getStats();
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > clientStats: ', clientStats);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > clientStats: ', clientStats);
 
     // ------------------------------------------------------------------------------------------------------
 
@@ -428,8 +428,9 @@ app.use(async (req, res, next) => {
     const chunkNames = flushChunkNames();
     console.log('>>>>>>>>>>>>>>>>> SERVER > chunkNames: ', chunkNames);
 
-    // const scripts = flushFiles(clientStats, { chunkNames, filter: 'js' });
-    // const styles = flushFiles(clientStats, { chunkNames, filter: 'css' });
+    // let scripts = bundles.filter(bundle => bundle.file.endsWith('.js') || bundle.file.endsWith('.map'));
+    // const scripts = flushFiles(clientStats, { chunkNames, filter: bundle => bundle.file.endsWith('.js') });
+    // const styles = flushFiles(clientStats, { chunkNames, filter: bundle => bundle.file.endsWith('.css') });
 
     // scripts:  [ 'bootstrap.ba1b422eeb0d78f07d43.bundle.js', 'main.f8c3be17197dd531d4b5.chunk.js' ]
     // stylesheets:  [ 'main.aa610604945cbff30901.css' ]
@@ -469,12 +470,12 @@ app.use(async (req, res, next) => {
 
     console.log('>>>>>>>>>>>>>>>> SERVER > ==================== content!!!!!!: ', content);
 
-    const html = <Html assets={assets} store={store} content={content} />;
-    const ssrHtml = `<!doctype html>${ReactDOM.renderToString(html)}`;
-    console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > RESPOND TO CLIENT !! > ReactDOM.renderToString(html):', ssrHtml);
+    //const html = <Html assets={assets} store={store} content={content} />;
+    //const ssrHtml = `<!doctype html>${ReactDOM.renderToString(html)}`;
+    //console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > RESPOND TO CLIENT !! > ReactDOM.renderToString(html):', ssrHtml);
 
-    res.status(200).send(ssrHtml);
-    // res.status(200).send('SERVER > Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
+    //res.status(200).send(ssrHtml);
+    res.status(200).send('SERVER > Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
 
   } catch (error) {
     console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > TRY > ERROR > error: ', error);
