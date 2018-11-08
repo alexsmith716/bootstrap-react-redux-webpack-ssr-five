@@ -52,6 +52,7 @@ import { clearChunks, flushChunkNames } from 'react-universal-component/server';
 import flushChunks from 'webpack-flush-chunks';
 // import { flushFiles } from 'webpack-flush-chunks';
 import { getStats } from './utils/stats';
+import { ReportChunks } from 'react-universal-component';
 
 const outputPath = path.resolve(__dirname, '..');
 
@@ -368,21 +369,25 @@ app.use(async (req, res, next) => {
 
     await trigger( 'fetch', components, locals);
 
+    clearChunks();
+    const chunkNames = [];
     const context = {};
 
     const component = (
-      <Provider store={store} {...providers}>
-        <ConnectedRouter history={history}>
-          <StaticRouter location={req.originalUrl} context={context}>
-            <ReduxAsyncConnect routes={routes} store={store} helpers={providers}>
-              {renderRoutes(routes)}
-            </ReduxAsyncConnect>
-          </StaticRouter>
-        </ConnectedRouter>
-      </Provider>
+      <ReportChunks report={chunkName => chunkNames.push(chunkName)}>
+        <Provider store={store} {...providers}>
+          <ConnectedRouter history={history}>
+            <StaticRouter location={req.originalUrl} context={context}>
+              <ReduxAsyncConnect routes={routes} store={store} helpers={providers}>
+                {renderRoutes(routes)}
+              </ReduxAsyncConnect>
+            </StaticRouter>
+          </ConnectedRouter>
+        </Provider>
+      </ReportChunks>
     );
-    
-    // console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADERSS > ==================== component: ', component);
+  
+    const content = ReactDOM.renderToString(component);
 
     // ------------------------------------------------------------------------------------------------------
 
@@ -411,12 +416,13 @@ app.use(async (req, res, next) => {
 
     // ------------------------------------------------------------------------------------------------------
 
-    const content = ReactDOM.renderToString(component);
+    const webpackStats = getStats();
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > webpackStats: ', webpackStats);
 
     // ------------------------------------------------------------------------------------------------------
 
-    const clientStats = getStats();
-    console.log('>>>>>>>>>>>>>>>>> SERVER > clientStats: ', clientStats);
+    // const { assetsX } = flushChunks(webpackStats, { chunkNames });
+    const assets = flushChunks(webpackStats, { chunkNames });
 
     // ------------------------------------------------------------------------------------------------------
 
@@ -424,17 +430,17 @@ app.use(async (req, res, next) => {
     // They are used in server-rendering to extract the minimal amount of chunks to send to the client, 
     // thereby solving a missing piece for code-splitting: server-side rendering
 
-    clearChunks();
-    const chunkNames = flushChunkNames();
+    // clearChunks();
+    // const chunkNames = flushChunkNames();
     console.log('>>>>>>>>>>>>>>>>> SERVER > chunkNames: ', chunkNames);
 
     // let scripts = bundles.filter(bundle => bundle.file.endsWith('.js') || bundle.file.endsWith('.map'));
-    // const scripts = flushFiles(clientStats, { chunkNames, filter: bundle => bundle.file.endsWith('.js') });
-    // const styles = flushFiles(clientStats, { chunkNames, filter: bundle => bundle.file.endsWith('.css') });
+    // const scripts = flushFiles(webpackStats, { chunkNames, filter: bundle => bundle.file.endsWith('.js') });
+    // const styles = flushFiles(webpackStats, { chunkNames, filter: bundle => bundle.file.endsWith('.css') });
 
     // scripts:  [ 'bootstrap.ba1b422eeb0d78f07d43.bundle.js', 'main.f8c3be17197dd531d4b5.chunk.js' ]
     // stylesheets:  [ 'main.aa610604945cbff30901.css' ]
-    // const { js, styles, cssHash, scripts, stylesheets } = flushChunks( clientStats, { chunkNames } )
+    // const { js, styles, cssHash, scripts, stylesheets } = flushChunks( webpackStats, { chunkNames } )
 
     // const assets = {
     //   // react components:
@@ -450,9 +456,9 @@ app.use(async (req, res, next) => {
     //   cssHash,
     //   scripts,
     //   stylesheets
-    // } = flushChunks( clientStats, { chunkNames } )
+    // } = flushChunks( webpackStats, { chunkNames } )
 
-    const assets = flushChunks( clientStats, { chunkNames } )
+    // const assets = flushChunks( webpackStats, { chunkNames } )
 
     console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > JS: ', assets.Js);
     console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > STYLES: ', assets.Styles);
