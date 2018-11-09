@@ -14,7 +14,7 @@ try {
     config.plugins.push(["universal-import", { "babelServer": true }]);
     config.plugins.push(["css-modules-transform", {
       "preprocessCss": "./loaders/sassLoader.js",
-      "extensions": [".css", ".scss", ".jpg", ".jpeg", ".gif", ".png", ".svg"],
+      "extensions": [".css", ".scss"],
       "generateScopedName": "[name]__[local]",
     }]);
   }
@@ -24,6 +24,14 @@ try {
 }
 
 require('@babel/register')(config);
+
+// // https://github.com/istarkov/babel-plugin-webpack-loaders
+// Babel 6 plugin allows you to use webpack loaders in Babel
+// replaces require - import statements with webpack loaders results
+// plugin tests all require paths with test regexps from the loaders in the webpack config, and then for each successful test:
+//  1) synchronously executes webpack
+//  2) parses webpack output using babel-parse
+//  3) replaces the required ast with the parsed ast output
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Plugins run before Presets

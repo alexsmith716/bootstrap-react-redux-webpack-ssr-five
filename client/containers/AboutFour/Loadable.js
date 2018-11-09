@@ -1,13 +1,18 @@
 import React from 'react';
-import Loadable from 'react-loadable';
+import universal from 'react-universal-component';
+import universalImport from 'babel-plugin-universal-import/universalImport.js';
+import path from 'path';
 
-const AboutFourLoadable = Loadable({
+const AboutFourLoadable = universal(() => import(/* webpackChunkName: 'about-four' */ './AboutFour'), {
+  path: path.resolve(__dirname, './AboutFour'),
+  resolve: () => require.resolveWeak('./AboutFour'),
+  chunkName: 'about-four',
+  minDelay: 500
+})
 
-  loader: () => import('./AboutFour' /* webpackChunkName: 'about-four' */).then(module => module.default),
-  // loader: () => import('./AboutFour').then(module => module.default),
-
-  loading: () => <div>Loading</div>
-
-});
+// const AboutFourLoadable = Loadable({
+//   loader: () => import('./AboutFour' /* webpackChunkName: 'about-four' */).then(module => module.default),
+//   loading: () => <div>Loading</div>
+// });
 
 export default AboutFourLoadable;

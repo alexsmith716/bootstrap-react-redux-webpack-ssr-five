@@ -1,5 +1,4 @@
 import React from 'react';
-
 import universal from 'react-universal-component';
 import universalImport from 'babel-plugin-universal-import/universalImport.js';
 import path from 'path';
@@ -16,10 +15,10 @@ import path from 'path';
 // }))
 
 
-const AboutLoadable = universal(() => import(/* webpackChunkName: 'About' */ './About'), {
+const AboutLoadable = universal(() => import(/* webpackChunkName: 'about' */ './About'), {
   path: path.resolve(__dirname, './About'),
   resolve: () => require.resolveWeak('./About'),
-  chunkName: 'About',
+  chunkName: 'about',
   minDelay: 500
 })
 
