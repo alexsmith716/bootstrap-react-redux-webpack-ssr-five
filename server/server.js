@@ -421,7 +421,6 @@ app.use(async (req, res, next) => {
 
     // ------------------------------------------------------------------------------------------------------
 
-    // const { assetsX } = flushChunks(webpackStats, { chunkNames });
     const assets = flushChunks(webpackStats, { chunkNames });
 
     // ------------------------------------------------------------------------------------------------------
