@@ -6,11 +6,7 @@ const config = require('../config/config');
 const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { StatsWriterPlugin } = require('webpack-stats-plugin');
+// const { StatsWriterPlugin } = require('webpack-stats-plugin');
 // const StatsPlugin = require('stats-webpack-plugin');
 
 const configuration = require('./webpack.config');
@@ -18,10 +14,6 @@ const configuration = require('./webpack.config');
 const bundleAnalyzerPath = path.resolve(configuration.context, './build/analyzers/bundleAnalyzer');
 const assetsPath = path.resolve(configuration.context, './build/static/dist');
 const serverPath = path.resolve(configuration.context, './build/server');
-
-// reuseExistingChunk: allows to reuse existing chunks instead of creating a new one when modules match exactly.
-// Chunks can be configured. There are 3 values possible "initial", "async" and "all". 
-// When configured the optimization only selects initial chunks, on-demand chunks or all chunks.
 
 // ==============================================================================================
 
@@ -52,58 +44,15 @@ function recursiveIssuer(m) {
   }
 }
 
-// configuration.name = 'client';
-configuration.target = 'web';
+configuration.name = 'server';
+configuration.target = 'node';
 configuration.mode = 'production';
 configuration.devtool = 'source-map';
-// configuration.devtool = 'hidden-source-map'; // stack trace info only
-
-// https://webpack.js.org/concepts/entry-points/#single-entry-shorthand-syntax
-// Passing an array of file paths to entry property creates a 'multi-main entry'
-// injects multiple 'dependent' files together and graph 'their dependencies' into one 'chunk' (main)
-
-// configuration.entry.main.push(
-//   'bootstrap-loader',
-//   './client/index.js',
-// );
 
 configuration.entry.main.push(
-  './client/assets/scss/bootstrap/bootstrap.global.scss',
-  'bootstrap',
-  './client/index.js'
+  '@babel/polyfill',
+  '../server/server/'
 );
-
-// ---------------------------------------------------------------------------------------
-
-// Two Key Points in this config:
-//  * caching
-//  * code splitting
-
-// 1) Caching:
-//  * A simple way to ensure the browser picks up changed files is by using 'output.filename' 'substitutions'
-//  * 'substitutions' being hash's generated on each webpack build
-//  * three hash types available ('hash', 'chunkhash', 'contenthash')
-//  * using 'chunkhash' for both 'output.filename' && 'output.chunkFilename'
-//  * chunkhash: Returns an entry chunk-specific hash
-//  * chunkhash: Each 'entry' defined in the configuration receives a hash of its own (each chunk receives a unique hash)
-//  * chunkhash: If any portion of the entry changes, the hash will change as well (only for that specific chunk) 
-//  * using 'chunkhash' as opposed to 'hash' because 'hash' returns hash for entire build (the same hash applied to all chunks)
-//  * using 'chunkhash' as opposed to 'hash' because with 'hash' if any portion of the build changes, this changes as well (all chunk's hashs' change)
-
-
-// ---------------------------------------------------------------------------
-// ---------------------------------------------------------------------------
-// ---------------------------------------------------------------------------
-// finish 'key-points' 'Code Splitting' on webpack prod && quickly do a 'key-points' for dev config
-// explain usage of 'optimization.splitChunks.cacheGroups.vendors'
-
-// 2) Code Splitting:
-//  * Entry Point Split: Manually split code using entry configuration (initial split of code at entry ('main' bundle))
-
-// ---------------------------------------------------------------------------
-// ---------------------------------------------------------------------------
-// ---------------------------------------------------------------------------
-
 
 // ---------------------------------------------------------------------------------------
 
@@ -120,8 +69,6 @@ configuration.output.chunkFilename = '[name].[chunkhash].chunk.js';
 // output.publicPath: value is prefixed to every URL created by the runtime or loaders
 configuration.output.publicPath = '/dist/';
 
-// configuration.stats = 'verbose';
-
 configuration.module.rules.push(
   {
     test: /\.jsx?$/,
@@ -133,7 +80,6 @@ configuration.module.rules.push(
     test: /\.(scss)$/,
     exclude: /node_modules/,
     use: [
-      ExtractCssChunks.loader,
       {
         loader: 'css-loader',
         options: {
@@ -187,7 +133,6 @@ configuration.module.rules.push(
   {
     test: /\.(css)$/,
     use: [
-      ExtractCssChunks.loader,
       {
         loader : 'css-loader',
         options: {
@@ -232,7 +177,7 @@ configuration.optimization = {
   splitChunks: {
     // 'splitChunks.cacheGroups' inherits and/or overrides any options from splitChunks
     // 'test', 'priority' and 'reuseExistingChunk' can only be configured on 'splitChunks.cacheGroups'
-    // all below config objects for 'optimization.splitChunks' are defaults
+    // following config objects to 'name' are defaults
     chunks: 'async',
     minSize: 30000,
     minChunks: 1,
@@ -333,13 +278,13 @@ configuration.plugins.push(
   //   exclude: [/node_modules[\\\/]react/]
   // }),
 
-  new StatsWriterPlugin({
-    filename: 'stats.json',
-    fields: null,
-    // transform(data, opts) {
-    //   return JSON.stringify(data);
-    // }
-  }),
+  // new StatsWriterPlugin({
+  //   filename: 'stats.json',
+  //   fields: null,
+  //   // transform(data, opts) {
+  //   //   return JSON.stringify(data);
+  //   // }
+  // }),
 
   // new webpack.LoaderOptionsPlugin({
   //   options: {
@@ -347,70 +292,15 @@ configuration.plugins.push(
   //   }
   // }),
 
-  // new ExtractCssChunks(),
-  new ExtractCssChunks({
-    filename: '[name].[contenthash].css',
-    // chunkFilename: '[name].[contenthash].chunk.css',
-    hot: false,
-    orderWarning: true,
-    // reloadAll: true,
-    cssModules: true
-  }),
-
-  // new MiniCssExtractPlugin({
-  //   // For long term caching (according to 'mini-css-extract-plugin' docs)
-  //   filename: '[name].[contenthash].css',
-  //   // chunkFilename: '[name].[contenthash].chunk.css',
-  // }),
-
-  // post-process your chunks by merging them
-  // https://webpack.js.org/plugins/limit-chunk-count-plugin/
-  // will create 1 css chunk ('main.css')
-  // new webpack.optimize.LimitChunkCountPlugin({
-  //   maxChunks: 1,
-  //   // minChunkSize: 1000
-  // }),
-
   new webpack.DefinePlugin({
     'process.env': { NODE_ENV: JSON.stringify('production') },
-    __CLIENT__: true,
-    __SERVER__: false,
+    __CLIENT__: false,
+    __SERVER__: true,
     __DEVELOPMENT__: false,
     __DEVTOOLS__: false,
     __DLLS__: false
   }),
 
-  new HtmlWebpackPlugin({
-    filename: 'index.html',
-    template: path.join(configuration.context, './server/pwa.js')
-  }),
-
-  // https://github.com/goldhand/sw-precache-webpack-plugin
-  // https://github.com/GoogleChromeLabs/sw-precache
-  new SWPrecacheWebpackPlugin({
-    cacheId: 'bootstrap-react-redux-webpack-ssr-four',
-    filename: 'service-worker.js',
-    maximumFileSizeToCacheInBytes: 8388608,
-
-    staticFileGlobs: [`${path.dirname(assetsPath)}/**/*.{js,html,css,png,jpg,gif,svg,eot,ttf,woff,woff2}`],
-    stripPrefix: path.dirname(assetsPath),
-
-    directoryIndex: '/',
-    verbose: true,
-    // clientsClaim: true,
-    // skipWaiting: false,
-    navigateFallback: '/dist/index.html'
-  }),
-
-  new BundleAnalyzerPlugin({
-    analyzerMode: 'static',
-    reportFilename: '../../analyzers/bundleAnalyzer/client-production.html',
-    // analyzerMode: 'server',
-    // analyzerPort: 8888,
-    // defaultSizes: 'parsed',
-    openAnalyzer: false,
-    generateStatsFile: false
-  })
 );
 
 // console.log('>>>>>>>>>>>>>>>>>>> WCCPB CLIENT configuration: ', configuration);

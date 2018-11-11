@@ -18,8 +18,8 @@
     "start:prod": "concurrently \"yarn prod:server\" \"yarn prod:api\"",
     "prod:server": "NODE_ENV=production BABEL_DISABLE_CACHE=1 PORT=8080 APIPORT=3030 node ./bin/server.js",
     "prod:api": "NODE_ENV=production APIPORT=3030 node ./bin/api.js",
-    "prod:client:build": "NODE_ENV=production webpack --mode production --display-error-details --config ./webpack/webpack.config.client.production.babel.js",
-    "prod:build:stats": "NODE_ENV=production webpack --profile --json > stats.json --mode production --config ./webpack/webpack.config.client.production.babel.js",
+    "prod:client:build": "NODE_ENV=production webpack --mode production --display-error-details --config ./webpack/client.production.babel.js",
+    "prod:build:stats": "NODE_ENV=production webpack --profile --json > stats.json --mode production --config ./webpack/client.prod.js",
     "dlls": "webpack --display-error-details --config webpack/dllplugin.vendor.config.js",
     "prettier": "prettier-eslint --write --eslint-config-path .eslintrc './+(bin)/**/*.js'",
     "lint": "eslint -c .eslintrc bin && flow",
@@ -69,7 +69,7 @@
     "localforage": "^1.7.2",
     "lodash": "^4.17.10",
     "lru-memoize": "^1.0.2",
-    "mongoose": "^5.3.6",
+    "mongoose": "^5.3.11",
     "multireducer": "^3.1.2",
     "nedb": "^1.8.0",
     "nprogress": "^0.2.0",
@@ -204,7 +204,8 @@
     "webpack-dev-middleware": "^3.4.0",
     "webpack-hot-middleware": "^2.24.3",
     "webpack-pwa-manifest": "^3.7.1",
-    "webpack-stats-plugin": "^0.2.1"
+    "webpack-stats-plugin": "^0.2.1",
+    "write-file-webpack-plugin": "^4.4.1"
   },
   "husky": {
     "hooks": {

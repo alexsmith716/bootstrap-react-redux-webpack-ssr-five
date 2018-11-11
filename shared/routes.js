@@ -8,8 +8,6 @@ import { replace } from 'connected-react-router';
 
 import { App, Home, NotFound } from '../client/containers';
 
-// dynamically imported routes
-
 // import About from '../client/containers/About/About';
 // import AboutOne from '../client/containers/AboutOne/AboutOne';
 // import AboutTwo from '../client/containers/AboutTwo/AboutTwo';
