@@ -5,13 +5,11 @@ const config = require('../config/config');
 
 const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-// const { StatsWriterPlugin } = require('webpack-stats-plugin');
-// const StatsPlugin = require('stats-webpack-plugin');
+const { StatsWriterPlugin } = require('webpack-stats-plugin');
 
 const configuration = require('./webpack.config');
 
@@ -20,33 +18,6 @@ const assetsPath = path.resolve(configuration.context, './build/static/dist');
 const serverPath = path.resolve(configuration.context, './build/server');
 
 // ==============================================================================================
-
-const babelrc = fs.readFileSync('./.babelrc', 'utf8');
-let prodconfig = {};
-
-try {
-  prodconfig = JSON.parse(babelrc);
-    if (Array.isArray(prodconfig.plugins)) {
-      prodconfig.plugins.push('universal-import');
-    }
-    console.error('>>>>>>>>>>>>>>>>>>> WCCPB > SUCCESS: parsing .babelrc !!: ', prodconfig)
-} catch (err) {
-  console.error('>>>>>>>>>>>>>>>>>>> WCCPB > ERROR: parsing .babelrc: ', err)
-}
-
-const babelrcObject = Object.assign({}, prodconfig);
-
-// ==============================================================================================
-
-function recursiveIssuer(m) {
-  if (m.issuer) {
-    return recursiveIssuer(m.issuer);
-  } else if (m.name) {
-    return m.name;
-  } else {
-    return false;
-  }
-}
 
 configuration.name = 'client';
 configuration.target = 'web';
@@ -62,6 +33,8 @@ configuration.entry.main.push(
 
 // ---------------------------------------------------------------------------------------
 
+configuration.output.path = path.resolve(configuration.context, './build/static/dist/client');
+
 // output.filename: determines the name of each output bundle
 // output.filename: The bundle is written to the directory specified by 'output.path'
 // configuration.output.filename = 'bundle.js';
@@ -73,15 +46,9 @@ configuration.output.chunkFilename = '[name].[chunkhash].chunk.js';
 
 // output.publicPath: specifies the public URL of the output directory
 // output.publicPath: value is prefixed to every URL created by the runtime or loaders
-configuration.output.publicPath = '/dist/';
+configuration.output.publicPath = '/static/';
 
 configuration.module.rules.push(
-  {
-    test: /\.jsx?$/,
-    loader: 'babel-loader',
-    exclude: /node_modules(\/|\\)(?!(@feathersjs))/,
-    options: babelrcObject
-  },
   {
     test: /\.(scss)$/,
     exclude: /node_modules/,
@@ -279,25 +246,12 @@ configuration.optimization = {
 
 configuration.plugins.push(
 
-  new CleanWebpackPlugin([bundleAnalyzerPath,assetsPath,serverPath], { root: configuration.context }),
-
-  // new StatsPlugin('stats.json', {
-  //   chunkModules: true,
-  //   exclude: [/node_modules[\\\/]react/]
-  // }),
-
   // new StatsWriterPlugin({
   //   filename: 'stats.json',
   //   fields: null,
   //   // transform(data, opts) {
   //   //   return JSON.stringify(data);
   //   // }
-  // }),
-
-  // new webpack.LoaderOptionsPlugin({
-  //   options: {
-  //     context: __dirname,
-  //   }
   // }),
 
   // new ExtractCssChunks(),

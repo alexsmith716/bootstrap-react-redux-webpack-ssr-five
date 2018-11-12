@@ -512,6 +512,26 @@ app.use(async (req, res, next) => {
   }
 })();
 
+// (async () => {
+//   if (config.port) {
+//     try {
+//       const wsp = await waitStats(webpackStatsPath);
+//       // console.log('>>>>>>>>>>>>>>>>> SERVER > waitStats > webpackStats: ', wsp);
+//     } catch (error) {
+//       console.error('>>>>>>>>>>>>>>>>> SERVER > Preload Error ------:', err);
+//     }
+//     server.listen(config.port, err => {
+//       if (err) {
+//         console.error('>>>>>>>>>>>>>>>>> SERVER > ERROR:', err);
+//       }
+//       console.info('>>>>>>>>>>>>>>>>> SERVER > Running on Host:', config.host);
+//       console.info('>>>>>>>>>>>>>>>>> SERVER > Running on Port:', config.port);
+//     });
+//   } else {
+//     console.error('>>>>>>>>>>>>>>>>> SERVER > Missing config.port <<<<<<<<<<<<<');
+//   }
+// })();
+
 // #########################################################################
 
 // MONGOOSE CONNECTION EVENTS

@@ -3,25 +3,26 @@ const fs = require('fs');
 const webpack = require('webpack');
 const path = require('path');
 
-const rootPath = path.resolve(__dirname, '../');
-const assetsPath = path.resolve(rootPath, './build/static/dist');
-
 module.exports = {
 
   context: path.resolve(__dirname, '..'),
 
   entry: {
-    main: [],
+    // 
   },
 
   output: {
-    // filesystem path for static files
-    path: assetsPath,
+    //
   },
 
   module: {
 
     rules: [
+      {
+        test: /\.jsx?$/,
+        loader: 'babel-loader',
+        exclude: /node_modules(\/|\\)(?!(@feathersjs))/
+      },
       {
         test: /\.(jpg|jpeg|gif|png)$/,
         loader: 'url-loader',
