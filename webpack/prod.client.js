@@ -6,8 +6,8 @@ const config = require('../config/config');
 const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
+// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+// const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const rootPath = path.resolve(__dirname, '..');
@@ -32,20 +32,19 @@ module.exports = {
   },
 
   output: {
-
     path: path.resolve('./build/static/dist/client'),
-
     filename: '[name].[chunkhash].bundle.js',
-
     publicPath: '/static/',
-
     chunkFilename: '[name].[chunkhash].chunk.js',
-
   },
 
   module: {
-
     rules: [
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules(\/|\\)(?!(@feathersjs))/,
+        loader: 'babel-loader'
+      },
       {
         test: /\.(scss)$/,
         exclude: /node_modules/,
@@ -124,11 +123,6 @@ module.exports = {
             }
           }
         ]
-      },
-      {
-        test: /\.jsx?$/,
-        loader: 'babel-loader',
-        exclude: /node_modules(\/|\\)(?!(@feathersjs))/
       },
       {
         test: /\.(jpg|jpeg|gif|png)$/,
@@ -310,59 +304,59 @@ module.exports = {
       __DLLS__: false
     }),
 
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: path.join(rootPath, './server/pwa.js')
-    }),
+    // new HtmlWebpackPlugin({
+    //   filename: 'index.html',
+    //   template: path.join(rootPath, './server/pwa.js')
+    // }),
 
     // https://github.com/goldhand/sw-precache-webpack-plugin
     // https://github.com/GoogleChromeLabs/sw-precache
-    new SWPrecacheWebpackPlugin({
-      cacheId: 'bootstrap-react-redux-webpack-ssr-four',
-      filename: 'service-worker.js',
-      maximumFileSizeToCacheInBytes: 8388608,
+    // new SWPrecacheWebpackPlugin({
+    //   cacheId: 'bootstrap-react-redux-webpack-ssr-four',
+    //   filename: 'service-worker.js',
+    //   maximumFileSizeToCacheInBytes: 8388608,
 
-      staticFileGlobs: [`${path.dirname(assetsPath)}/**/*.{js,html,css,png,jpg,gif,svg,eot,ttf,woff,woff2}`],
-      stripPrefix: path.dirname(assetsPath),
+    //   staticFileGlobs: [`${path.dirname(assetsPath)}/**/*.{js,html,css,png,jpg,gif,svg,eot,ttf,woff,woff2}`],
+    //   stripPrefix: path.dirname(assetsPath),
 
-      directoryIndex: '/',
-      verbose: true,
-      // clientsClaim: true,
-      // skipWaiting: false,
-      navigateFallback: '/dist/index.html'
-    }),
+    //   directoryIndex: '/',
+    //   verbose: true,
+    //   // clientsClaim: true,
+    //   // skipWaiting: false,
+    //   navigateFallback: '/dist/index.html'
+    // }),
 
-    new BundleAnalyzerPlugin({
-      analyzerMode: 'static',
-      reportFilename: '../../analyzers/bundleAnalyzer/client-production.html',
-      // analyzerMode: 'server',
-      // analyzerPort: 8888,
-      // defaultSizes: 'parsed',
-      openAnalyzer: false,
-      generateStatsFile: false
-    }),
+    // new BundleAnalyzerPlugin({
+    //   analyzerMode: 'static',
+    //   reportFilename: '../../analyzers/bundleAnalyzer/client-production.html',
+    //   // analyzerMode: 'server',
+    //   // analyzerPort: 8888,
+    //   // defaultSizes: 'parsed',
+    //   openAnalyzer: false,
+    //   generateStatsFile: false
+    // }),
 
     // ProvidePlugin: Whenever the identifier is encountered as free variable in a module, 
     //    the module is loaded automatically and the identifier is filled with the exports of 
     //    the loaded module (of property in order to support named exports).
 
     // To automatically load jquery point variables it exposes to the corresponding node module
-    new webpack.ProvidePlugin({
-      $: 'jquery',
-      jQuery: 'jquery',
-      jquery: 'jquery',
-      Popper: ['popper.js', 'default'],
-      Alert: "exports-loader?Alert!bootstrap/js/dist/alert",
-      Button: "exports-loader?Button!bootstrap/js/dist/button",
-      Carousel: "exports-loader?Carousel!bootstrap/js/dist/carousel",
-      Collapse: "exports-loader?Collapse!bootstrap/js/dist/collapse",
-      Dropdown: "exports-loader?Dropdown!bootstrap/js/dist/dropdown",
-      Modal: "exports-loader?Modal!bootstrap/js/dist/modal",
-      Popover: "exports-loader?Popover!bootstrap/js/dist/popover",
-      Scrollspy: "exports-loader?Scrollspy!bootstrap/js/dist/scrollspy",
-      Tab: "exports-loader?Tab!bootstrap/js/dist/tab",
-      Tooltip: "exports-loader?Tooltip!bootstrap/js/dist/tooltip",
-      Util: "exports-loader?Util!bootstrap/js/dist/util",
-    })
+    //new webpack.ProvidePlugin({
+    //  $: 'jquery',
+    //  jQuery: 'jquery',
+    //  jquery: 'jquery',
+    //  Popper: ['popper.js', 'default'],
+    //  Alert: "exports-loader?Alert!bootstrap/js/dist/alert",
+    //  Button: "exports-loader?Button!bootstrap/js/dist/button",
+    //  Carousel: "exports-loader?Carousel!bootstrap/js/dist/carousel",
+    //  Collapse: "exports-loader?Collapse!bootstrap/js/dist/collapse",
+    //  Dropdown: "exports-loader?Dropdown!bootstrap/js/dist/dropdown",
+    //  Modal: "exports-loader?Modal!bootstrap/js/dist/modal",
+    //  Popover: "exports-loader?Popover!bootstrap/js/dist/popover",
+    //  Scrollspy: "exports-loader?Scrollspy!bootstrap/js/dist/scrollspy",
+    //  Tab: "exports-loader?Tab!bootstrap/js/dist/tab",
+    //  Tooltip: "exports-loader?Tooltip!bootstrap/js/dist/tooltip",
+    //  Util: "exports-loader?Util!bootstrap/js/dist/util",
+    //})
   ]
 };

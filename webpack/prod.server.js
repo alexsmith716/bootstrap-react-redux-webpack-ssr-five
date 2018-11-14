@@ -33,11 +33,16 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.jsx?$/,
+        exclude: /node_modules(\/|\\)(?!(@feathersjs))/,
+        loader: 'babel-loader'
+      },
+      {
         test: /\.(scss)$/,
         exclude: /node_modules/,
         use: [
           {
-            loader: 'css-loader',
+            loader: 'css-loader/locals',
             options: {
               modules: true,
               // localIdentName: '[name]__[local]__[hash:base64:5]',
@@ -90,7 +95,7 @@ module.exports = {
         test: /\.(css)$/,
         use: [
           {
-            loader : 'css-loader',
+            loader : 'css-loader/locals',
             options: {
               modules: true,
               localIdentName: '[name]__[local]',
@@ -108,11 +113,6 @@ module.exports = {
             }
           }
         ]
-      },
-      {
-        test: /\.jsx?$/,
-        loader: 'babel-loader',
-        exclude: /node_modules(\/|\\)(?!(@feathersjs))/
       },
       {
         test: /\.(jpg|jpeg|gif|png)$/,
