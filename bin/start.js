@@ -71,30 +71,29 @@ app.use(express.static(path.join(__dirname, '..', 'static')));
 let isBuilt = false;
 
 const done = () => !isBuilt
-  && (() => {
-    console.log('>>>>>>>> BIN > SERVER > STATS BUILD COMPLETE <<<<<<<<<<<<');
+  && server.listen(config.port, err => {
     isBuilt = true;
-    mongoose.Promise = global.Promise;
-    mongoose.connect(
-      dbURL,
-      mongooseOptions,
-      err => {
-        if (err) {
-          console.error('####### > Please make sure Mongodb is installed and running!');
-        } else {
-          console.error('####### > Mongodb is installed and running!');
-        }
-      }
-    );
-    server.listen(config.port, err => {
-      isBuilt = true;
+    console.log('>>>>>>>> BIN > SERVER > STATS COMPILER BUILD COMPLETE !!');
+    if (err) {
+      console.error('>>>>>>>>>>>>>>>>> SERVER > ERROR:', err);
+    }
+    console.info('>>>>>>>>>>>>>>>>> SERVER > Running on Host:', config.host);
+    console.info('>>>>>>>>>>>>>>>>> SERVER > Running on Port:', config.port);
+  });
+if (isBuilt) {
+  mongoose.Promise = global.Promise;
+  mongoose.connect(
+    dbURL,
+    mongooseOptions,
+    err => {
       if (err) {
-        console.error('>>>>>>>>>>>>>>>>> SERVER > ERROR:', err);
+        console.error('####### > Please make sure Mongodb is installed and running!');
+      } else {
+        console.error('####### > Mongodb is installed and running!');
       }
-      console.info('>>>>>>>>>>>>>>>>> SERVER > Running on Host:', config.host);
-      console.info('>>>>>>>>>>>>>>>>> SERVER > Running on Port:', config.port);
-    });
-  })();
+    }
+  );
+}
 
 if (config.port) {
   rimraf.sync(path.resolve(rootPath, './build/static/dist/client'));
@@ -102,9 +101,11 @@ if (config.port) {
 
   if (__DEVELOPMENT__) {
     console.log('>>>>>>>> BIN > SERVER > __DEVELOPMENT__ ?: ', __DEVELOPMENT__);
+    console.log('>>>>>>>> BIN > SERVER > STATS COMPILER ATTEMPTING BUILD !! ...');
     done();
   } else {
     console.log('>>>>>>>> BIN > SERVER > __DEVELOPMENT__ ?: ', __DEVELOPMENT__);
+    console.log('>>>>>>>> BIN > SERVER > STATS COMPILER ATTEMPTING BUILD !! ...');
     webpack([clientConfig, serverConfig]).run((err, stats) => {
       if (err) {
         console.error('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > err: ', err.stack || err);
