@@ -70,31 +70,34 @@ app.use(express.static(path.join(__dirname, '..', 'static')));
 
 let isBuilt = false;
 
-const done = () => !isBuilt
-  && (() => {
-    console.log('>>>>>>>> BIN > SERVER > STATS BUILD COMPLETE <<<<<<<<<<<<');
-    isBuilt = true;
-    mongoose.Promise = global.Promise;
-    mongoose.connect(
-      dbURL,
-      mongooseOptions,
-      err => {
-        if (err) {
-          console.error('####### > Please make sure Mongodb is installed and running!');
-        } else {
-          console.error('####### > Mongodb is installed and running!');
-        }
-      }
-    );
-    server.listen(config.port, err => {
-      isBuilt = true;
+server.on('listening', () => {
+  const addr = server.address();
+  const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
+  console.log('>>>>>>>>>>>>>>>>> SERVER > Express server Listening on: ', bind);
+  mongoose.Promise = global.Promise;
+  mongoose.connect(
+    dbURL,
+    mongooseOptions,
+    err => {
       if (err) {
-        console.error('>>>>>>>>>>>>>>>>> SERVER > ERROR:', err);
+        console.error('>>>>>>>>>>>>>>>>> SERVER > Please make sure Mongodb is installed and running!');
+      } else {
+        console.error('>>>>>>>>>>>>>>>>> SERVER > Mongodb is installed and running!');
       }
-      console.info('>>>>>>>>>>>>>>>>> SERVER > Running on Host:', config.host);
-      console.info('>>>>>>>>>>>>>>>>> SERVER > Running on Port:', config.port);
-    });
-  })();
+    }
+  );
+});
+
+const done = () => !isBuilt
+  && server.listen(config.port, err => {
+    isBuilt = true;
+    console.log('>>>>>>>> BIN > SERVER > STATS COMPILER BUILD COMPLETE !!');
+    if (err) {
+      console.error('>>>>>>>>>>>>>>>>> SERVER > ERROR:', err);
+    }
+    console.info('>>>>>>>>>>>>>>>>> SERVER > Express server Running on Host:', config.host);
+    console.info('>>>>>>>>>>>>>>>>> SERVER > Express server Running on Port:', config.port);
+  });
 
 if (config.port) {
   rimraf.sync(path.resolve(rootPath, './build/static/dist/client'));
@@ -102,9 +105,11 @@ if (config.port) {
 
   if (__DEVELOPMENT__) {
     console.log('>>>>>>>> BIN > SERVER > __DEVELOPMENT__ ?: ', __DEVELOPMENT__);
+    console.log('>>>>>>>> BIN > SERVER > STATS COMPILER ATTEMPTING BUILD !! ...');
     done();
   } else {
     console.log('>>>>>>>> BIN > SERVER > __DEVELOPMENT__ ?: ', __DEVELOPMENT__);
+    console.log('>>>>>>>> BIN > SERVER > STATS COMPILER ATTEMPTING BUILD !! ...');
     webpack([clientConfig, serverConfig]).run((err, stats) => {
       if (err) {
         console.error('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > err: ', err.stack || err);
@@ -132,22 +137,22 @@ if (config.port) {
 // MONGOOSE CONNECTION EVENTS
 
 mongoose.connection.on('connected', () => {
-  console.log(`####### > Mongoose Connection: ${dbURL}`);
+  console.log(`>>>>>>>>>>>>>>>>> SERVER > Mongoose Connection: ${dbURL}`);
 });
 
 mongoose.connection.on('error', err => {
-  console.log(`####### > Mongoose Connection error: ${err}`);
+  console.log(`>>>>>>>>>>>>>>>>> SERVER > Mongoose Connection error: ${err}`);
 });
 
 mongoose.connection.on('disconnected', () => {
-  console.log('####### > Mongoose Connection disconnected');
+  console.log('>>>>>>>>>>>>>>>>> SERVER > Mongoose Connection disconnected');
 });
 
 // CLOSE MONGOOSE CONNECTION
 
 const gracefulShutdown = (msg, cb) => {
   mongoose.connection.close(() => {
-    console.log(`####### > Mongoose Connection closed through: ${msg}`);
+    console.log(`>>>>>>>>>>>>>>>>> SERVER > Mongoose Connection closed through: ${msg}`);
     cb();
   });
 };
@@ -158,7 +163,7 @@ const gracefulShutdown = (msg, cb) => {
 // listen to Node process for SIGINT event
 process.on('SIGINT', () => {
   gracefulShutdown('app termination', () => {
-    console.log('####### > Mongoose SIGINT gracefulShutdown');
+    console.log('>>>>>>>>>>>>>>>>> SERVER > Mongoose SIGINT gracefulShutdown');
     process.exit(0);
   });
 });
@@ -167,7 +172,7 @@ process.on('SIGINT', () => {
 // listen to Node process for SIGUSR2 event
 process.once('SIGUSR2', () => {
   gracefulShutdown('nodemon restart', () => {
-    console.log('####### > Mongoose SIGUSR2 gracefulShutdown');
+    console.log('>>>>>>>>>>>>>>>>> SERVER > Mongoose SIGUSR2 gracefulShutdown');
     process.kill(process.pid, 'SIGUSR2');
   });
 });
@@ -176,7 +181,7 @@ process.once('SIGUSR2', () => {
 // listen to Node process for SIGTERM event
 process.on('SIGTERM', () => {
   gracefulShutdown('Heroku app termination', () => {
-    console.log('####### > Mongoose SIGTERM gracefulShutdown');
+    console.log('>>>>>>>>>>>>>>>>> SERVER > Mongoose SIGTERM gracefulShutdown');
     process.exit(0);
   });
 });
