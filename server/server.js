@@ -1,30 +1,18 @@
 import fs from 'fs';
-import express from 'express';
-import helmet from 'helmet';
 import config from '../config/config';
-import compression from 'compression';
-import bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
-import session from 'express-session';
-import morgan from 'morgan';
 import path from 'path';
 import http from 'http';
-import favicon from 'serve-favicon';
-import headers from './utils/headers';
-import mongoose from 'mongoose';
 import httpProxy from 'http-proxy';
 import Cookies from 'cookies';
 
 import { getStoredState } from 'redux-persist';
 import { CookieStorage, NodeCookiesWrapper } from 'redux-persist-cookie-storage';
 
-// #########################################################################
-
 import React from 'react';
 import ReactDOM from 'react-dom/server';
 import { StaticRouter } from 'react-router';
 
-import asyncMatchRoutes from './utils/asyncMatchRoutes';
+import asyncMatchRoutes from '../server/utils/asyncMatchRoutes';
 import { ReduxAsyncConnect, Provider } from '../shared';
 
 import createMemoryHistory from 'history/createMemoryHistory';
@@ -33,20 +21,15 @@ import createStore from '../client/redux/createStore';
 
 import { ConnectedRouter } from 'connected-react-router';
 import { renderRoutes } from 'react-router-config';
-// import Loadable from 'react-loadable';
-// import { getBundles } from 'react-loadable/webpack';
+
 import { trigger } from 'redial';
 
-import Html from './utils/Html';
+import Html from '../server/utils/Html';
 import routes from '../shared/routes';
 import { parse as parseUrl } from 'url';
 
-import { createApp } from './app';
-import apiClient from './utils/apiClient';
-
-import { waitStats } from './utils/stats';
-
-import webpack from 'webpack';
+import { createApp } from '../server/app';
+import apiClient from '../server/utils/apiClient';
 
 import { clearChunks, flushChunkNames } from 'react-universal-component/server';
 import flushChunks from 'webpack-flush-chunks';
@@ -54,144 +37,38 @@ import flushChunks from 'webpack-flush-chunks';
 import { getStats } from './utils/stats';
 import { ReportChunks } from 'react-universal-component';
 
-const outputPath = path.resolve(__dirname, '..');
-
-// ================================
-
-if (__DEVELOPMENT__) {
-  console.log('>>>>>>>>>>>>>>>>> SERVER > __DEVELOPMENT__ ?: ', __DEVELOPMENT__);
-} else {
-  console.log('>>>>>>>>>>>>>>>>> SERVER > __DEVELOPMENT__ ?: ', __DEVELOPMENT__);
-}
-
-// ###########################################################################
-// ######## ----------------- CATCH UNCAUGHT ERRORS ------------------- ######
-// ###########################################################################
-
-// catch uncaught errors at a global level:
-// promises swallow errors without a catch() statement
-// always call .catch() on your promises
-// 'unhandledrejection' event is fired when a Promise is rejected but there is no rejection handler to deal with the rejection
-process.on('unhandledRejection', (error, promise) => {
-  console.error('>>>>>>>>>>>>>>>>> SERVER > process > unhandledRejection > promise:', promise);
-  console.error('>>>>>>>>>>>>>>>>> SERVER > process > unhandledRejection > error:', error);
-});
-
-// ###########################################################################
-// ######## ---------- SPECIFY LOADABLE COMPONENTS PATH --------------- ######
-// ###########################################################################
-
-// const loadableChunksPath = path.join(__dirname, '..', 'static', 'dist', 'loadable-chunks.json');
-// console.log('>>>>>>>>>>>>>>>>> SERVER > loadableChunksPath +++++++++: ', loadableChunksPath);
-
-const webpackStatsPath = path.join(__dirname, '..', 'build', 'static', 'dist', 'stats.json');
-console.log('>>>>>>>>>>>>>>>>> SERVER > webpackStatsPath +++++++++: ', webpackStatsPath);
-
-const clientConfigProd = require('../webpack/webpack.config.client.production.babel.js');
-
-// ###########################################################################
-// ######## ------------------- CONFIGURE MONGOOSE -------------------- ######
-// ###########################################################################
-
-const dbURL = config.mongoDBmongooseURL;
-
-if (process.env.NODE_ENV === 'production') {
-  // dbURL = config.mongoLabURL;
-};
-
-const mongooseOptions = {
-  autoReconnect: true,
-  keepAlive: true,
-  connectTimeoutMS: 30000,
-  useNewUrlParser: true,
-};
-
-mongoose.Promise = global.Promise;
-
-mongoose.connect(dbURL, mongooseOptions).then(
-  () => { console.log('####### > Mongodb is installed and running!'); },
-  err => { console.error('####### > Please make sure Mongodb is installed and running!'); }
-);
-
-// https://mongoosejs.com/docs/connections.html#multiple_connections
-// mongoose.createConnection('mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database][?options]]', options);
-
-// ================================
-
 const targetUrl = `http://${config.apiHost}:${config.apiPort}`;
-const app = new express();
-const server = http.createServer(app);
 
 const proxy = httpProxy.createProxyServer({
   target: targetUrl,
   ws: true
 });
 
-const normalizePort = (val)  => {
-  const port = parseInt(val, 10);
-  if (isNaN(port)) {
-    // named pipe
-    return val;
+export default ({ clientStats }) => async (req, res) => {
+
+  if (req.url == '/manifest.json') {
+    console.log('>>>>>>>>>>>>>>>>> SERVER > manifest.json <<<<<<<<<<<<<<<<<<<<<<<');
+    return res.sendFile(path.join(__dirname, '..', 'build', 'static', 'manifest.json'))
   }
-  if (port >= 0) {
-    // port number
-    return port;
+
+  if (req.url == '/dist/service-worker.js') {
+    console.log('>>>>>>>>>>>>>>>>> SERVER > service-worker <<<<<<<<<<<<<<<<<<<<<<<');
+    return res.setHeader('Service-Worker-Allowed', '/');
+    return res.setHeader('Cache-Control', 'no-store');
   }
-  return false;
-};
 
-const port = normalizePort(config.port);
-app.set('port', port);
+  // app.use('/dist/dlls/:dllName.js', (req, res, next) => {
+  //   console.log('>>>>>>>>>>>>>>>>> SERVER > DLLs <<<<<<<<<<<<<<<<<<<<<<<');
+  //   fs.access(
+  //     path.join(__dirname, '..', 'static', 'dist', 'dlls', `${req.params.dllName}.js`),
+  //     fs.constants.R_OK,
+  //     err => (err ? res.send(`console.log('No dll file found (${req.originalUrl})')`) : next())
+  //   );
+  // });
 
-app.use(morgan('dev'));
-// app.use(helmet());
-// app.use(helmet.xssFilter());
-// app.use(headers);
-
-// #########################################################################
-
-app.use(cookieParser()); // parse cookie header and populate req.cookies
-app.use(compression()); // compress request response bodies
-
-app.use(favicon(path.join(__dirname, '..', 'build', 'static', 'favicon.ico')))
-app.use('/manifest.json', (req, res) => res.sendFile(path.join(__dirname, '..', 'build', 'static', 'manifest.json')));
-
-// #########################################################################
-
-app.use('/dist/service-worker.js', (req, res, next) => {
-  console.log('>>>>>>>>>>>>>>>>> SERVER > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ service-worker $$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
-  res.setHeader('Service-Worker-Allowed', '/');
-  res.setHeader('Cache-Control', 'no-store');
-  return next();
-});
-
-// #########################################################################
-
-app.use('/dist/dlls/:dllName.js', (req, res, next) => {
-  console.log('>>>>>>>>>>>>>>>>> SERVER > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ DLLs $$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
-  fs.access(
-    path.join(__dirname, '..', 'static', 'dist', 'dlls', `${req.params.dllName}.js`),
-    fs.constants.R_OK,
-    err => (err ? res.send(`console.log('No dll file found (${req.originalUrl})')`) : next())
-  );
-});
-
-// #########################################################################
-
-app.use(express.static(path.join(__dirname, '..', 'static')));
-
-// #########################################################################
-
-// app.use(headers);
-app.use((req, res, next) => {
   res.setHeader('X-Forwarded-For', req.ip);
-  return next();
-});
 
-// #########################################################################
-
-app.use((req, res, next) => {
-  console.log('>>>>>>>>>>>>>>>>> SERVER > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ IN > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
+  console.log('>>>>>>>>>>>>>>>>> SERVER > IN > <<<<<<<<<<<<<<<<<<<<<<<');
   // console.log('>>>>>>>>>>>>>>>>> SERVER > REQ.ip +++++++++++++: ', req.ip);
   console.log('>>>>>>>>>>>>>>>>> SERVER > REQ.method +++++++++++++++: ', req.method);
   console.log('>>>>>>>>>>>>>>>>> SERVER > REQ.url ++++++++++++++++++: ', req.url);
@@ -201,95 +78,48 @@ app.use((req, res, next) => {
   // console.log('>>>>>>>>>>>>>>>>> SERVER > REQ.session ++++++++: ', req.session);
   // console.log('>>>>>>>>>>>>>>>>> SERVER > REQ.params +++++++++: ', req.params);
   console.log('>>>>>>>>>>>>>>>>> SERVER > REQ.originalUrl ++++: ', req.originalUrl);
-  console.log('>>>>>>>>>>>>>>>>> SERVER > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ IN < $$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
-  return next();
-});
+  console.log('>>>>>>>>>>>>>>>>> SERVER > IN < <<<<<<<<<<<<<<<<<<<<<<<');
 
-// ##################################################################################################################
-// ########## ------------------------------------------ API --------------------------------------------- ##########
-// ##################################################################################################################
+  // #########################################################################
 
-// PORT (3030)
-// proxy any requests to '/api/*' >>>>>>>>> the API server
-// all the data fetching calls from client go to '/api/*'
-// #########################################################################
-
-
-app.use('/api', (req, res) => {
-  console.log('>>>>>>>>>>>>>>>>> SERVER > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ /API $$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
-  proxy.web(req, res, { target: targetUrl });
-});
-
-app.use('/ws', (req, res) => {
-  console.log('>>>>>>>>>>>>>>>>> SERVER > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ /WS $$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
-  proxy.web(req, res, { target: `${targetUrl}/ws` });
-});
-
-console.log('>>>>>>>>>>>>>>>>> SERVER > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ / $$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
-
-proxy.on('error', (error, req, res) => {
-
-  if (error.code !== 'ECONNRESET') {
-    console.error('proxy error', error);
+  if (req.url == '/api') {
+    console.log('>>>>>>>>>>>>>>>>> SERVER > /API <<<<<<<<<<<<<<<<<<<<<<<');
+    proxy.web(req, res, { target: targetUrl });
+    return;
   }
 
-  if (!res.headersSent) {
-    res.writeHead(500, { 'content-type': 'application/json' });
+  if (req.url == '/ws') {
+    console.log('>>>>>>>>>>>>>>>>> SERVER > /WS <<<<<<<<<<<<<<<<<<<<<<<');
+    proxy.web(req, res, { target: `${targetUrl}/ws` });
+    return;
   }
 
-  const json = {
-    error: 'proxy_error',
-    reason: error.message
-  };
+  proxy.on('error', (error, req, res) => {
+    if (error.code !== 'ECONNRESET') {
+      console.error('proxy error', error);
+    }
+    if (!res.headersSent) {
+      res.writeHead(500, { 'content-type': 'application/json' });
+    }
+    const json = {
+      error: 'proxy_error',
+      reason: error.message
+    };
+    res.end(JSON.stringify(json));
+    return;
+  });
 
-  res.end(JSON.stringify(json));
-});
+  console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > SetUpComponent !! START !! <<<<<<<<<<<<<<<<<<<<<<<');
 
-// ##################################################################################################################
-// ########## ---------------------------------------- SERVER -------------------------------------------- ##########
-// ##################################################################################################################
-
-app.use(async (req, res, next) => {
-
-  console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > SetUpComponent !! START !! $$$$$$$$$$$$$$$$$$$$$$');
-
-  // ###########################################################################
-  // ######## ----- CONFIGURE SERVER FOR API COMM (REST/AXIOS-AJAX) ----- ######
-  // ###########################################################################
-
-  // passing session cookie (req)
   const providers = {
     app: createApp(req),
     client: apiClient(req)
   };
-  // console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > providers.app !!: ', providers.app);
-  // console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > providers.client !!: ', providers.client);
 
-
-  // ###########################################################################
-  // ######## ----------- CREATE NON-DOM HISTORY OBJECT ----------------- ######
-  // ###########################################################################
-
-  // manage session history
-  // API to manage the history stack, navigate, confirm navigation and persist state between sessions
-  // history object is mutable
-  // create non-dom 'createMemoryHistory()' method
-  // create method with option 'initialEntries'
-  // option 'initialEntries' assigned value 'req.originalUrl' (requested URL)
   const history = createMemoryHistory({ initialEntries: [req.originalUrl] });
 
   console.log('>>>>>>>>>>>>>>>>>>> SERVER.JS > APP LOADER > history: ', history)
 
-
-  // ###########################################################################
-  // ######## ------- SET THE CURRENT USER DEPENDING ON THE ------------- ######
-  // ######## ---------- STATE OF COOKIE CREATED ON CLIENT ------------ ########
-  // ###########################################################################
-
-  // redux-persist-cookie-storage: redux persist cookie
-  // Read-only mode: using getStoredState()
-  // create cookie jar 'Cookies()'
-  // pass 'cookie jar' to Redux Persist storage 'NodeCookiesWrapper()'
   const cookieJar = new NodeCookiesWrapper(new Cookies(req, res)); // node module for getting and setting HTTP cookies
 
   const persistConfig = {
@@ -301,13 +131,6 @@ app.use(async (req, res, next) => {
 
   let preloadedState;
 
-  // read stored cookies: getStoredState()
-  // preloadedState:
-  //    {
-  //    auth: {loaded: false,loading: false,error: {}},
-  //    info: {loaded: true,loading: false,data: {message: 'This came from the api server',time: 1530540780215}}
-  //    }
-
   try {
     // Returns a promise of restored state (getStoredState())
     preloadedState = await getStoredState(persistConfig);
@@ -318,23 +141,11 @@ app.use(async (req, res, next) => {
   }
   console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > preloadedState !! =======================: ', preloadedState);
 
-  // ###########################################################################
-  // ######## -------------------- CREATE STORE ----------------------- ########
-  // ###########################################################################
-
   const store = createStore({
     history,
     data: preloadedState,
     helpers: providers
   });
-
-  // store.subscribe(() =>
-  //   console.log('>>>>>>>>>>>>>>>>>>> SERVER.JS > APP LOADER > store.getState(): ', store.getState())
-  // )
-
-  // ###########################################################################
-  // ######## ----------------- function hydrate ---------------------- ########
-  // ###########################################################################
 
   function hydrate() {
     res.write('<!doctype html>');
@@ -348,15 +159,13 @@ app.use(async (req, res, next) => {
     return hydrate();
   }
 
-  // ###########################################################################
-  // ######## ----------------- TRY SUCESSFUL SSR ---------------------- #######
-  // ###########################################################################
-
-  // ------------------------------------------------------------------------------------------------------
-
   try {
 
     const { components, match, params } = await asyncMatchRoutes(routes, req.path);
+
+    console.log('>>>>>>>>>>>>>>>> SERVER > await asyncMatchRoutes > components: ', components);
+    console.log('>>>>>>>>>>>>>>>> SERVER > await asyncMatchRoutes > match: ', match);
+    console.log('>>>>>>>>>>>>>>>> SERVER > await asyncMatchRoutes > params: ', params);
 
     const locals = {
       ...providers,
@@ -369,167 +178,10 @@ app.use(async (req, res, next) => {
 
     await trigger( 'fetch', components, locals);
 
-    clearChunks();
-    const chunkNames = [];
-    const context = {};
-
-    const component = (
-      <ReportChunks report={chunkName => chunkNames.push(chunkName)}>
-        <Provider store={store} {...providers}>
-          <ConnectedRouter history={history}>
-            <StaticRouter location={req.originalUrl} context={context}>
-              <ReduxAsyncConnect routes={routes} store={store} helpers={providers}>
-                {renderRoutes(routes)}
-              </ReduxAsyncConnect>
-            </StaticRouter>
-          </ConnectedRouter>
-        </Provider>
-      </ReportChunks>
-    );
-  
-    const content = ReactDOM.renderToString(component);
-
-    // ------------------------------------------------------------------------------------------------------
-
-    // console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > context: ', context);
-
-    // test context prop to find out what the result of rendering was
-    // context.url ? the app redirected
-    // 301: status.redirect
-    // send a redirect from the server
-    if (context.url) {
-      return res.redirect(301, context.url);
-    }
-
-    const locationState = store.getState().router.location;
-
-    // console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > store.getState: ', store.getState());
-    // console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > locationState: ', locationState);
-
-    // decodeURIComponent: decode percent-encoded characters in the query string
-    // parses a URL Query String into a collection of key and value pairs
-    // 'foo=bar&abc=xyz&abc=123' >>>> '{foo: 'bar',abc: ['xyz', '123']}'
-    // https://nodejs.org/api/all.html#querystring_querystring_parse_str_sep_eq_options
-    if (decodeURIComponent(req.originalUrl) !== decodeURIComponent(locationState.pathname + locationState.search)) {
-      return res.redirect(301, locationState.pathname);
-    }
-
-    // ------------------------------------------------------------------------------------------------------
-
-    const webpackStats = getStats();
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > webpackStats: ', webpackStats);
-
-    // ------------------------------------------------------------------------------------------------------
-
-    const assets = flushChunks(webpackStats, { chunkNames });
-
-    // ------------------------------------------------------------------------------------------------------
-
-    // flushChunks and flushFiles: called immediately after ReactDOMServer.renderToString. 
-    // They are used in server-rendering to extract the minimal amount of chunks to send to the client, 
-    // thereby solving a missing piece for code-splitting: server-side rendering
-
-    // clearChunks();
-    // const chunkNames = flushChunkNames();
-    console.log('>>>>>>>>>>>>>>>>> SERVER > chunkNames: ', chunkNames);
-
-    // let scripts = bundles.filter(bundle => bundle.file.endsWith('.js') || bundle.file.endsWith('.map'));
-    // const scripts = flushFiles(webpackStats, { chunkNames, filter: bundle => bundle.file.endsWith('.js') });
-    // const styles = flushFiles(webpackStats, { chunkNames, filter: bundle => bundle.file.endsWith('.css') });
-
-    // scripts:  [ 'bootstrap.ba1b422eeb0d78f07d43.bundle.js', 'main.f8c3be17197dd531d4b5.chunk.js' ]
-    // stylesheets:  [ 'main.aa610604945cbff30901.css' ]
-    // const { js, styles, cssHash, scripts, stylesheets } = flushChunks( webpackStats, { chunkNames } )
-
-    // const assets = {
-    //   // react components:
-    //   Js, // javascript chunks
-    //   Styles, // external stylesheets
-    //   Css, // raw css
-
-    //   // strings:
-    //   js, // javascript chunks
-    //   styles, // external stylesheets
-    //   css, // raw css
-
-    //   cssHash,
-    //   scripts,
-    //   stylesheets
-    // } = flushChunks( webpackStats, { chunkNames } )
-
-    // const assets = flushChunks( webpackStats, { chunkNames } )
-
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > JS: ', assets.Js);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > STYLES: ', assets.Styles);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > CSS: ', assets.Css);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > js: ', assets.js);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > styles: ', assets.styles);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > css: ', assets.css);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > cssHash: ', assets.cssHash);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > scripts: ', assets.scripts);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > stylesheets: ', assets.stylesheets);
-
-    // >>>>>>>>>>>>>>>>> SERVER > chunkNames:  []
-    // >>>>>>>>>>>>>>>>> SERVER > flushChunks > scripts:  [ 'bootstrap.1028857055655ec25286.bundle.js', 'main.336c632fd2d3509b6828.chunk.js' ]
-    // >>>>>>>>>>>>>>>>> SERVER > flushChunks > stylesheets:  [ 'main.fa8250340286f1b7318e.css' ]
-
-    console.log('>>>>>>>>>>>>>>>> SERVER > ==================== content!!!!!!: ', content);
-
-    //const html = <Html assets={assets} store={store} content={content} />;
-    //const ssrHtml = `<!doctype html>${ReactDOM.renderToString(html)}`;
-    //console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > RESPOND TO CLIENT !! > ReactDOM.renderToString(html):', ssrHtml);
-
-    //res.status(200).send(ssrHtml);
-    res.status(200).send('SERVER > Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
-
   } catch (error) {
     console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > TRY > ERROR > error: ', error);
     res.status(500);
     hydrate();
   }
 
-});
-
-// #########################################################################
-
-(async () => {
-  if (config.port) {
-    try {
-      const wsp = await waitStats(webpackStatsPath);
-      // console.log('>>>>>>>>>>>>>>>>> SERVER > waitStats > webpackStats: ', wsp);
-    } catch (error) {
-      console.error('>>>>>>>>>>>>>>>>> SERVER > Preload Error ------:', err);
-    }
-    server.listen(config.port, err => {
-      if (err) {
-        console.error('>>>>>>>>>>>>>>>>> SERVER > ERROR:', err);
-      }
-      console.info('>>>>>>>>>>>>>>>>> SERVER > Running on Host:', config.host);
-      console.info('>>>>>>>>>>>>>>>>> SERVER > Running on Port:', config.port);
-    });
-  } else {
-    console.error('>>>>>>>>>>>>>>>>> SERVER > Missing config.port <<<<<<<<<<<<<');
-  }
-})();
-
-// (async () => {
-//   if (config.port) {
-//     try {
-//       const wsp = await waitStats(webpackStatsPath);
-//       // console.log('>>>>>>>>>>>>>>>>> SERVER > waitStats > webpackStats: ', wsp);
-//     } catch (error) {
-//       console.error('>>>>>>>>>>>>>>>>> SERVER > Preload Error ------:', err);
-//     }
-//     server.listen(config.port, err => {
-//       if (err) {
-//         console.error('>>>>>>>>>>>>>>>>> SERVER > ERROR:', err);
-//       }
-//       console.info('>>>>>>>>>>>>>>>>> SERVER > Running on Host:', config.host);
-//       console.info('>>>>>>>>>>>>>>>>> SERVER > Running on Port:', config.port);
-//     });
-//   } else {
-//     console.error('>>>>>>>>>>>>>>>>> SERVER > Missing config.port <<<<<<<<<<<<<');
-//   }
-// })();
-
-
+};
