@@ -53,8 +53,9 @@ export default ({ clientStats }) => async (req, res) => {
 
   if (req.url == '/dist/service-worker.js') {
     console.log('>>>>>>>>>>>>>>>>> SERVER > service-worker <<<<<<<<<<<<<<<<<<<<<<<');
-    return res.setHeader('Service-Worker-Allowed', '/');
-    return res.setHeader('Cache-Control', 'no-store');
+    res.setHeader('Service-Worker-Allowed', '/');
+    res.setHeader('Cache-Control', 'no-store');
+    return;
   }
 
   // app.use('/dist/dlls/:dllName.js', (req, res, next) => {
