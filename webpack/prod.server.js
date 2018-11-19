@@ -16,7 +16,7 @@ module.exports = {
   entry: {
     server: [
       '@babel/polyfill',
-      // '../server/server/'
+      './server/server.js'
     ]
   },
 
@@ -26,7 +26,9 @@ module.exports = {
 
     filename: 'server.js',
 
-    publicPath: '/static/'
+    publicPath: '/static/',
+
+    libraryTarget: 'commonjs2'
 
   },
 
