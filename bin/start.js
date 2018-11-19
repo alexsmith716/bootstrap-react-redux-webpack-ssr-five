@@ -12,11 +12,12 @@ const rimraf = require('rimraf');
 const express = require('express');
 const mongoose = require('mongoose');
 const config = require('../config/config');
-const clientConfig = require('../webpack/prod.client');
-const serverConfig = require('../webpack/prod.server');
 
-const { publicPath } = clientConfig.output;
-const outputPath = clientConfig.output.path;
+const clientConfigProd = require('../webpack/prod.client');
+const serverConfigProd = require('../webpack/prod.server');
+
+const { publicPath } = clientConfigProd.output;
+const outputPath = clientConfigProd.output.path;
 const rootPath = path.resolve(__dirname, '../');
 
 global.__CLIENT__ = false;
@@ -110,10 +111,22 @@ const done = () => !isBuilt
     console.log('>>>>>>>> BIN > SERVER > __DEVELOPMENT__ ?: ', __DEVELOPMENT__);
     console.log('>>>>>>>> BIN > SERVER > STATS COMPILER ATTEMPTING BUILD !! ...');
 
+    // https://webpack.js.org/api/node/
+
     if (__DEVELOPMENT__) {
+      // https://webpack.js.org/api/node/#compiler-instance
+
+      // If you don’t pass the webpack runner function a callback, it will return a webpack Compiler instance.
+      // This instance can be used to manually trigger the webpack runner
+
+      // const compiler = webpack([clientConfigDev, configDevServer]);
+
+      // const clientCompiler = compiler.compilers[0];
+
+      // return a webpack Compiler instance
       done();
     } else {
-      webpack([clientConfig, serverConfig]).run((err, stats) => {
+      webpack([clientConfigProd, serverConfigProd]).run((err, stats) => {
         if (err) {
           console.error('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > err: ', err.stack || err);
           if (err.details) {
@@ -123,9 +136,13 @@ const done = () => !isBuilt
         }
 
         const clientStats = stats.toJson().children[0];
+
         app.use(publicPath, express.static(outputPath));
+
         const render = require('../build/static/dist/server/server.js').default;
+
         console.log('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > render: ', render);
+
         app.use(render({ clientStats }));
 
         if (stats.hasErrors()) {

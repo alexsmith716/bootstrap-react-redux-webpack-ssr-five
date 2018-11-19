@@ -1,17 +1,18 @@
-var express = require('express');
-var webpack = require('webpack');
+const express = require('express');
+const webpack = require('webpack');
 
-var config = require('../config/config');
-var webpackConfig = require('./webpack.config.client.development.babel.js');
+const config = require('../config/config');
+// const webpackConfig = require('./webpack.config.client.development.babel.js');
+const webpackConfig = require('./webpack.config.client.development.babel.js');
 
 webpackConfig.mode = 'development';
 
-var compiler = webpack(webpackConfig);
+const compiler = webpack(webpackConfig);
 
 const host = config.host || 'localhost';
 const port = Number(config.port) + 1 || 3001;
 
-var serverOptions = {
+const serverOptions = {
   contentBase: `http://${host}:${port}`,
   quiet: true,
   noInfo: true,
@@ -22,7 +23,7 @@ var serverOptions = {
   headers: { 'Access-Control-Allow-Origin': '*' }
 };
 
-var app = new express();
+const app = express();
 
 // https://github.com/webpack/webpack-dev-middleware#server-side-rendering
 // https://github.com/webpack/docs/wiki/node.js-api#stats
