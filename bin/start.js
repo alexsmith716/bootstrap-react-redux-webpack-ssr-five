@@ -130,11 +130,11 @@ const done = () => !isBuilt
 
         if (stats.hasErrors()) {
           console.error('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > stats.hasErrors: ', clientStats.errors);
-        }
-        if (stats.hasWarnings()) {
+        } else if (stats.hasWarnings()) {
           console.warn('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > stats.hasWarnings: ', clientStats.warnings);
+        } else {
+          done();
         }
-        done();
       });
     }
   } else {
