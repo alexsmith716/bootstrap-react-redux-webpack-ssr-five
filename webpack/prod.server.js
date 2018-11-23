@@ -164,6 +164,16 @@ module.exports = {
   },
 
   plugins: [
+    // https://webpack.js.org/plugins/module-concatenation-plugin/
+    new webpack.optimize.ModuleConcatenationPlugin(),
+    // https://webpack.js.org/plugins/internal-plugins/#occurrenceorderplugin
+    new webpack.optimize.OccurrenceOrderPlugin(),
+    // https://webpack.js.org/plugins/limit-chunk-count-plugin/
+    // After compiling some chunks are too small - creating larger HTTP overhead
+    // post-process chunks by merging them
+    new webpack.optimize.LimitChunkCountPlugin({
+      maxChunks: 1
+    }),
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: JSON.stringify('production') },
       __CLIENT__: true,
