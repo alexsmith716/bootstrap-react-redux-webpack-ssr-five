@@ -58,15 +58,6 @@ export default ({ clientStats }) => async (req, res) => {
     return;
   }
 
-  // app.use('/dist/dlls/:dllName.js', (req, res, next) => {
-  //   console.log('>>>>>>>>>>>>>>>>> SERVER > DLLs <<<<<<<<<<<<<<<<<<<<<<<');
-  //   fs.access(
-  //     path.join(__dirname, '..', 'static', 'dist', 'dlls', `${req.params.dllName}.js`),
-  //     fs.constants.R_OK,
-  //     err => (err ? res.send(`console.log('No dll file found (${req.originalUrl})')`) : next())
-  //   );
-  // });
-
   res.setHeader('X-Forwarded-For', req.ip);
 
   console.log('>>>>>>>>>>>>>>>>> SERVER > IN > <<<<<<<<<<<<<<<<<<<<<<<');
@@ -178,6 +169,9 @@ export default ({ clientStats }) => async (req, res) => {
     };
 
     await trigger( 'fetch', components, locals);
+
+    res.status(200);
+    res.send('<!doctype html><html lang="en-US"><head><title data-react-helmet="true"></title><meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover"/><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-capable" content="yes"/><meta name="application-name" content="Election App 2018!"/><meta name="apple-mobile-web-app-status-bar-style" content="black"/><meta name="apple-mobile-web-app-title" content="Election App 2018!"/><meta name="theme-color" content="#1E90FF"/><link rel="shortcut icon" href="/favicon.ico"/><link rel="manifest" href="/manifest.json"/></head><body><div><p><h1>HELLO WORLD!!</h1></p></div></body></html>');
 
   } catch (error) {
     console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > TRY > ERROR > error: ', error);

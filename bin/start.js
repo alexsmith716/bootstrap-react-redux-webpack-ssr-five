@@ -1,4 +1,9 @@
-// const fs = require('fs');
+global.__CLIENT__ = false;
+global.__SERVER__ = true;
+global.__DISABLE_SSR__ = false;
+global.__DEVELOPMENT__ = process.env.NODE_ENV !== 'production';
+global.__DLLS__ = process.env.WEBPACK_DLLS === '1';
+
 const path = require('path');
 // const helmet = require('helmet');
 const morgan = require('morgan');
@@ -20,15 +25,9 @@ const { publicPath } = clientConfigProd.output;
 const outputPath = clientConfigProd.output.path;
 const rootPath = path.resolve(__dirname, '../');
 
-global.__CLIENT__ = false;
-global.__SERVER__ = true;
-global.__DISABLE_SSR__ = false;
-global.__DEVELOPMENT__ = process.env.NODE_ENV !== 'production';
-global.__DLLS__ = process.env.WEBPACK_DLLS === '1';
-
 process.on('unhandledRejection', (error, promise) => {
-  console.error('>>>>>>>> BIN > SERVER > process > unhandledRejection > promise:', promise);
-  console.error('>>>>>>>> BIN > SERVER > process > unhandledRejection > error:', error);
+  console.error('>>>>>>>> BIN > START > process > unhandledRejection > promise:', promise);
+  console.error('>>>>>>>> BIN > START > process > unhandledRejection > error:', error);
 });
 
 const dbURL = config.mongoDBmongooseURL;
@@ -145,12 +144,13 @@ const done = () => !isBuilt
 
         app.use(render({ clientStats }));
 
+        done();
+
         if (stats.hasErrors()) {
           console.error('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > stats.hasErrors: ', clientStats.errors);
-        } else if (stats.hasWarnings()) {
+        }
+        if (stats.hasWarnings()) {
           console.warn('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > stats.hasWarnings: ', clientStats.warnings);
-        } else {
-          done();
         }
       });
     }
