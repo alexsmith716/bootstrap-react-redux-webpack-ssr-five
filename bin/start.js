@@ -114,14 +114,10 @@ const done = () => !isBuilt
 
     if (__DEVELOPMENT__) {
       // https://webpack.js.org/api/node/#compiler-instance
-
       // If you don’t pass the webpack runner function a callback, it will return a webpack Compiler instance.
       // This instance can be used to manually trigger the webpack runner
-
       // const compiler = webpack([clientConfigDev, configDevServer]);
-
       // const clientCompiler = compiler.compilers[0];
-
       // return a webpack Compiler instance
       done();
     } else {
@@ -136,6 +132,13 @@ const done = () => !isBuilt
 
         const clientStats = stats.toJson().children[0];
 
+        if (stats.hasErrors()) {
+          console.error('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > stats.hasErrors: ', clientStats.errors);
+        }
+        if (stats.hasWarnings()) {
+          console.warn('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > stats.hasWarnings: ', clientStats.warnings);
+        }
+
         app.use(publicPath, express.static(outputPath));
 
         const render = require('../build/static/dist/server/server.js').default;
@@ -145,13 +148,6 @@ const done = () => !isBuilt
         app.use(render({ clientStats }));
 
         done();
-
-        if (stats.hasErrors()) {
-          console.error('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > stats.hasErrors: ', clientStats.errors);
-        }
-        if (stats.hasWarnings()) {
-          console.warn('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > stats.hasWarnings: ', clientStats.warnings);
-        }
       });
     }
   } else {
