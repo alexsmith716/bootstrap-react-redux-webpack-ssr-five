@@ -1,5 +1,4 @@
 
-// The '@feathersjs/express' module contains Express framework integrations for Feathers
 import express from '@feathersjs/express';
 import feathers from '@feathersjs/feathers';
 import socketio from '@feathersjs/socketio';
@@ -8,7 +7,7 @@ import session from 'express-session';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import services from './services';
-import channels from './channels';  // Decide what events to send to connected real-time clients
+import channels from './channels';
 import apiConfig from '../config/config';
 import config from './config';
 

@@ -32,10 +32,10 @@ module.exports = {
   },
 
   output: {
-    path: path.resolve('./build/static/dist/client'),
     filename: '[name].[chunkhash].bundle.js',
-    publicPath: '/static/',
     chunkFilename: '[name].[chunkhash].chunk.js',
+    path: path.resolve(__dirname, '../build/static/dist/client'),
+    publicPath: '/'
   },
 
   module: {

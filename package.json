@@ -7,7 +7,9 @@
   "author": "dev",
   "license": "MIT",
   "scripts": {
-    "bin:start": "NODE_ENV=production PORT=8080 APIPORT=3030 node --trace-deprecation bin/start.js",
+    "start:bin": "concurrently \"yarn bin:start\" \"yarn prod:api\"",
+    "bin:start": "NODE_ENV=production PORT=8080 APIPORT=3030 node --trace-deprecation bin/main.js",
+    "prod:api": "NODE_ENV=production APIPORT=3030 node ./bin/api.js",
     "run:dev": "npm-run-all dev:prepare development",
     "dev:prepare": "universal-webpack --settings ./webpack/universal-webpack-settings.json prepare",
     "development": "NODE_ENV=development npm-run-all --parallel dev:client:build dev:server:build start:dev",
@@ -18,7 +20,6 @@
     "start:dev": "concurrently \"yarn dev:server\" \"yarn dev:api\"",
     "start:prod": "concurrently \"yarn prod:server\" \"yarn prod:api\"",
     "prod:server": "NODE_ENV=production BABEL_DISABLE_CACHE=1 PORT=8080 APIPORT=3030 node ./bin/server.js",
-    "prod:api": "NODE_ENV=production APIPORT=3030 node ./bin/api.js",
     "prod:build:client:server": "concurrently \"yarn prod:client:build\" \"yarn prod:server:build\"",
     "prod:client:build": "NODE_ENV=production webpack --mode production --display-error-details --config ./webpack/client.prod.js",
     "prod:server:build": "NODE_ENV=production webpack --mode production --display-error-details --config ./webpack/server.prod.js",

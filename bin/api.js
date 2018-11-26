@@ -8,6 +8,5 @@
 // // eslint-disable-next-line
 // square("2"); // Error!
 
-require('../server.babel');
-
+require('@babel/register');
 require('../api/api');
