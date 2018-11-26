@@ -21,15 +21,9 @@ module.exports = {
   },
 
   output: {
-
     path: path.resolve('./build/static/dist/server'),
-
     filename: 'server.js',
-
-    publicPath: '/static/',
-
     libraryTarget: 'commonjs2'
-
   },
 
   module: {

@@ -21,13 +21,13 @@ const config = require('../config/config');
 const clientConfigProd = require('../webpack/prod.client');
 const serverConfigProd = require('../webpack/prod.server');
 
-const { publicPath } = clientConfigProd.output;
+// const { publicPath } = clientConfigProd.output;
 const outputPath = clientConfigProd.output.path;
 const rootPath = path.resolve(__dirname, '../');
 
 process.on('unhandledRejection', (error, promise) => {
-  console.error('>>>>>>>> BIN > START > process > unhandledRejection > promise:', promise);
   console.error('>>>>>>>> BIN > START > process > unhandledRejection > error:', error);
+  console.error('>>>>>>>> BIN > START > process > unhandledRejection > promise:', promise);
 });
 
 const dbURL = config.mongoDBmongooseURL;
@@ -63,7 +63,7 @@ app.use(cookieParser());
 app.use(compression());
 app.use(favicon(path.join(__dirname, '..', 'build', 'static', 'favicon.ico')));
 
-// app.use(express.static(path.join(__dirname, '..')));
+app.use(express.static(outputPath));
 
 // #########################################################################
 
@@ -138,8 +138,6 @@ const done = () => !isBuilt
         if (stats.hasWarnings()) {
           console.warn('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > stats.hasWarnings: ', clientStats.warnings);
         }
-
-        app.use(publicPath, express.static(outputPath));
 
         const render = require('../build/static/dist/server/server.js').default;
 

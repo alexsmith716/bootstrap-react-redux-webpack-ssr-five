@@ -77,13 +77,13 @@ export default ({ clientStats }) => async (req, res) => {
   if (req.url == '/api') {
     console.log('>>>>>>>>>>>>>>>>> SERVER > /API <<<<<<<<<<<<<<<<<<<<<<<');
     proxy.web(req, res, { target: targetUrl });
-    return;
+    //return;
   }
 
   if (req.url == '/ws') {
     console.log('>>>>>>>>>>>>>>>>> SERVER > /WS <<<<<<<<<<<<<<<<<<<<<<<');
     proxy.web(req, res, { target: `${targetUrl}/ws` });
-    return;
+    //return;
   }
 
   proxy.on('error', (error, req, res) => {
@@ -98,7 +98,6 @@ export default ({ clientStats }) => async (req, res) => {
       reason: error.message
     };
     res.end(JSON.stringify(json));
-    return;
   });
 
   console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > SetUpComponent !! START !! <<<<<<<<<<<<<<<<<<<<<<<');
@@ -170,7 +169,7 @@ export default ({ clientStats }) => async (req, res) => {
 
     await trigger( 'fetch', components, locals);
 
-    // clearChunks();
+    clearChunks();
     // const chunkNames = [];
     const context = {};
 
@@ -220,14 +219,8 @@ export default ({ clientStats }) => async (req, res) => {
 
     // ------------------------------------------------------------------------------------------------------
 
-    // const webpackStats = getStats();
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > webpackStats: ', webpackStats);
-
-    // ------------------------------------------------------------------------------------------------------
-
     const chunkNames = flushChunkNames();
-
-    // const assets = flushChunks(clientStats, { chunkNames });
+    const assets = flushChunks(clientStats, { chunkNames });
 
     // ------------------------------------------------------------------------------------------------------
 
@@ -237,7 +230,7 @@ export default ({ clientStats }) => async (req, res) => {
 
     // clearChunks();
     console.log('>>>>>>>>>>>>>>>>> SERVER > chunkNames: ', chunkNames);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > clientStats: ', clientStats);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > clientStats: ', clientStats);
 
     // let scripts = bundles.filter(bundle => bundle.file.endsWith('.js') || bundle.file.endsWith('.map'));
     // const scripts = flushFiles(webpackStats, { chunkNames, filter: bundle => bundle.file.endsWith('.js') });
@@ -263,46 +256,35 @@ export default ({ clientStats }) => async (req, res) => {
     //   stylesheets
     // } = flushChunks( clientStats, { chunkNames } )
 
-    // // const assets = flushChunks( webpackStats, { chunkNames } )
+    // const { js, styles, cssHash, scripts, stylesheets } = flushChunks( clientStats, { chunkNames } );
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > js: ', js);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > styles: ', styles);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > cssHash: ', cssHash);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > scripts: ', scripts);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > stylesheets: ', stylesheets);
 
-    const { js, styles, cssHash, scripts, stylesheets } = flushChunks( clientStats, { chunkNames } );
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > JS: ', assets.Js);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > STYLES: ', assets.Styles);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > CSS: ', assets.Css);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > js: ', assets.js);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > styles: ', assets.styles);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > css: ', assets.css);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > cssHash: ', assets.cssHash);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > scripts: ', assets.scripts);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > stylesheets: ', assets.stylesheets);
 
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > JS: ', assets.Js);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > STYLES: ', assets.Styles);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > CSS: ', assets.Css);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > js: ', assets.js);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > styles: ', assets.styles);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > css: ', assets.css);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > cssHash: ', assets.cssHash);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > scripts: ', assets.scripts);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > stylesheets: ', assets.stylesheets);
+    console.log('>>>>>>>>>>>>>>>> SERVER > ==================== content: ', content);
 
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > js: ', js);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > styles: ', styles);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > cssHash: ', cssHash);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > scripts: ', scripts);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > stylesheets: ', stylesheets);
+    const html = <Html assets={assets} store={store} content={content} />;
+    const ssrHtml = `<!doctype html>${ReactDOM.renderToString(html)}`;
+    console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > RESPOND TO CLIENT !! > ReactDOM.renderToString(html):', ssrHtml);
 
-    // // >>>>>>>>>>>>>>>>> SERVER > chunkNames:  []
-    // // >>>>>>>>>>>>>>>>> SERVER > flushChunks > scripts:  [ 'bootstrap.1028857055655ec25286.bundle.js', 'main.336c632fd2d3509b6828.chunk.js' ]
-    // // >>>>>>>>>>>>>>>>> SERVER > flushChunks > stylesheets:  [ 'main.fa8250340286f1b7318e.css' ]
-
-    // console.log('>>>>>>>>>>>>>>>> SERVER > ==================== content!!!!!!: ', content);
-
-    // //const html = <Html assets={assets} store={store} content={content} />;
-    // //const ssrHtml = `<!doctype html>${ReactDOM.renderToString(html)}`;
-    // //console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > RESPOND TO CLIENT !! > ReactDOM.renderToString(html):', ssrHtml);
-
-    // //res.status(200).send(ssrHtml);
+    res.status(200).send(ssrHtml);
     // res.status(200).send('SERVER > Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
-
-    res.status(200);
-    res.send('<!doctype html><html lang="en-US"><head><title data-react-helmet="true"></title><meta name="viewport"     content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover"/><meta name="mobile-web-app-capable"     content="yes"/><meta name="apple-mobile-web-app-capable" content="yes"/><meta name="application-name" content="Election App 2018!"/><meta     name="apple-mobile-web-app-status-bar-style" content="black"/><meta name="apple-mobile-web-app-title" content="Election App 2018!"/><meta name="theme-color"    content="#1E90FF"/><link rel="shortcut icon" href="/favicon.ico"/><link rel="manifest" href="/manifest.json"/></head><body><div><p><h1>HELLO    WORLD!!</h1></p></div></body></html>');
 
   } catch (error) {
     console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > TRY > ERROR > error: ', error);
     res.status(500);
     hydrate();
   }
-
 };
