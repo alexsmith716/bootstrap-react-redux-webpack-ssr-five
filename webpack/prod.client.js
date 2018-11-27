@@ -24,7 +24,6 @@ module.exports = {
 
   entry: {
     main: [
-      // '@babel/polyfill',
       './client/assets/scss/bootstrap/bootstrap.global.scss',
       'bootstrap',
       './client/index.js'
