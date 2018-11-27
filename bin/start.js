@@ -1,9 +1,3 @@
-global.__CLIENT__ = false;
-global.__SERVER__ = true;
-global.__DISABLE_SSR__ = false;
-global.__DEVELOPMENT__ = process.env.NODE_ENV !== 'production';
-global.__DLLS__ = process.env.WEBPACK_DLLS === '1';
-
 const path = require('path');
 // const helmet = require('helmet');
 const morgan = require('morgan');
@@ -92,12 +86,9 @@ server.on('listening', () => {
 });
 
 const done = () => !isBuilt
-  && server.listen(config.port, err => {
+  && server.listen(config.port, config.host, () => {
     isBuilt = true;
     console.log('>>>>>>>> BIN > SERVER > STATS COMPILER BUILD COMPLETE !!');
-    if (err) {
-      console.error('>>>>>>>> BIN > SERVER > ERROR:', err);
-    }
     console.info('>>>>>>>> BIN > SERVER > Express server Running on Host:', config.host);
     console.info('>>>>>>>> BIN > SERVER > Express server Running on Port:', config.port);
   });
@@ -144,6 +135,11 @@ const done = () => !isBuilt
         console.log('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > render: ', render);
 
         app.use(render({ clientStats }));
+
+        // server.listen(config.port, config.host, () => {
+        //   console.info('>>>>>>>>>>>>>>>>> BIN > SERVER > Running on Host:', config.host);
+        //   console.info('>>>>>>>>>>>>>>>>> BIN > SERVER > Running on Port:', config.port);
+        // });
 
         done();
       });
