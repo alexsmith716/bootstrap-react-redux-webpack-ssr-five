@@ -15,7 +15,6 @@ module.exports = {
 
   entry: {
     server: [
-      '@babel/polyfill',
       './server/server.js'
     ]
   },

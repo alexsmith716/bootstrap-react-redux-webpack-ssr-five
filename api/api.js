@@ -144,13 +144,23 @@ app.use(express.errorHandler({
   }
 }));
 
-if (process.env.APIPORT) {
-  app.listen(process.env.APIPORT, (err) => {
-    if (err) {
-      console.error('>>>>>> api > api > Express API server connection Error', err);
-    }
-    console.error('>>>>>> api > api > Express API server running on PORT: ', process.env.APIPORT);
+app.on('listening', () => {
+  const addr = app.address();
+  const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
+  console.log('>>>>>>>> API > API > Express server Listening on: ', bind);
+});
+
+if (apiConfig.apiPort) {
+  app.listen(apiConfig.apiPort, apiConfig.apiHost, () => {
+    // if (err) {
+    //   console.error('>>>>>>>>>>>>>>>>> SERVER > ERROR:', err);
+    // }
+    console.info('>>>>>>>>>>>>>>>>> API > API > Running on Host:', apiConfig.apiHost);
+    console.info('>>>>>>>>>>>>>>>>> API > API > Running on Port:', apiConfig.apiPort);
   });
 } else {
   console.error('==>     ERROR: No APIPORT environment variable has been specified');
 }
+
+console.log('>>>>>>>>>>>>>>>>> API > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ API !!!!!! > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
+
