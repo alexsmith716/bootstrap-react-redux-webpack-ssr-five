@@ -6,6 +6,7 @@ import morgan from 'morgan';
 import session from 'express-session';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
+import http from 'http';
 import services from './services';
 import channels from './channels';
 import apiConfig from '../config/config';
@@ -23,6 +24,7 @@ process.on('unhandledRejection', (error, promise) => {
 
 // Create the app that is a Feathers AND Express application
 const app = express(feathers());
+const server = http.createServer(app);
 
 const MongoStore = require('connect-mongo')(session);
 
@@ -144,23 +146,20 @@ app.use(express.errorHandler({
   }
 }));
 
-app.on('listening', () => {
-  const addr = app.address();
+server.on('listening', () => {
+  const addr = server.address();
   const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
   console.log('>>>>>>>> API > API > Express server Listening on: ', bind);
 });
 
 if (apiConfig.apiPort) {
-  app.listen(apiConfig.apiPort, apiConfig.apiHost, () => {
-    // if (err) {
-    //   console.error('>>>>>>>>>>>>>>>>> SERVER > ERROR:', err);
-    // }
+  server.listen(apiConfig.apiPort, err => {
+    if (err) {
+      console.error('>>>>>>>>>>>>>>>>> API > API > ERROR:', err);
+    }
     console.info('>>>>>>>>>>>>>>>>> API > API > Running on Host:', apiConfig.apiHost);
     console.info('>>>>>>>>>>>>>>>>> API > API > Running on Port:', apiConfig.apiPort);
   });
 } else {
   console.error('==>     ERROR: No APIPORT environment variable has been specified');
 }
-
-console.log('>>>>>>>>>>>>>>>>> API > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ API !!!!!! > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
-

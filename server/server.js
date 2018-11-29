@@ -146,6 +146,7 @@ export default ({ clientStats }) => async (req, res) => {
     ReactDOM.renderToNodeStream(<Html assets={webpackAssets} store={store} />).pipe(res);
   }
 
+  console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > __DISABLE_SSR__:', __DISABLE_SSR__);
   if (__DISABLE_SSR__) {
     return hydrate();
   }
