@@ -10,6 +10,7 @@ const webpack = require('webpack');
 const rimraf = require('rimraf');
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const config = require('../config/config');
 
 const clientConfigProd = require('../webpack/prod.client');
@@ -32,6 +33,19 @@ const mongooseOptions = {
   connectTimeoutMS: 30000,
   useNewUrlParser: true
 };
+
+mongoose.Promise = global.Promise;
+mongoose.connect(
+  dbURL,
+  mongooseOptions,
+  err => {
+    if (err) {
+      console.error('>>>>>>>> BIN > SERVER > Please make sure Mongodb is installed and running!');
+    } else {
+      console.error('>>>>>>>> BIN > SERVER > Mongodb is installed and running!');
+    }
+  }
+);
 
 const app = express();
 const server = http.createServer(app);
@@ -56,6 +70,7 @@ app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(compression());
 app.use(favicon(path.join(__dirname, '..', 'build', 'static', 'favicon.ico')));
+app.use(cors());
 
 app.use(express.static(outputPath));
 
@@ -65,89 +80,112 @@ app.use(express.static(outputPath));
 
 // #########################################################################
 
-let isBuilt = false;
+// let isBuilt = false;
+
+server.listen(config.port, () => {
+  console.info('>>>>>>>> BIN > SERVER > Running on Port:', config.port);
+  console.info('>>>>>>>> BIN > SERVER > Running on Host:', config.host);
+});
+
+server.on('error', err => {
+  if (err.code === 'EADDRINUSE') {
+    console.log('Address in use, retrying...');
+    console.error('>>>>>>>> BIN > SERVER > ERROR > Address in use, retrying...');
+    setTimeout(() => {
+      server.close();
+      server.listen(config.port, config.host);
+    }, 1000);
+  }
+});
 
 server.on('listening', () => {
   const addr = server.address();
   const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
   console.log('>>>>>>>> BIN > SERVER > Express server Listening on: ', bind);
-  mongoose.Promise = global.Promise;
-  mongoose.connect(
-    dbURL,
-    mongooseOptions,
-    err => {
-      if (err) {
-        console.error('>>>>>>>> BIN > SERVER > Please make sure Mongodb is installed and running!');
-      } else {
-        console.error('>>>>>>>> BIN > SERVER > Mongodb is installed and running!');
-      }
-    }
-  );
+  // mongoose.Promise = global.Promise;
+  // mongoose.connect(
+  //   dbURL,
+  //   mongooseOptions,
+  //   err => {
+  //     if (err) {
+  //       console.error('>>>>>>>> BIN > SERVER > Please make sure Mongodb is installed and running!');
+  //     } else {
+  //       console.error('>>>>>>>> BIN > SERVER > Mongodb is installed and running!');
+  //     }
+  //   }
+  // );
 });
 
-const done = () => !isBuilt
-  && server.listen(config.port, config.host, () => {
-    isBuilt = true;
-    console.log('>>>>>>>> BIN > SERVER > STATS COMPILER BUILD COMPLETE !!');
-    console.info('>>>>>>>> BIN > SERVER > Express server Running on Host:', config.host);
-    console.info('>>>>>>>> BIN > SERVER > Express server Running on Port:', config.port);
-  });
+// server.listen(config.port, err => {
+//   console.log('>>>>>>>> BIN > SERVER > STATS COMPILER BUILD COMPLETE !!');
+//   if (err) {
+//     console.error('>>>>>>>> BIN > SERVER > ERROR:', err);
+//   }
+//   console.info('>>>>>>>> BIN > SERVER > Express server Running on Host:', config.host);
+//   console.info('>>>>>>>> BIN > SERVER > Express server Running on Port:', config.port);
+// });
 
-(() => {
-  if (config.port) {
-    rimraf.sync(path.resolve(rootPath, './build/static/dist/client'));
-    rimraf.sync(path.resolve(rootPath, './build/static/dist/server'));
+// const done = () => !isBuilt
+//   && server.listen(config.port, err => {
+//     isBuilt = true;
+//     console.log('>>>>>>>> BIN > SERVER > STATS COMPILER BUILD COMPLETE !!');
+//     if (err) {
+//       console.error('>>>>>>>> BIN > SERVER > ERROR:', err);
+//     }
+//     console.info('>>>>>>>> BIN > SERVER > Express server Running on Host:', config.host);
+//     console.info('>>>>>>>> BIN > SERVER > Express server Running on Port:', config.port);
+//   });
 
-    console.log('>>>>>>>> BIN > SERVER > __DEVELOPMENT__ ?: ', __DEVELOPMENT__);
-    console.log('>>>>>>>> BIN > SERVER > STATS COMPILER ATTEMPTING BUILD !! ...');
+const __DEVELOPMENTx__ = false;
 
-    // https://webpack.js.org/api/node/
+if (config.port) {
+  rimraf.sync(path.resolve(rootPath, './build/static/dist/client'));
+  rimraf.sync(path.resolve(rootPath, './build/static/dist/server'));
 
-    if (__DEVELOPMENT__) {
-      // https://webpack.js.org/api/node/#compiler-instance
-      // If you don’t pass the webpack runner function a callback, it will return a webpack Compiler instance.
-      // This instance can be used to manually trigger the webpack runner
-      // const compiler = webpack([clientConfigDev, configDevServer]);
-      // const clientCompiler = compiler.compilers[0];
-      // return a webpack Compiler instance
-      done();
-    } else {
-      webpack([clientConfigProd, serverConfigProd]).run((err, stats) => {
-        if (err) {
-          console.error('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > err: ', err.stack || err);
-          if (err.details) {
-            console.error('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > err.details: ', err.details);
-          }
-          return;
-        }
+  console.log('>>>>>>>> BIN > SERVER > __DEVELOPMENT__ ?: ', __DEVELOPMENTx__);
+  console.log('>>>>>>>> BIN > SERVER > STATS COMPILER ATTEMPTING BUILD !! ...');
 
-        const clientStats = stats.toJson().children[0];
+  // https://webpack.js.org/api/node/
 
-        if (stats.hasErrors()) {
-          console.error('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > stats.hasErrors: ', clientStats.errors);
-        }
-        if (stats.hasWarnings()) {
-          console.warn('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > stats.hasWarnings: ', clientStats.warnings);
-        }
-
-        const render = require('../build/static/dist/server/server.js').default;
-
-        console.log('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > render: ', render);
-
-        app.use(render({ clientStats }));
-
-        // server.listen(config.port, config.host, () => {
-        //   console.info('>>>>>>>>>>>>>>>>> BIN > SERVER > Running on Host:', config.host);
-        //   console.info('>>>>>>>>>>>>>>>>> BIN > SERVER > Running on Port:', config.port);
-        // });
-
-        done();
-      });
-    }
+  if (__DEVELOPMENTx__) {
+    // https://webpack.js.org/api/node/#compiler-instance
+    // If you don’t pass the webpack runner function a callback, it will return a webpack Compiler instance.
+    // This instance can be used to manually trigger the webpack runner
+    // const compiler = webpack([clientConfigDev, configDevServer]);
+    // const clientCompiler = compiler.compilers[0];
+    // return a webpack Compiler instance
+    // done();
   } else {
-    console.error('>>>>>>>> BIN > SERVER > Missing config.port <<<<<<<<<<<<<');
+    webpack([clientConfigProd, serverConfigProd]).run((err, stats) => {
+      if (err) {
+        console.error('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > err: ', err.stack || err);
+        if (err.details) {
+          console.error('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > err.details: ', err.details);
+        }
+        return;
+      }
+
+      const clientStats = stats.toJson().children[0];
+
+      if (stats.hasErrors()) {
+        console.error('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > stats.hasErrors: ', clientStats.errors);
+      }
+      if (stats.hasWarnings()) {
+        console.warn('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > stats.hasWarnings: ', clientStats.warnings);
+      }
+
+      const render = require('../build/static/dist/server/server.js').default;
+
+      console.log('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > render: ', render);
+
+      app.use(render({ clientStats }));
+
+      // done();
+    });
   }
-})();
+} else {
+  console.error('>>>>>>>> BIN > SERVER > Missing config.port <<<<<<<<<<<<<');
+}
 
 // MONGOOSE CONNECTION EVENTS
 

@@ -170,9 +170,9 @@ export default class ReduxAsyncConnect extends Component {
     const { children, location } = this.props;
     const { previousLocation } = this.state;
 
-    console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > render() > children:', children);
-    console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > render() > location:', location);
-    console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > render() > previousLocation:', previousLocation);
+    // console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > render() > children:', children);
+    // console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > render() > location:', location);
+    // console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > render() > previousLocation:', previousLocation);
 
     // use a controlled <Route> to trick all descendants into
     // rendering the old location
