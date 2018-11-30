@@ -9,7 +9,7 @@
   "scripts": {
     "start": "concurrently \"yarn start:server\" \"yarn start:api\"",
     "start:server": "NODE_ENV=production BABEL_DISABLE_CACHE=1 PORT=8080 node --trace-deprecation ./bin/server.js",
-    "start:api": "NODE_ENV=production BABEL_DISABLE_CACHE=1 APIPORT=3030 node ./bin/api.js",
+    "start:api": "NODE_ENV=production APIPORT=3030 node ./bin/api.js",
     "dlls": "webpack --display-error-details --config webpack/dllplugin.vendor.config.js",
     "prettier": "prettier-eslint --write --eslint-config-path .eslintrc './+(bin)/**/*.js'",
     "lint": "eslint -c .eslintrc bin && flow",
