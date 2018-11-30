@@ -1,5 +1,5 @@
 import { createStore as _createStore, applyMiddleware, compose, combineReducers } from 'redux';
-import { connectRouter, routerMiddleware } from 'connected-react-router';
+import { routerMiddleware } from 'connected-react-router';
 import { createPersistoid, persistCombineReducers, REGISTER } from 'redux-persist';
 import clientMiddleware from './middleware/clientMiddleware';
 import createReducers from './reducer';
@@ -36,7 +36,7 @@ export function inject(store, reducers, persistConfig) {
   });
 
   // get a new root reducer
-  store.replaceReducer(combine( createReducers(store.asyncReducers), persistConfig ));
+  store.replaceReducer( combine( createReducers(history, store.asyncReducers), persistConfig ) );
 }
 
 // =======================================================================================
@@ -113,13 +113,13 @@ export default function createStore({ history, data, helpers, persistConfig }) {
 
   // Composed Enhancers
   const finalCreateStore = compose(...enhancers)(_createStore);
-  const reducers = createReducers();
+  const reducers = createReducers(history);
   const noopReducers = getNoopReducers(reducers, data);
 
   // -----------------------------------------
 
   // const store = finalCreateStore( combine({ ...noopReducers, ...reducers }, persistConfig), data);
-  const store = finalCreateStore(connectRouter(history)(combine({ ...noopReducers, ...reducers }, persistConfig)), data);
+  const store = finalCreateStore((combine({ ...noopReducers, ...reducers }, persistConfig)), data);
   console.log('>>>>>>>>>>>>>>>>>>> createStore.JS > store 1: ', store);
   // -----------------------------------------
 
@@ -140,14 +140,15 @@ export default function createStore({ history, data, helpers, persistConfig }) {
 
   // -----------------------------------------
 
-if (__DEVELOPMENT__ && module.hot) {
-  module.hot.accept('./reducer', () => {
-    let reducer = require('./reducer').default;
-    console.log('>>>>>>>>>>>>>>>>>>> createStore > createStore > reducer !!!: ', reducer);
-    reducer = combine((reducer.__esModule ? reducer.default : reducer)(store.asyncReducers), persistConfig);
-    store.replaceReducer(connectRouter(history)(reducer));
-  });
-}
+  // reducers hot reloading
+  if (__DEVELOPMENT__ && module.hot) {
+    module.hot.accept('./reducer', () => {
+      let reducer = require('./reducer').default;
+      console.log('>>>>>>>>>>>>>>>>>>> createStore > createStore > reducer !!!: ', reducer);
+      reducer = combine((reducer.__esModule ? reducer.default : reducer)(store.asyncReducers), persistConfig);
+      store.replaceReducer(createReducers(history));
+    });
+  }
 
   // -----------------------------------------
 
