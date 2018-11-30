@@ -31,11 +31,12 @@ import { parse as parseUrl } from 'url';
 import { createApp } from '../server/app';
 import apiClient from '../server/utils/apiClient';
 
-import { clearChunks, flushChunkNames } from 'react-universal-component/server';
-import flushChunks from 'webpack-flush-chunks';
-// import { flushFiles } from 'webpack-flush-chunks';
-import { getStats } from './utils/stats';
-import { ReportChunks } from 'react-universal-component';
+// holds a global cache of all the universal components that are rendered and makes them available via flushChunkNames
+import { flushChunkNames } from 'react-universal-component/server';
+// import flushChunks from 'webpack-flush-chunks';
+import { flushFiles } from 'webpack-flush-chunks';
+// import { getStats } from './utils/stats';
+// import { ReportChunks } from 'react-universal-component';
 
 const targetUrl = `http://${config.apiHost}:${config.apiPort}`;
 
@@ -170,10 +171,10 @@ export default ({ clientStats }) => async (req, res) => {
 
     await trigger( 'fetch', components, locals);
 
-    clearChunks();
     // const chunkNames = [];
     const context = {};
 
+    // build step and render step ARE separate
     // const component = (
     //   <ReportChunks report={chunkName => chunkNames.push(chunkName)}>
     //     <Provider store={store} {...providers}>
@@ -188,6 +189,7 @@ export default ({ clientStats }) => async (req, res) => {
     //   </ReportChunks>
     // );
 
+    // build step and render step NOT separate
     const component = (
       <Provider store={store} {...providers}>
         <ConnectedRouter history={history}>
@@ -221,7 +223,7 @@ export default ({ clientStats }) => async (req, res) => {
     // ------------------------------------------------------------------------------------------------------
 
     const chunkNames = flushChunkNames();
-    const assets = flushChunks(clientStats, { chunkNames });
+    // const assets = flushChunks(clientStats, { chunkNames });
 
     // ------------------------------------------------------------------------------------------------------
 
@@ -234,12 +236,12 @@ export default ({ clientStats }) => async (req, res) => {
     // console.log('>>>>>>>>>>>>>>>>> SERVER > clientStats: ', clientStats);
 
     // let scripts = bundles.filter(bundle => bundle.file.endsWith('.js') || bundle.file.endsWith('.map'));
-    // const scripts = flushFiles(webpackStats, { chunkNames, filter: bundle => bundle.file.endsWith('.js') });
-    // const styles = flushFiles(webpackStats, { chunkNames, filter: bundle => bundle.file.endsWith('.css') });
+    const scripts = flushFiles(clientStats, { chunkNames, filter: file => file.endsWith('.js') });
+    const styles = flushFiles(clientStats, { chunkNames, filter: file => file.endsWith('.css') });
 
     // scripts:  [ 'bootstrap.ba1b422eeb0d78f07d43.bundle.js', 'main.f8c3be17197dd531d4b5.chunk.js' ]
     // stylesheets:  [ 'main.aa610604945cbff30901.css' ]
-    // const { js, styles, cssHash, scripts, stylesheets } = flushChunks( webpackStats, { chunkNames } )
+    // const { js, styles, cssHash, scripts, stylesheets } = flushChunks( clientStats, { chunkNames } )
 
     // const assets = {
     //   // react components:
@@ -259,29 +261,29 @@ export default ({ clientStats }) => async (req, res) => {
 
     // const { js, styles, cssHash, scripts, stylesheets } = flushChunks( clientStats, { chunkNames } );
     // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > js: ', js);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > styles: ', styles);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > styles: ', styles);
     // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > cssHash: ', cssHash);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > scripts: ', scripts);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > scripts: ', scripts);
     // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > stylesheets: ', stylesheets);
 
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > JS: ', assets.Js);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > STYLES: ', assets.Styles);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > CSS: ', assets.Css);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > js: ', assets.js);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > styles: ', assets.styles);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > css: ', assets.css);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > cssHash: ', assets.cssHash);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > scripts: ', assets.scripts);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > stylesheets: ', assets.stylesheets);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > JS: ', assets.Js);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > STYLES: ', assets.Styles);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > CSS: ', assets.Css);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > js: ', assets.js);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > styles: ', assets.styles);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > css: ', assets.css);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > cssHash: ', assets.cssHash);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > scripts: ', assets.scripts);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > stylesheets: ', assets.stylesheets);
 
     console.log('>>>>>>>>>>>>>>>> SERVER > ==================== content: ', content);
 
-    const html = <Html assets={assets} store={store} content={content} />;
-    const ssrHtml = `<!doctype html>${ReactDOM.renderToString(html)}`;
-    console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > RESPOND TO CLIENT !! > ReactDOM.renderToString(html):', ssrHtml);
+    // const html = <Html assets={assets} store={store} content={content} />;
+    // const ssrHtml = `<!doctype html>${ReactDOM.renderToString(html)}`;
+    // console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > RESPOND TO CLIENT !! > ReactDOM.renderToString(html):', ssrHtml);
 
-    res.status(200).send(ssrHtml);
-    // res.status(200).send('SERVER > Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
+    // res.status(200).send(ssrHtml);
+    res.status(200).send('SERVER > Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
 
   } catch (error) {
     console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > TRY > ERROR > error: ', error);
