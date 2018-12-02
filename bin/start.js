@@ -136,18 +136,16 @@ server.on('listening', () => {
 //     console.info('>>>>>>>> BIN > SERVER > Express server Running on Port:', config.port);
 //   });
 
-const __DEVELOPMENTx__ = false;
-
 if (config.port) {
   rimraf.sync(path.resolve(rootPath, './build/static/dist/client'));
   rimraf.sync(path.resolve(rootPath, './build/static/dist/server'));
 
-  console.log('>>>>>>>> BIN > SERVER > __DEVELOPMENT__ ?: ', __DEVELOPMENTx__);
+  console.log('>>>>>>>> BIN > SERVER > __DEVELOPMENT__ ?: ', __DEVELOPMENT__);
   console.log('>>>>>>>> BIN > SERVER > STATS COMPILER ATTEMPTING BUILD !! ...');
 
   // https://webpack.js.org/api/node/
 
-  if (__DEVELOPMENTx__) {
+  if (__DEVELOPMENT__) {
     // https://webpack.js.org/api/node/#compiler-instance
     // If you don’t pass the webpack runner function a callback, it will return a webpack Compiler instance.
     // This instance can be used to manually trigger the webpack runner

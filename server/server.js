@@ -33,10 +33,8 @@ import apiClient from '../server/utils/apiClient';
 
 // holds a global cache of all the universal components that are rendered and makes them available via flushChunkNames
 import { flushChunkNames } from 'react-universal-component/server';
-// import flushChunks from 'webpack-flush-chunks';
-import { flushFiles } from 'webpack-flush-chunks';
-// import { getStats } from './utils/stats';
-// import { ReportChunks } from 'react-universal-component';
+import flushChunks from 'webpack-flush-chunks';
+// import { flushFiles } from 'webpack-flush-chunks';
 
 const targetUrl = `http://${config.apiHost}:${config.apiPort}`;
 
@@ -206,6 +204,59 @@ export default ({ clientStats }) => async (req, res) => {
 
     // ------------------------------------------------------------------------------------------------------
 
+    // array of chunks flushed from react-universal-component
+    const chunkNames = flushChunkNames();
+    const assets = flushChunks(clientStats, { chunkNames });
+
+    // ------------------------------------------------------------------------------------------------------
+
+    // flushChunks and flushFiles: called immediately after ReactDOMServer.renderToString. 
+    // They are used in server-rendering to extract the minimal amount of chunks to send to the client, 
+    // thereby solving a missing piece for code-splitting: server-side rendering
+
+    console.log('>>>>>>>>>>>>>>>>> SERVER > chunkNames: ', chunkNames);
+
+    // let scripts = bundles.filter(bundle => bundle.file.endsWith('.js') || bundle.file.endsWith('.map'));
+
+    // const scripts = flushFiles(clientStats, { chunkNames, filter: file => file.endsWith('.js') });
+    // const styles = flushFiles(clientStats, { chunkNames, filter: file => file.endsWith('.css') });
+    // const scripts2 = flushFiles(clientStats, { chunkNames, filter: 'js' })
+    // const styles2 = flushFiles(clientStats, { chunkNames, filter: 'css' })
+
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushFiles > styles: ', styles);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushFiles > scripts: ', scripts);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushFiles > styles2: ', styles2);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushFiles > scripts2: ', scripts2);
+
+    // -----------------------------------------------------------------------------
+
+    // const assets = {
+    //   // react components:
+    //   Js, // javascript chunks
+    //   Styles, // external stylesheets
+    //   Css, // raw css
+    //   // strings:
+    //   js, // javascript chunks
+    //   styles, // external stylesheets
+    //   css, // raw css
+    //   cssHash,
+    //   scripts,
+    //   stylesheets
+    // } = flushChunks( clientStats, { chunkNames } )
+
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > JS: ', assets.Js);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > STYLES: ', assets.Styles);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > CSS: ', assets.Css);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > .js: ', assets.js);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > .map: ', assets.map);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > styles: ', assets.styles);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > .css: ', assets.css);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > cssHash: ', assets.cssHash);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > scripts: ', assets.scripts);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > stylesheets: ', assets.stylesheets);
+
+    // ------------------------------------------------------------------------------------------------------
+
     // console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > context: ', context);
 
     console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > component: ', component);
@@ -221,60 +272,6 @@ export default ({ clientStats }) => async (req, res) => {
     }
 
     // ------------------------------------------------------------------------------------------------------
-
-    const chunkNames = flushChunkNames();
-    // const assets = flushChunks(clientStats, { chunkNames });
-
-    // ------------------------------------------------------------------------------------------------------
-
-    // flushChunks and flushFiles: called immediately after ReactDOMServer.renderToString. 
-    // They are used in server-rendering to extract the minimal amount of chunks to send to the client, 
-    // thereby solving a missing piece for code-splitting: server-side rendering
-
-    // clearChunks();
-    console.log('>>>>>>>>>>>>>>>>> SERVER > chunkNames: ', chunkNames);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > clientStats: ', clientStats);
-
-    // let scripts = bundles.filter(bundle => bundle.file.endsWith('.js') || bundle.file.endsWith('.map'));
-    const scripts = flushFiles(clientStats, { chunkNames, filter: file => file.endsWith('.js') });
-    const styles = flushFiles(clientStats, { chunkNames, filter: file => file.endsWith('.css') });
-
-    // scripts:  [ 'bootstrap.ba1b422eeb0d78f07d43.bundle.js', 'main.f8c3be17197dd531d4b5.chunk.js' ]
-    // stylesheets:  [ 'main.aa610604945cbff30901.css' ]
-    // const { js, styles, cssHash, scripts, stylesheets } = flushChunks( clientStats, { chunkNames } )
-
-    // const assets = {
-    //   // react components:
-    //   Js, // javascript chunks
-    //   Styles, // external stylesheets
-    //   Css, // raw css
-
-    //   // strings:
-    //   js, // javascript chunks
-    //   styles, // external stylesheets
-    //   css, // raw css
-
-    //   cssHash,
-    //   scripts,
-    //   stylesheets
-    // } = flushChunks( clientStats, { chunkNames } )
-
-    // const { js, styles, cssHash, scripts, stylesheets } = flushChunks( clientStats, { chunkNames } );
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > js: ', js);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > styles: ', styles);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > cssHash: ', cssHash);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > scripts: ', scripts);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > stylesheets: ', stylesheets);
-
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > JS: ', assets.Js);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > STYLES: ', assets.Styles);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > CSS: ', assets.Css);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > js: ', assets.js);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > styles: ', assets.styles);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > css: ', assets.css);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > cssHash: ', assets.cssHash);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > scripts: ', assets.scripts);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > stylesheets: ', assets.stylesheets);
 
     console.log('>>>>>>>>>>>>>>>> SERVER > ==================== content: ', content);
 
