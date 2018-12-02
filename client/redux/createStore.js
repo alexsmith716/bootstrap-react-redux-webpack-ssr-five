@@ -118,8 +118,7 @@ export default function createStore({ history, data, helpers, persistConfig }) {
 
   // -----------------------------------------
 
-  // const store = finalCreateStore( combine({ ...noopReducers, ...reducers }, persistConfig), data);
-  const store = finalCreateStore((combine({ ...noopReducers, ...reducers }, persistConfig)), data);
+  const store = finalCreateStore(combine({ ...noopReducers, ...reducers }, persistConfig), data);
   console.log('>>>>>>>>>>>>>>>>>>> createStore.JS > store 1: ', store);
   // -----------------------------------------
 
