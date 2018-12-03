@@ -114,7 +114,7 @@ server.on('listening', () => {
 const done = () => !isBuilt
   && server.listen(config.port, err => {
     isBuilt = true;
-    console.log('>>>>>>>> BIN > START > STATS COMPILER BUILD COMPLETE !!');
+    console.log('>>>>>>>> BIN > START > STATS COMPILER COMPLETED BUILD !!');
     if (err) {
       console.error('>>>>>>>> BIN > START > ERROR:', err);
     }
