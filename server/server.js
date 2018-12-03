@@ -264,8 +264,6 @@ export default ({ clientStats }) => async (req, res) => {
 
     // console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > context: ', context);
 
-    console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > component: ', component);
-
     if (context.url) {
       return res.redirect(301, context.url);
     }

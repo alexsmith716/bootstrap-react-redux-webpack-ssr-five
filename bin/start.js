@@ -34,18 +34,18 @@ const mongooseOptions = {
   useNewUrlParser: true
 };
 
-mongoose.Promise = global.Promise;
-mongoose.connect(
-  dbURL,
-  mongooseOptions,
-  err => {
-    if (err) {
-      console.error('>>>>>>>> BIN > SERVER > Please make sure Mongodb is installed and running!');
-    } else {
-      console.error('>>>>>>>> BIN > SERVER > Mongodb is installed and running!');
-    }
-  }
-);
+// mongoose.Promise = global.Promise;
+// mongoose.connect(
+//   dbURL,
+//   mongooseOptions,
+//   err => {
+//     if (err) {
+//       console.error('>>>>>>>> BIN > START > Please make sure Mongodb is installed and running!');
+//     } else {
+//       console.error('>>>>>>>> BIN > START > Mongodb is installed and running!');
+//     }
+//   }
+// );
 
 const app = express();
 const server = http.createServer(app);
@@ -80,17 +80,12 @@ app.use(express.static(outputPath));
 
 // #########################################################################
 
-// let isBuilt = false;
-
-server.listen(config.port, () => {
-  console.info('>>>>>>>> BIN > SERVER > Running on Port:', config.port);
-  console.info('>>>>>>>> BIN > SERVER > Running on Host:', config.host);
-});
+let isBuilt = false;
 
 server.on('error', err => {
   if (err.code === 'EADDRINUSE') {
     console.log('Address in use, retrying...');
-    console.error('>>>>>>>> BIN > SERVER > ERROR > Address in use, retrying...');
+    console.error('>>>>>>>> BIN > START > ERROR > Address in use, retrying...');
     setTimeout(() => {
       server.close();
       server.listen(config.port, config.host);
@@ -101,47 +96,38 @@ server.on('error', err => {
 server.on('listening', () => {
   const addr = server.address();
   const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
-  console.log('>>>>>>>> BIN > SERVER > Express server Listening on: ', bind);
-  // mongoose.Promise = global.Promise;
-  // mongoose.connect(
-  //   dbURL,
-  //   mongooseOptions,
-  //   err => {
-  //     if (err) {
-  //       console.error('>>>>>>>> BIN > SERVER > Please make sure Mongodb is installed and running!');
-  //     } else {
-  //       console.error('>>>>>>>> BIN > SERVER > Mongodb is installed and running!');
-  //     }
-  //   }
-  // );
+  console.log('>>>>>>>> BIN > START > Express server Listening on: ', bind);
+  mongoose.Promise = global.Promise;
+  mongoose.connect(
+    dbURL,
+    mongooseOptions,
+    err => {
+      if (err) {
+        console.error('>>>>>>>> BIN > START > Please make sure Mongodb is installed and running!');
+      } else {
+        console.error('>>>>>>>> BIN > START > Mongodb is installed and running!');
+      }
+    }
+  );
 });
 
-// server.listen(config.port, err => {
-//   console.log('>>>>>>>> BIN > SERVER > STATS COMPILER BUILD COMPLETE !!');
-//   if (err) {
-//     console.error('>>>>>>>> BIN > SERVER > ERROR:', err);
-//   }
-//   console.info('>>>>>>>> BIN > SERVER > Express server Running on Host:', config.host);
-//   console.info('>>>>>>>> BIN > SERVER > Express server Running on Port:', config.port);
-// });
-
-// const done = () => !isBuilt
-//   && server.listen(config.port, err => {
-//     isBuilt = true;
-//     console.log('>>>>>>>> BIN > SERVER > STATS COMPILER BUILD COMPLETE !!');
-//     if (err) {
-//       console.error('>>>>>>>> BIN > SERVER > ERROR:', err);
-//     }
-//     console.info('>>>>>>>> BIN > SERVER > Express server Running on Host:', config.host);
-//     console.info('>>>>>>>> BIN > SERVER > Express server Running on Port:', config.port);
-//   });
+const done = () => !isBuilt
+  && server.listen(config.port, err => {
+    isBuilt = true;
+    console.log('>>>>>>>> BIN > START > STATS COMPILER BUILD COMPLETE !!');
+    if (err) {
+      console.error('>>>>>>>> BIN > START > ERROR:', err);
+    }
+    console.info('>>>>>>>> BIN > START > Express server Running on Host:', config.host);
+    console.info('>>>>>>>> BIN > START > Express server Running on Port:', config.port);
+  });
 
 if (config.port) {
   rimraf.sync(path.resolve(rootPath, './build/static/dist/client'));
   rimraf.sync(path.resolve(rootPath, './build/static/dist/server'));
 
-  console.log('>>>>>>>> BIN > SERVER > __DEVELOPMENT__ ?: ', __DEVELOPMENT__);
-  console.log('>>>>>>>> BIN > SERVER > STATS COMPILER ATTEMPTING BUILD !! ...');
+  console.log('>>>>>>>> BIN > START > __DEVELOPMENT__ ?: ', __DEVELOPMENT__);
+  console.log('>>>>>>>> BIN > START > STATS COMPILER ATTEMPTING BUILD !! ...');
 
   // https://webpack.js.org/api/node/
 
@@ -156,9 +142,9 @@ if (config.port) {
   } else {
     webpack([clientConfigProd, serverConfigProd]).run((err, stats) => {
       if (err) {
-        console.error('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > err: ', err.stack || err);
+        console.error('>>>>>>>> BIN > START > WEBPACK COMPILE > err: ', err.stack || err);
         if (err.details) {
-          console.error('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > err.details: ', err.details);
+          console.error('>>>>>>>> BIN > START > WEBPACK COMPILE > err.details: ', err.details);
         }
         return;
       }
@@ -166,44 +152,44 @@ if (config.port) {
       const clientStats = stats.toJson().children[0];
 
       if (stats.hasErrors()) {
-        console.error('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > stats.hasErrors: ', clientStats.errors);
+        console.error('>>>>>>>> BIN > START > WEBPACK COMPILE > stats.hasErrors: ', clientStats.errors);
       }
       if (stats.hasWarnings()) {
-        console.warn('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > stats.hasWarnings: ', clientStats.warnings);
+        console.warn('>>>>>>>> BIN > START > WEBPACK COMPILE > stats.hasWarnings: ', clientStats.warnings);
       }
 
       const render = require('../build/static/dist/server/server.js').default;
 
-      console.log('>>>>>>>> BIN > SERVER > WEBPACK COMPILE > render: ', render);
+      // console.log('>>>>>>>> BIN > START > WEBPACK COMPILE > render: ', render);
 
       app.use(render({ clientStats }));
 
-      // done();
+      done();
     });
   }
 } else {
-  console.error('>>>>>>>> BIN > SERVER > Missing config.port <<<<<<<<<<<<<');
+  console.error('>>>>>>>> BIN > START > Missing config.port <<<<<<<<<<<<<');
 }
 
 // MONGOOSE CONNECTION EVENTS
 
 mongoose.connection.on('connected', () => {
-  console.log(`>>>>>>>> BIN > SERVER > Mongoose Connection: ${dbURL}`);
+  console.log(`>>>>>>>> BIN > START > Mongoose Connection: ${dbURL}`);
 });
 
 mongoose.connection.on('error', err => {
-  console.log(`>>>>>>>> BIN > SERVER > Mongoose Connection error: ${err}`);
+  console.log(`>>>>>>>> BIN > START > Mongoose Connection error: ${err}`);
 });
 
 mongoose.connection.on('disconnected', () => {
-  console.log('>>>>>>>> BIN > SERVER > Mongoose Connection disconnected');
+  console.log('>>>>>>>> BIN > START > Mongoose Connection disconnected');
 });
 
 // CLOSE MONGOOSE CONNECTION
 
 const gracefulShutdown = (msg, cb) => {
   mongoose.connection.close(() => {
-    console.log(`>>>>>>>> BIN > SERVER > Mongoose Connection closed through: ${msg}`);
+    console.log(`>>>>>>>> BIN > START > Mongoose Connection closed through: ${msg}`);
     cb();
   });
 };
@@ -214,7 +200,7 @@ const gracefulShutdown = (msg, cb) => {
 // listen to Node process for SIGINT event
 process.on('SIGINT', () => {
   gracefulShutdown('app termination', () => {
-    console.log('>>>>>>>> BIN > SERVER > Mongoose SIGINT gracefulShutdown');
+    console.log('>>>>>>>> BIN > START > Mongoose SIGINT gracefulShutdown');
     process.exit(0);
   });
 });
@@ -223,7 +209,7 @@ process.on('SIGINT', () => {
 // listen to Node process for SIGUSR2 event
 process.once('SIGUSR2', () => {
   gracefulShutdown('nodemon restart', () => {
-    console.log('>>>>>>>> BIN > SERVER > Mongoose SIGUSR2 gracefulShutdown');
+    console.log('>>>>>>>> BIN > START > Mongoose SIGUSR2 gracefulShutdown');
     process.kill(process.pid, 'SIGUSR2');
   });
 });
@@ -232,7 +218,7 @@ process.once('SIGUSR2', () => {
 // listen to Node process for SIGTERM event
 process.on('SIGTERM', () => {
   gracefulShutdown('Heroku app termination', () => {
-    console.log('>>>>>>>> BIN > SERVER > Mongoose SIGTERM gracefulShutdown');
+    console.log('>>>>>>>> BIN > START > Mongoose SIGTERM gracefulShutdown');
     process.exit(0);
   });
 });
