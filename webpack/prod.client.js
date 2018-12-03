@@ -283,8 +283,6 @@ module.exports = {
   },
 
   plugins: [
-
-    // new ExtractCssChunks(),
     new ExtractCssChunks({
       filename: '[name].[contenthash].css',
       // chunkFilename: '[name].[contenthash].chunk.css',

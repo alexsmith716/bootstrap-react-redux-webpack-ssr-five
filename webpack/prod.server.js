@@ -50,14 +50,12 @@ module.exports = {
                   return `${name}__${localName}`
                 }
               },
-              importLoaders: 2,
-              sourceMap: true,
+              importLoaders: 2
             }
           },
           {
             loader: 'postcss-loader',
             options: {
-              sourceMap: true,
               config: {
                 path: 'postcss.config.js'
               }
@@ -69,9 +67,7 @@ module.exports = {
           {
             loader: 'sass-loader',
             options: {
-              outputStyle: 'expanded',
-              sourceMap: true,
-              sourceMapContents: true,
+              outputStyle: 'expanded' // https://github.com/sass/node-sass#outputstyle
             }
           },
           {
@@ -94,14 +90,12 @@ module.exports = {
             options: {
               modules: true,
               localIdentName: '[name]__[local]',
-              importLoaders: 1,
-              sourceMap: true
+              importLoaders: 1
             }
           },
           {
             loader: 'postcss-loader',
             options: {
-              sourceMap: true,
               config: {
                 path: 'postcss.config.js'
               }
