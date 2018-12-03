@@ -34,7 +34,7 @@ import apiClient from '../server/utils/apiClient';
 // holds a global cache of all the universal components that are rendered and makes them available via flushChunkNames
 import { flushChunkNames } from 'react-universal-component/server';
 import flushChunks from 'webpack-flush-chunks';
-// import { flushFiles } from 'webpack-flush-chunks';
+import { flushFiles } from 'webpack-flush-chunks';
 
 const targetUrl = `http://${config.apiHost}:${config.apiPort}`;
 
@@ -175,15 +175,7 @@ export default ({ clientStats }) => async (req, res) => {
     // build step and render step ARE separate
     // const component = (
     //   <ReportChunks report={chunkName => chunkNames.push(chunkName)}>
-    //     <Provider store={store} {...providers}>
-    //       <ConnectedRouter history={history}>
-    //         <StaticRouter location={req.originalUrl} context={context}>
-    //           <ReduxAsyncConnect routes={routes} store={store} helpers={providers}>
-    //             {renderRoutes(routes)}
-    //           </ReduxAsyncConnect>
-    //         </StaticRouter>
-    //       </ConnectedRouter>
-    //     </Provider>
+    //    ...
     //   </ReportChunks>
     // );
 
@@ -206,54 +198,67 @@ export default ({ clientStats }) => async (req, res) => {
 
     // array of chunks flushed from react-universal-component
     const chunkNames = flushChunkNames();
-    const assets = flushChunks(clientStats, { chunkNames });
 
-    // ------------------------------------------------------------------------------------------------------
+    console.log('>>>>>>>>>>>>>>>>> SERVER > chunkNames: ', chunkNames);
 
     // flushChunks and flushFiles: called immediately after ReactDOMServer.renderToString. 
     // They are used in server-rendering to extract the minimal amount of chunks to send to the client, 
     // thereby solving a missing piece for code-splitting: server-side rendering
 
-    console.log('>>>>>>>>>>>>>>>>> SERVER > chunkNames: ', chunkNames);
+    // ------------------------------------------------------------------------------------------------------
 
-    // let scripts = bundles.filter(bundle => bundle.file.endsWith('.js') || bundle.file.endsWith('.map'));
+    const flushedFiles = flushFiles(clientStats, { chunkNames });
+    // const flushedFilesFilter = flushedFiles.filter(file => file.endsWith('.js') || file.endsWith('.css') || file.endsWith('.map'));
 
-    // const scripts = flushFiles(clientStats, { chunkNames, filter: file => file.endsWith('.js') });
-    // const styles = flushFiles(clientStats, { chunkNames, filter: file => file.endsWith('.css') });
-    // const scripts2 = flushFiles(clientStats, { chunkNames, filter: 'js' })
-    // const styles2 = flushFiles(clientStats, { chunkNames, filter: 'css' })
-
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushFiles > styles: ', styles);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushFiles > scripts: ', scripts);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushFiles > styles2: ', styles2);
-    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushFiles > scripts2: ', scripts2);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushFiles > flushedFiles: ', flushedFiles);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushFiles > flushedFilesFilter: ', flushedFilesFilter);
 
     // -----------------------------------------------------------------------------
 
+    const assets = flushChunks(clientStats, { chunkNames });
+
     // const assets = {
     //   // react components:
-    //   Js, // javascript chunks
-    //   Styles, // external stylesheets
-    //   Css, // raw css
+    //   Js,                // javascript chunks
+    //   Styles,            // external stylesheets
+    //   Css,               // raw css
+    // 
     //   // strings:
-    //   js, // javascript chunks
-    //   styles, // external stylesheets
-    //   css, // raw css
-    //   cssHash,
+    //   js,                // javascript chunks
+    //   styles,            // external stylesheets
+    //   css,               // raw css
+    // 
+    //   // arrays of file names:
     //   scripts,
-    //   stylesheets
+    //   stylesheets,
+    // 
+    //   // cssHash for use with babel-plugin-dual-import:
+    //   cssHashRaw,        // hash object of chunk names to css file paths
+    //   cssHash,           // string: <script>window.__CSS_CHUNKS__ = ${JSON.stringify(cssHashRaw)}</script>
+    //   CssHash,           // react component of above
+    // 
+    //   // important paths:
+    //   publicPath,
+    //   outputPath
     // } = flushChunks( clientStats, { chunkNames } )
 
     console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > JS: ', assets.Js);
     console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > STYLES: ', assets.Styles);
     console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > CSS: ', assets.Css);
+
     console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > .js: ', assets.js);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > .map: ', assets.map);
     console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > styles: ', assets.styles);
     console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > .css: ', assets.css);
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > cssHash: ', assets.cssHash);
+
     console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > scripts: ', assets.scripts);
     console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > stylesheets: ', assets.stylesheets);
+
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > cssHashRaw: ', assets.cssHashRaw);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > cssHash: ', assets.cssHash);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > CssHash: ', assets.CssHash);
+
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > publicPath: ', assets.publicPath);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > outputPath: ', assets.outputPath);
 
     // ------------------------------------------------------------------------------------------------------
 
