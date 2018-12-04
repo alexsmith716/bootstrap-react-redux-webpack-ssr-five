@@ -36,10 +36,10 @@ const Html = ({ assets, store, content, bundles }) => {
 
         {/* (>>>>>>> STYLES - will be present only in production) */}
         {assets.stylesheets 
-          && Object.keys(assets.stylesheets).map(style => (
+          && Object.keys(assets.stylesheets).map(key => (
             <link
-              href={assets.stylesheets[style]}
-              key={style}
+              href={assets.stylesheets[key]}
+              key={key}
               media="screen, projection"
               rel="stylesheet"
               type="text/css"
@@ -54,13 +54,19 @@ const Html = ({ assets, store, content, bundles }) => {
         {/* (>>>>>>> CONTENT <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<) */}
         <div id="content" dangerouslySetInnerHTML={{ __html: content }} />
 
-        {/* (>>>>>>> STORE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<) */}
+        {/* (>>>>>>> STORE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<) */}
         {store && (
           <script
             dangerouslySetInnerHTML={{ __html: `window.__data=${serialize(store.getState())};` }}
             charSet="UTF-8"
           />
         )}
+
+        {/* (>>>>>>> JS - SCRIPTS  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<) */}
+        {assets.scripts 
+          && Object.keys(assets.scripts).map(key => (
+            <script key={key} src={assets.scripts[key]} charSet="UTF-8" />
+          ))}
 
       </body>
     </html>
