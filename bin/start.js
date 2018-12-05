@@ -1,14 +1,14 @@
 const path = require('path');
+const express = require('express');
 // const helmet = require('helmet');
+// const headers = require('../server/utils/headers');
+const compression = require('compression');
+const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const http = require('http');
 const favicon = require('serve-favicon');
-// const headers = require('../server/utils/headers');
-const cookieParser = require('cookie-parser');
-const compression = require('compression');
-const webpack = require('webpack');
-const express = require('express');
 const mongoose = require('mongoose');
+const webpack = require('webpack');
 const config = require('../config/config');
 
 const clientConfigProd = require('../webpack/prod.client');
@@ -64,15 +64,17 @@ const port = normalizePort(config.port);
 
 app.set('port', port);
 app.use(morgan('dev'));
+
+// app.use(helmet());
+// app.use(helmet.contentSecurityPolicy(config.app.csp));
+// app.use(helmet.xssFilter());
+// app.use(headers);
+
 app.use(cookieParser());
 app.use(compression());
 app.use(favicon(path.join(__dirname, '..', 'build', 'static', 'favicon.ico')));
 
 app.use(express.static(outputPath));
-
-// #########################################################################
-
-// app.use(headers);
 
 // #########################################################################
 
