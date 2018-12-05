@@ -7,10 +7,11 @@
   "author": "dev",
   "license": "MIT",
   "scripts": {
-    "start": "concurrently \"yarn start:server\" \"yarn start:api\"",
+    "start:prodX": "yarn run clean && concurrently \"yarn start:server\" \"yarn start:api\"",
     "start:server": "NODE_ENV=production BABEL_DISABLE_CACHE=1 PORT=8080 node --trace-deprecation ./bin/server.js",
     "start:api": "NODE_ENV=production APIPORT=3030 node ./bin/api.js",
     "dlls": "webpack --display-error-details --config webpack/dllplugin.vendor.config.js",
+    "clean": "rimraf build/static/dist",
     "prettier": "prettier-eslint --write --eslint-config-path .eslintrc './+(bin)/**/*.js'",
     "lint": "eslint -c .eslintrc bin && flow",
     "test": "NODE_PATH=client jest client"
@@ -41,7 +42,6 @@
     "cookie-session": "^2.0.0-beta.3",
     "cookies": "^0.7.1",
     "cookies-js": "^1.2.3",
-    "cors": "^2.8.5",
     "express": "^4.16.4",
     "express-jwt": "^5.3.1",
     "express-session": "^1.15.6",
