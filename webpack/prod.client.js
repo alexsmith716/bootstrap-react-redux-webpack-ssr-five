@@ -272,9 +272,9 @@ module.exports = {
     // adds an additional chunk to each entrypoint containing only the runtime
     // runtimeChunk: true
     // creates a runtime file to be shared for all generated chunks
-    runtimeChunk: {
-      name: 'bootstrap'
-    }
+    // runtimeChunk: {
+    //   name: 'bootstrap'
+    // }
   },
 
   resolve: {

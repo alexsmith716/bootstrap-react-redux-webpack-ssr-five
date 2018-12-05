@@ -7,7 +7,7 @@
   "author": "dev",
   "license": "MIT",
   "scripts": {
-    "start:prodX": "yarn run clean && concurrently \"yarn start:server\" \"yarn start:api\"",
+    "start:prod": "yarn run clean && concurrently \"yarn start:server\" \"yarn start:api\"",
     "start:server": "NODE_ENV=production BABEL_DISABLE_CACHE=1 PORT=8080 node --trace-deprecation ./bin/server.js",
     "start:api": "NODE_ENV=production APIPORT=3030 node ./bin/api.js",
     "dlls": "webpack --display-error-details --config webpack/dllplugin.vendor.config.js",
