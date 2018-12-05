@@ -7,10 +7,8 @@ const favicon = require('serve-favicon');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const webpack = require('webpack');
-const rimraf = require('rimraf');
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
 const config = require('../config/config');
 
 const clientConfigProd = require('../webpack/prod.client');
@@ -18,7 +16,6 @@ const serverConfigProd = require('../webpack/prod.server');
 
 // const { publicPath } = clientConfigProd.output;
 const outputPath = clientConfigProd.output.path;
-const rootPath = path.resolve(__dirname, '../');
 
 process.on('unhandledRejection', (error, promise) => {
   console.error('>>>>>>>> BIN > START > process > unhandledRejection > error:', error);
@@ -70,7 +67,6 @@ app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(compression());
 app.use(favicon(path.join(__dirname, '..', 'build', 'static', 'favicon.ico')));
-app.use(cors());
 
 app.use(express.static(outputPath));
 
@@ -123,9 +119,6 @@ const done = () => !isBuilt
   });
 
 if (config.port) {
-  rimraf.sync(path.resolve(rootPath, './build/static/dist/client'));
-  rimraf.sync(path.resolve(rootPath, './build/static/dist/server'));
-
   console.log('>>>>>>>> BIN > START > __DEVELOPMENT__ ?: ', __DEVELOPMENT__);
   console.log('>>>>>>>> BIN > START > STATS COMPILER ATTEMPTING BUILD !! ...');
 
