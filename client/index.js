@@ -143,7 +143,14 @@ initSocket();
     };
 
     // Wait for async data fetching to complete, then continue to render
-    await trigger('fetch', components, triggerLocals);
+    // Don't fetch data for initial route, server has already done the work:
+    if (window.__PRELOADED__) {
+      // Delete initial data so that subsequent data fetches can occur:
+      delete window.__PRELOADED__;
+    } else {
+      // Fetch mandatory data dependencies for 2nd route change onwards:
+      await trigger('fetch', components, triggerLocals);
+    }
     await trigger('defer', components, triggerLocals);
 
     // server-rendered markup ('ReactDOMServer.renderToString()') sent here
