@@ -1,6 +1,6 @@
 import React from 'react';
 import universal from 'react-universal-component';
-import universalImport from 'babel-plugin-universal-import/universalImport.js';
+// import universalImport from 'babel-plugin-universal-import/universalImport.js';
 import path from 'path';
 
 // const AboutLoadable = universal(() => import(/* webpackChunkName: 'about' */ './About'));
@@ -14,7 +14,7 @@ import path from 'path';
 //   ]).then(proms => proms[0])
 // }))
 
-
+// const AboutLoadable = universal(() => import(/* webpackChunkName: 'about' */ './About'), {
 const AboutLoadable = universal(() => import(/* webpackChunkName: 'about' */ './About'), {
   path: path.resolve(__dirname, './About'),
   resolve: () => require.resolveWeak('./About'),
@@ -23,13 +23,3 @@ const AboutLoadable = universal(() => import(/* webpackChunkName: 'about' */ './
 })
 
 export default AboutLoadable;
-
-
-// import Loadable from 'react-loadable';
-// 
-// const AboutLoadable = Loadable({
-//   loader: () => import('./About' /* webpackChunkName: 'about' */).then(module => module.default),
-//   loading: () => <div>Loading</div>
-// });
-// 
-// export default AboutLoadable;
