@@ -8,5 +8,5 @@
 // // eslint-disable-next-line
 // square("2"); // Error!
 
-require('../server.babel');
+require('../api.babel');
 require('../api/api');

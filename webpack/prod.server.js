@@ -7,22 +7,17 @@ const rootPath = path.resolve(__dirname, '..');
 
 // ==============================================================================================
 
-// const babelrc = fs.readFileSync('./.babelrc', 'utf8');
-// let prodconfig = {};
-// 
-// try {
-//   prodconfig = JSON.parse(babelrc);
-//     if (Array.isArray(prodconfig.plugins)) {
-//       prodconfig.plugins.push('universal-import');
-//     }
-//     console.error('>>>>>>>>> webpack prod.server > SUCCESS: parsing .babelrc !!: ', prodconfig)
-// } catch (err) {
-//   console.error('>>>>>>>>> webpack prod.server > ERROR: parsing .babelrc: ', err)
-// }
-// 
-// const babelrcObject = Object.assign({}, prodconfig);
-// 
-// console.error('>>>>>>>>> webpack prod.server > SUCCESS: babelrcObject !!: ', babelrcObject)
+const babelrc = fs.readFileSync('./.babelrc', 'utf8');
+let prodconfig = {};
+
+try {
+  prodconfig = JSON.parse(babelrc);
+  console.error('>>>>>>>>> webpack prod.server > SUCCESS: parsing .babelrc !!typeof: ', typeof prodconfig)
+  console.error('>>>>>>>>> webpack prod.server > SUCCESS: parsing .babelrc !!: ', prodconfig)
+} catch (err) {
+  console.error('>>>>>>>>> webpack prod.server > ERROR: parsing .babelrc: ', err)
+}
+
 
 // ==============================================================================================
 
@@ -51,8 +46,7 @@ module.exports = {
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
-        exclude: /node_modules(\/|\\)(?!(@feathersjs))/,
-        // options: babelrcObject
+        exclude: /node_modules(\/|\\)(?!(@feathersjs))/
       },
       {
         test: /\.(scss)$/,
