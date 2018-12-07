@@ -5,13 +5,11 @@
       "targets": {
         "browsers": ["last 2 versions", "IE >= 8"]
       }
-    }],
-    "@babel/preset-flow"
+    }]
   ],
   "plugins": [
     ["@babel/plugin-transform-runtime",{"corejs": 2}],
     ["@babel/plugin-proposal-decorators", { "legacy": true }],
-    "react-hot-loader/babel",
     "@babel/plugin-syntax-dynamic-import",
     "universal-import",
     "@babel/plugin-syntax-import-meta",
@@ -23,5 +21,12 @@
     "@babel/plugin-proposal-throw-expressions",
     "@babel/plugin-proposal-export-default-from",
     "@babel/plugin-proposal-object-rest-spread"
-  ]
+  ],
+  "env": {
+    "development": {
+      "plugins": [
+        "react-hot-loader/babel"
+      ]
+    }
+  }
 }

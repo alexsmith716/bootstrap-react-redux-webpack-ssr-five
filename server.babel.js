@@ -39,11 +39,6 @@ require('@babel/register')(config);
 // Preset ordering is reversed (last to first)
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-// ###########################################################################################
-// (hey, 3 days of weirdness finally sorted out! (yeah, now realize i was here before over a year ago!))
-// By default @babel/node cli and @babel/register will save to a json cache in your temporary directory
-// This will heavily improve with the startup and compilation of your files
-// ###########################################################################################
 // https://babeljs.io/docs/en/babel-register
 // https://babeljs.io/docs/en/babel-register#babel-disable-cache
 // ###########################################################################################
