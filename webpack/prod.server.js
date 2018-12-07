@@ -5,6 +5,27 @@ const config = require('../config/config');
 
 const rootPath = path.resolve(__dirname, '..');
 
+// ==============================================================================================
+
+// const babelrc = fs.readFileSync('./.babelrc', 'utf8');
+// let prodconfig = {};
+// 
+// try {
+//   prodconfig = JSON.parse(babelrc);
+//     if (Array.isArray(prodconfig.plugins)) {
+//       prodconfig.plugins.push('universal-import');
+//     }
+//     console.error('>>>>>>>>> webpack prod.server > SUCCESS: parsing .babelrc !!: ', prodconfig)
+// } catch (err) {
+//   console.error('>>>>>>>>> webpack prod.server > ERROR: parsing .babelrc: ', err)
+// }
+// 
+// const babelrcObject = Object.assign({}, prodconfig);
+// 
+// console.error('>>>>>>>>> webpack prod.server > SUCCESS: babelrcObject !!: ', babelrcObject)
+
+// ==============================================================================================
+
 module.exports = {
 
   context: path.resolve(__dirname, '..'),
@@ -29,8 +50,9 @@ module.exports = {
     rules: [
       {
         test: /\.jsx?$/,
+        loader: 'babel-loader',
         exclude: /node_modules(\/|\\)(?!(@feathersjs))/,
-        loader: 'babel-loader'
+        // options: babelrcObject
       },
       {
         test: /\.(scss)$/,

@@ -13,6 +13,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const rootPath = path.resolve(__dirname, '..');
 const assetsPath = path.resolve(rootPath, './build/static/dist/client');
 
+// ==============================================================================================
+
 module.exports = {
 
   context: path.resolve(__dirname, '..'),
@@ -41,8 +43,8 @@ module.exports = {
     rules: [
       {
         test: /\.jsx?$/,
-        exclude: /node_modules(\/|\\)(?!(@feathersjs))/,
-        loader: 'babel-loader'
+        loader: 'babel-loader',
+        exclude: /node_modules(\/|\\)(?!(@feathersjs))/
       },
       {
         test: /\.(scss)$/,
