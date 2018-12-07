@@ -59,9 +59,10 @@ module.exports = {
         exclude: /node_modules/,
         use: [
           {
-            loader: 'css-loader/locals',
+            loader: 'css-loader',
             options: {
               modules: true,
+              exportOnlyLocals: true,
               // localIdentName: '[name]__[local]__[hash:base64:5]',
               getLocalIdent: (loaderContext, localIdentName, localName, options) => {
                 const fileName = path.basename(loaderContext.resourcePath)
@@ -108,9 +109,10 @@ module.exports = {
         test: /\.(css)$/,
         use: [
           {
-            loader : 'css-loader/locals',
+            loader : 'css-loader',
             options: {
               modules: true,
+              exportOnlyLocals: true,
               localIdentName: '[name]__[local]',
               importLoaders: 1
             }

@@ -44,3 +44,23 @@ https://webpack.js.org/configuration/devtool/#src/components
       toString: [Function: toString]
   }
 }
+
+css-loader
+svg-react-loader 
+stats-webpack-plugin
+source-map-support
+react-hot-loader
+react-a11y
+offline-plugin
+npm-run-all
+nodemon
+node-sass
+husky
+enzyme
+cssnano
+clean-webpack-plugin
+chai
+autoprefixer
+babel-plugin-dynamic-import-node
+babel-plugin-dynamic-import-webpack
+
