@@ -9,10 +9,12 @@ const http = require('http');
 const favicon = require('serve-favicon');
 const mongoose = require('mongoose');
 const webpack = require('webpack');
+const webpackDevMiddleware = require('webpack-dev-middleware');
+const webpackHotMiddleware = require('webpack-hot-middleware');
 const config = require('../config/config');
 
-// const clientConfigDev = require('../webpack/dev.client');
-// const serverConfigDev = require('../webpack/dev.server');
+const clientConfigDev = require('../webpack/dev.client');
+const serverConfigDev = require('../webpack/dev.server');
 
 const clientConfigProd = require('../webpack/prod.client');
 const serverConfigProd = require('../webpack/prod.server');
@@ -64,6 +66,17 @@ const normalizePort = val => {
 };
 
 const port = normalizePort(config.port);
+
+const serverOptions = {
+  contentBase: `http://${config.host}:${port + 1 || 3001}`,
+  quiet: true,
+  noInfo: true,
+  hot: true,
+  inline: true,
+  lazy: false,
+  publicPath: clientConfigDev.output.publicPath,
+  headers: { 'Access-Control-Allow-Origin': '*' }
+};
 
 app.set('port', port);
 app.use(morgan('dev'));
@@ -135,12 +148,18 @@ if (config.port) {
     // This instance can be used to manually trigger the webpack runner
     // return a webpack Compiler instance
 
-    // const compiler = webpack([clientConfigDev, serverConfigDev]);
+    const compiler = webpack([clientConfigDev, serverConfigDev]);
 
-    // const clientCompiler = compiler.compilers[0];
+    const clientCompiler = compiler.compilers[0];
     // const serverCompiler = compiler.compilers[1];
 
-    done();
+    const devMiddleware = webpackDevMiddleware(compiler, serverOptions);
+
+    app.use(devMiddleware);
+
+    app.use(webpackHotMiddleware(clientCompiler));
+
+    devMiddleware.waitUntilValid(done);
   } else {
     webpack([clientConfigProd, serverConfigProd]).run((err, stats) => {
       if (err) {
