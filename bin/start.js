@@ -11,6 +11,9 @@ const mongoose = require('mongoose');
 const webpack = require('webpack');
 const config = require('../config/config');
 
+// const clientConfigDev = require('../webpack/dev.client');
+// const serverConfigDev = require('../webpack/dev.server');
+
 const clientConfigProd = require('../webpack/prod.client');
 const serverConfigProd = require('../webpack/prod.server');
 
@@ -130,10 +133,14 @@ if (config.port) {
     // https://webpack.js.org/api/node/#compiler-instance
     // If you don’t pass the webpack runner function a callback, it will return a webpack Compiler instance.
     // This instance can be used to manually trigger the webpack runner
-    // const compiler = webpack([clientConfigDev, configDevServer]);
-    // const clientCompiler = compiler.compilers[0];
     // return a webpack Compiler instance
-    // done();
+
+    // const compiler = webpack([clientConfigDev, serverConfigDev]);
+
+    // const clientCompiler = compiler.compilers[0];
+    // const serverCompiler = compiler.compilers[1];
+
+    done();
   } else {
     webpack([clientConfigProd, serverConfigProd]).run((err, stats) => {
       if (err) {

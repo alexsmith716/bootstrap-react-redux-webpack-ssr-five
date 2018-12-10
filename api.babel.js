@@ -5,18 +5,19 @@ const fs = require('fs');
 
 const babelrc = fs.readFileSync('./.babelrc', 'utf8');
 let config = {};
-// 
+
 try {
   config = JSON.parse(babelrc);
   if (Array.isArray(config.plugins)) {
-    if (config.plugins.indexOf('universal-import')) {
-      config.plugins.splice(config.plugins.indexOf('universal-import'),1);
+  	const ioui = config.plugins.indexOf('universal-import');
+    if (ioui) {
+      config.plugins.splice(ioui,1);
     }
   }
-  console.error('>>>>>>>>>>>>>>>>>>> api.babel > SUCCESS: parsing .babelrc !!typeof: ', typeof config)
-  console.error('>>>>>>>>>>>>>>>>>>> api.babel > SUCCESS: parsing .babelrc !!: ', config)
+  console.error('>>>>>>>>>>>>>>>>>>> api.babel > SUCCESS: parsing .babelrc !!typeof: ', typeof config);
+  console.error('>>>>>>>>>>>>>>>>>>> api.babel > SUCCESS: parsing .babelrc !!: ', config);
 } catch (err) {
-  console.error('>>>>>>>>>>>>>>>>>>> api.babel > Error parsing .babelrc: ', err)
+  console.error('>>>>>>>>>>>>>>>>>>> api.babel > Error parsing .babelrc: ', err);
 }
 
 require('@babel/register')(config);
