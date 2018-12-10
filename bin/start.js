@@ -53,22 +53,22 @@ const app = express();
 const server = http.createServer(app);
 
 const normalizePort = val => {
-  const port = parseInt(val, 10);
-  if (Number.isNaN(port)) {
+  const parseIntPort = parseInt(val, 10);
+  if (Number.isNaN(parseIntPort)) {
     // named pipe
     return val;
   }
-  if (port >= 0) {
+  if (parseIntPort >= 0) {
     // port number
-    return port;
+    return parseIntPort;
   }
   return false;
 };
 
-const port = normalizePort(config.port);
+const port = normalizePort(__DEVELOPMENT__ ? Number(config.port) + 1 || 3001 : config.port);
 
 const serverOptions = {
-  contentBase: `http://${config.host}:${port + 1 || 3001}`,
+  contentBase: `http://${config.host}:${port}`,
   quiet: true,
   noInfo: true,
   hot: true,
@@ -78,7 +78,7 @@ const serverOptions = {
   headers: { 'Access-Control-Allow-Origin': '*' }
 };
 
-app.set('port', port);
+// app.set('port', port);
 app.use(morgan('dev'));
 
 // app.use(helmet());
@@ -126,7 +126,7 @@ server.on('listening', () => {
 });
 
 const done = () => !isBuilt
-  && server.listen(config.port, err => {
+  && server.listen(port, err => {
     isBuilt = true;
     console.log('>>>>>>>> BIN > START > STATS COMPILER COMPLETED BUILD !!');
     if (err) {
@@ -159,6 +159,7 @@ if (config.port) {
 
     app.use(webpackHotMiddleware(clientCompiler));
 
+    // execute a callback function when the compiler bundle is valid, typically after compilation
     devMiddleware.waitUntilValid(done);
   } else {
     webpack([clientConfigProd, serverConfigProd]).run((err, stats) => {
