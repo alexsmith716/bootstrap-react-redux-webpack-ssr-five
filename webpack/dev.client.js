@@ -14,17 +14,6 @@ const port = +process.env.PORT + 1 || 3001;
 
 // ==============================================================================================
 
-var validDLLs = dllHelpers.isValidDLLs('vendor', configuration.output.path);
-
-if (process.env.WEBPACK_DLLS === '1' && !validDLLs) {
-  process.env.WEBPACK_DLLS = '0';
-  console.warn('>>>>>> webpack.config.client.development.babel > WEBPACK_DLLS disabled !! <<<<<<<<<<');
-} else {
-  console.warn('>>>>>> webpack.config.client.development.babel > WEBPACK_DLLS ENABLED !! <<<<<<<<<<');
-};
-
-// ==============================================================================================
-
 let configuration = {
 
   context: path.resolve(__dirname, '..'),
@@ -241,6 +230,17 @@ let configuration = {
       Util: "exports-loader?Util!bootstrap/js/dist/util",
     })
   ]
+};
+
+// ==============================================================================================
+
+var validDLLs = dllHelpers.isValidDLLs('vendor', configuration.output.path);
+
+if (process.env.WEBPACK_DLLS === '1' && !validDLLs) {
+  process.env.WEBPACK_DLLS = '0';
+  console.warn('>>>>>> webpack.config.client.development.babel > WEBPACK_DLLS disabled !! <<<<<<<<<<');
+} else {
+  console.warn('>>>>>> webpack.config.client.development.babel > WEBPACK_DLLS ENABLED !! <<<<<<<<<<');
 };
 
 if (process.env.WEBPACK_DLLS === '1' && validDLLs) {

@@ -19,7 +19,7 @@ const serverConfigDev = require('../webpack/dev.server');
 const clientConfigProd = require('../webpack/prod.client');
 const serverConfigProd = require('../webpack/prod.server');
 
-// const { publicPath } = clientConfigProd.output;
+const { publicPath } = clientConfigProd.output;
 const outputPath = clientConfigProd.output.path;
 
 process.on('unhandledRejection', (error, promise) => {
@@ -65,7 +65,7 @@ const normalizePort = val => {
   return false;
 };
 
-const port = normalizePort(__DEVELOPMENT__ ? Number(config.port) + 1 || 3001 : config.port);
+const port = normalizePort(__DEVELOPMENT__ ? Number(config.port) + 1 : config.port);
 
 const serverOptions = {
   contentBase: `http://${config.host}:${port}`,
@@ -90,8 +90,6 @@ app.use(cookieParser());
 app.use(compression());
 app.use(favicon(path.join(__dirname, '..', 'build', 'static', 'favicon.ico')));
 
-app.use(express.static(outputPath));
-
 // #########################################################################
 
 let isBuilt = false;
@@ -102,7 +100,7 @@ server.on('error', err => {
     console.error('>>>>>>>> BIN > START > ERROR > Address in use, retrying...');
     setTimeout(() => {
       server.close();
-      server.listen(config.port, config.host);
+      server.listen(port, config.host);
     }, 1000);
   }
 });
@@ -133,7 +131,7 @@ const done = () => !isBuilt
       console.error('>>>>>>>> BIN > START > ERROR:', err);
     }
     console.info('>>>>>>>> BIN > START > Express server Running on Host:', config.host);
-    console.info('>>>>>>>> BIN > START > Express server Running on Port:', config.port);
+    console.info('>>>>>>>> BIN > START > Express server Running on Port:', port);
   });
 
 if (config.port) {
@@ -147,6 +145,9 @@ if (config.port) {
     // If you don’t pass the webpack runner function a callback, it will return a webpack Compiler instance.
     // This instance can be used to manually trigger the webpack runner
     // return a webpack Compiler instance
+
+    // convenient option ---------------------------------------------
+    // https://github.com/60frames/webpack-hot-server-middleware
 
     const compiler = webpack([clientConfigDev, serverConfigDev]);
 
@@ -183,6 +184,8 @@ if (config.port) {
       const render = require('../build/static/dist/server/server.js').default;
 
       // console.log('>>>>>>>> BIN > START > WEBPACK COMPILE > render: ', render);
+
+      app.use(publicPath, express.static(outputPath));
 
       app.use(render({ clientStats }));
 

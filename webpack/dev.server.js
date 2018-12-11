@@ -26,7 +26,7 @@ module.exports = {
 
   name: 'server',
   target: 'node',
-  mode: 'production',
+  mode: 'development',
 
   entry: {
     server: [
@@ -169,9 +169,9 @@ module.exports = {
 
   plugins: [
     // https://webpack.js.org/plugins/module-concatenation-plugin/
-    new webpack.optimize.ModuleConcatenationPlugin(),
+    // new webpack.optimize.ModuleConcatenationPlugin(),
     // https://webpack.js.org/plugins/internal-plugins/#occurrenceorderplugin
-    new webpack.optimize.OccurrenceOrderPlugin(),
+    // new webpack.optimize.OccurrenceOrderPlugin(),
     // https://webpack.js.org/plugins/limit-chunk-count-plugin/
     // After compiling some chunks are too small - creating larger HTTP overhead
     // post-process chunks by merging them
@@ -179,12 +179,12 @@ module.exports = {
       maxChunks: 1
     }),
     new webpack.DefinePlugin({
-      'process.env': { NODE_ENV: JSON.stringify('production') },
+      'process.env': { NODE_ENV: JSON.stringify('development') },
       __CLIENT__: false,
       __SERVER__: true,
-      __DEVELOPMENT__: false,
-      __DEVTOOLS__: false,
-      __DLLS__: false
+      __DEVELOPMENT__: true,
+      // __DEVTOOLS__: false,
+      // __DLLS__: false
     }),
   ]
 };
