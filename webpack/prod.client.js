@@ -20,7 +20,7 @@ module.exports = {
 
   name: 'client',
   target: 'web',
-  mode: 'production'
+  mode: 'production',
 
   entry: {
     main: [
@@ -109,7 +109,7 @@ module.exports = {
           },
           {
             loader: 'postcss-loader',
-            options: {\
+            options: {
               config: {
                 path: 'postcss.config.js'
               }
