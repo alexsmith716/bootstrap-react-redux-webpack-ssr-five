@@ -19,7 +19,6 @@ const serverConfigDev = require('../webpack/dev.server');
 const clientConfigProd = require('../webpack/prod.client');
 const serverConfigProd = require('../webpack/prod.server');
 
-const { publicPath } = clientConfigProd.output;
 const outputPath = clientConfigProd.output.path;
 
 process.on('unhandledRejection', (error, promise) => {
@@ -35,19 +34,6 @@ const mongooseOptions = {
   connectTimeoutMS: 30000,
   useNewUrlParser: true
 };
-
-// mongoose.Promise = global.Promise;
-// mongoose.connect(
-//   dbURL,
-//   mongooseOptions,
-//   err => {
-//     if (err) {
-//       console.error('>>>>>>>> BIN > START > Please make sure Mongodb is installed and running!');
-//     } else {
-//       console.error('>>>>>>>> BIN > START > Mongodb is installed and running!');
-//     }
-//   }
-// );
 
 const app = express();
 const server = http.createServer(app);
@@ -185,7 +171,7 @@ if (config.port) {
 
       // console.log('>>>>>>>> BIN > START > WEBPACK COMPILE > render: ', render);
 
-      app.use(publicPath, express.static(outputPath));
+      app.use(express.static(outputPath));
 
       app.use(render({ clientStats }));
 
