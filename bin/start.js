@@ -9,8 +9,8 @@ const http = require('http');
 const favicon = require('serve-favicon');
 const mongoose = require('mongoose');
 const webpack = require('webpack');
-const webpackDevMiddleware = require('webpack-dev-middleware');
-const webpackHotMiddleware = require('webpack-hot-middleware');
+// const webpackDevMiddleware = require('webpack-dev-middleware');
+// const webpackHotMiddleware = require('webpack-hot-middleware');
 const config = require('../config/config');
 
 const clientConfigDev = require('../webpack/dev.client');
@@ -19,7 +19,10 @@ const serverConfigDev = require('../webpack/dev.server');
 const clientConfigProd = require('../webpack/prod.client');
 const serverConfigProd = require('../webpack/prod.server');
 
-const outputPath = clientConfigProd.output.path;
+// const { publicPath } = clientConfigDev.output
+const outputPath = clientConfigDev.output.path;
+
+console.log('>>>>>>>> BIN > START > STATS COMPILER COMPLETED BUILD !! outputPath: ', outputPath);
 
 process.on('unhandledRejection', (error, promise) => {
   console.error('>>>>>>>> BIN > START > process > unhandledRejection > error:', error);
@@ -53,16 +56,16 @@ const normalizePort = val => {
 
 const port = normalizePort(__DEVELOPMENT__ ? Number(config.port) + 1 : config.port);
 
-const serverOptions = {
-  contentBase: `http://${config.host}:${port}`,
-  quiet: true,
-  noInfo: true,
-  hot: true,
-  inline: true,
-  lazy: false,
-  publicPath: clientConfigDev.output.publicPath,
-  headers: { 'Access-Control-Allow-Origin': '*' }
-};
+// const serverOptions = {
+//   contentBase: 'http://localhost:3001/dist/client/',
+//   quiet: true,
+//   noInfo: true,
+//   hot: true,
+//   inline: true,
+//   lazy: false,
+//   publicPath: 'http://localhost:3001/dist/client/',
+//   headers: { 'Access-Control-Allow-Origin': '*' }
+// };
 
 // app.set('port', port);
 app.use(morgan('dev'));
@@ -110,9 +113,9 @@ server.on('listening', () => {
 });
 
 const done = () => !isBuilt
-  && server.listen(port, err => {
+  && server.listen('3000', err => {
     isBuilt = true;
-    console.log('>>>>>>>> BIN > START > STATS COMPILER COMPLETED BUILD !!');
+    console.log('>>>>>>>> BIN > START > STATS COMPILER COMPLETED BUILD !! __DEVELOPMENT__: ', __DEVELOPMENT__);
     if (err) {
       console.error('>>>>>>>> BIN > START > ERROR:', err);
     }
@@ -124,36 +127,35 @@ if (config.port) {
   console.log('>>>>>>>> BIN > START > __DEVELOPMENT__ ?: ', __DEVELOPMENT__);
   console.log('>>>>>>>> BIN > START > STATS COMPILER ATTEMPTING BUILD !! ...');
 
-  // https://webpack.js.org/api/node/
+  app.use(express.static(outputPath));
 
   if (__DEVELOPMENT__) {
-    // https://webpack.js.org/api/node/#compiler-instance
-    // If you don’t pass the webpack runner function a callback, it will return a webpack Compiler instance.
-    // This instance can be used to manually trigger the webpack runner
-    // return a webpack Compiler instance
+    // // https://webpack.js.org/api/node/#compiler-instance
+    // // If you don’t pass the webpack runner function a callback, it will return a webpack Compiler instance.
+    // // This instance can be used to manually trigger the webpack runner
+    // // return a webpack Compiler instance
 
-    // convenient option ---------------------------------------------
-    // https://github.com/60frames/webpack-hot-server-middleware
+    // // convenient option ---------------------------------------------
+    // // https://github.com/60frames/webpack-hot-server-middleware
 
-    const compiler = webpack([clientConfigDev, serverConfigDev]);
+    // const compiler = webpack([clientConfigDev, serverConfigDev]);
 
-    const clientCompiler = compiler.compilers[0];
-    // const serverCompiler = compiler.compilers[1];
+    // const clientCompiler = compiler.compilers[0];
+    // // const serverCompiler = compiler.compilers[1];
 
-    const devMiddleware = webpackDevMiddleware(compiler, serverOptions);
+    // const devMiddleware = webpackDevMiddleware(compiler, serverOptions);
 
-    app.use(devMiddleware);
+    // app.use(devMiddleware);
 
-    app.use(webpackHotMiddleware(clientCompiler));
+    // app.use(webpackHotMiddleware(clientCompiler));
 
-    // execute a callback function when the compiler bundle is valid, typically after compilation
-    devMiddleware.waitUntilValid(done);
-  } else {
-    webpack([clientConfigProd, serverConfigProd]).run((err, stats) => {
+    // // execute a callback function when the compiler bundle is valid, typically after compilation
+    // devMiddleware.waitUntilValid(done);
+    webpack([clientConfigDev, serverConfigDev]).run((err, stats) => {
       if (err) {
-        console.error('>>>>>>>> BIN > START > WEBPACK COMPILE > err: ', err.stack || err);
+        console.error('>>>>>>>> BIN > START > WEBPACK COMPILE > DEV > err: ', err.stack || err);
         if (err.details) {
-          console.error('>>>>>>>> BIN > START > WEBPACK COMPILE > err.details: ', err.details);
+          console.error('>>>>>>>> BIN > START > WEBPACK COMPILE > DEV > err.details: ', err.details);
         }
         return;
       }
@@ -161,17 +163,46 @@ if (config.port) {
       const clientStats = stats.toJson().children[0];
 
       if (stats.hasErrors()) {
-        console.error('>>>>>>>> BIN > START > WEBPACK COMPILE > stats.hasErrors: ', clientStats.errors);
+        console.error('>>>>>>>> BIN > START > WEBPACK COMPILE > DEV > stats.hasErrors: ', clientStats.errors);
       }
       if (stats.hasWarnings()) {
-        console.warn('>>>>>>>> BIN > START > WEBPACK COMPILE > stats.hasWarnings: ', clientStats.warnings);
+        console.warn('>>>>>>>> BIN > START > WEBPACK COMPILE > DEV > stats.hasWarnings: ', clientStats.warnings);
       }
 
+      // Done processing ---------------------------------------------------------------------
+      const render = require('../build/static/dist/server/server.js').default;
+
+      app.use(render({ clientStats }));
+
+      done();
+    });
+  } else {
+    // webpack provides a Node.js API which can be used directly in Node.js runtime
+    // the Node.js API is useful in scenarios in which you need to customize the build or development process
+    // all the reporting and error handling must be done manually and webpack only does the compiling part
+    // For this reason the stats configuration options will not have any effect (no stats about module builds)
+    webpack([clientConfigProd, serverConfigProd]).run((err, stats) => {
+      if (err) {
+        console.error('>>>>>>>> BIN > START > WEBPACK COMPILE > PROD > err: ', err.stack || err);
+        if (err.details) {
+          console.error('>>>>>>>> BIN > START > WEBPACK COMPILE > PROD > err.details: ', err.details);
+        }
+        return;
+      }
+
+      const clientStats = stats.toJson().children[0];
+
+      if (stats.hasErrors()) {
+        console.error('>>>>>>>> BIN > START > WEBPACK COMPILE > PROD > stats.hasErrors: ', clientStats.errors);
+      }
+      if (stats.hasWarnings()) {
+        console.warn('>>>>>>>> BIN > START > WEBPACK COMPILE > PROD > stats.hasWarnings: ', clientStats.warnings);
+      }
+
+      // Done processing ---------------------------------------------------------------------
       const render = require('../build/static/dist/server/server.js').default;
 
       // console.log('>>>>>>>> BIN > START > WEBPACK COMPILE > render: ', render);
-
-      app.use(express.static(outputPath));
 
       app.use(render({ clientStats }));
 

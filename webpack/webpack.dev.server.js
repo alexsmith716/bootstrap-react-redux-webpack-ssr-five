@@ -2,8 +2,7 @@ const express = require('express');
 const webpack = require('webpack');
 
 const config = require('../config/config');
-// const webpackConfig = require('./webpack.config.client.development.babel.js');
-const webpackConfig = require('./webpack.config.client.development.babel.js');
+const webpackConfig = require('./dev.client.js');
 
 webpackConfig.mode = 'development';
 
@@ -13,7 +12,8 @@ const host = config.host || 'localhost';
 const port = Number(config.port) + 1 || 3001;
 
 const serverOptions = {
-  contentBase: `http://${host}:${port}`,
+  // contentBase: `http://${host}:${port}`,
+  contentBase: 'http://localhost:3001',
   quiet: true,
   noInfo: true,
   hot: true,
@@ -31,8 +31,7 @@ const app = express();
 app.use(require('webpack-dev-middleware')(compiler, serverOptions));
 app.use(require('webpack-hot-middleware')(compiler));
 
-// app.listen(port, function onAppListening(err) {
-app.listen(port, function (err) {
+app.listen('3001', function (err) {
   if (err) {
     console.error('>>>>>> webpack.dev.server > Express DEV server connection Error', err);
   } else {

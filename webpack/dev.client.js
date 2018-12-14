@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const dllHelpers = require('./dllreferenceplugin');
 const config = require('../config/config');
 
+// const WriteFilePlugin = require('write-file-webpack-plugin');
 const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
@@ -22,7 +23,7 @@ let configuration = {
   target: 'web',
   mode: 'development',
   devtool: 'source-map',
-  // devtool: 'inline-source-map', // https://webpack.js.org/guides/development/#source-maps
+  // devtool: 'inline-source-map',
 
   entry: {
     main: [
@@ -37,7 +38,7 @@ let configuration = {
     filename: '[name].[hash].js',
     chunkFilename: '[name].[chunkhash].chunk.js',
     path: path.resolve(__dirname, '../build/static/dist/client'),
-    publicPath: `http://${host}:${port}/dist/`
+    publicPath: '/'
   },
 
   module: {
@@ -175,6 +176,7 @@ let configuration = {
 
   plugins: [
 
+    // new WriteFilePlugin(),
     new webpack.HotModuleReplacementPlugin(),
 
     new ExtractCssChunks({

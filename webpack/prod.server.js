@@ -186,5 +186,6 @@ module.exports = {
       __DEVTOOLS__: false,
       __DLLS__: false
     }),
+    new webpack.HashedModuleIdsPlugin()
   ]
 };
