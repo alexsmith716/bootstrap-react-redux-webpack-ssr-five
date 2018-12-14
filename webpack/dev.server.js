@@ -7,16 +7,16 @@ const rootPath = path.resolve(__dirname, '..');
 
 // ==============================================================================================
 
-const babelrc = fs.readFileSync('./.babelrc', 'utf8');
-let prodconfig = {};
-
-try {
-  prodconfig = JSON.parse(babelrc);
-  console.error('>>>>>>>>> webpack prod.server > SUCCESS: parsing .babelrc !!typeof: ', typeof prodconfig)
-  console.error('>>>>>>>>> webpack prod.server > SUCCESS: parsing .babelrc !!: ', prodconfig)
-} catch (err) {
-  console.error('>>>>>>>>> webpack prod.server > ERROR: parsing .babelrc: ', err)
-}
+// const babelrc = fs.readFileSync('./.babelrc', 'utf8');
+// let prodconfig = {};
+// 
+// try {
+//   prodconfig = JSON.parse(babelrc);
+//   console.error('>>>>>>>>> webpack prod.server > SUCCESS: parsing .babelrc !!typeof: ', typeof prodconfig)
+//   console.error('>>>>>>>>> webpack prod.server > SUCCESS: parsing .babelrc !!: ', prodconfig)
+// } catch (err) {
+//   console.error('>>>>>>>>> webpack prod.server > ERROR: parsing .babelrc: ', err)
+// }
 
 // ==============================================================================================
 

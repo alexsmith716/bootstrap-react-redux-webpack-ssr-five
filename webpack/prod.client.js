@@ -286,6 +286,9 @@ module.exports = {
       cssModules: true
     }),
 
+    new webpack.optimize.ModuleConcatenationPlugin(),
+    new webpack.optimize.OccurrenceOrderPlugin(),
+
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: JSON.stringify('production') },
       __CLIENT__: true,
@@ -347,6 +350,7 @@ module.exports = {
       Tab: "exports-loader?Tab!bootstrap/js/dist/tab",
       Tooltip: "exports-loader?Tooltip!bootstrap/js/dist/tooltip",
       Util: "exports-loader?Util!bootstrap/js/dist/util",
-    })
+    }),
+    new webpack.HashedModuleIdsPlugin()
   ]
 };
