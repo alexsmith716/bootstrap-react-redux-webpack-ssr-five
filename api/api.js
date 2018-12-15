@@ -152,7 +152,7 @@ server.on('listening', () => {
 });
 
 if (apiConfig.apiPort) {
-  server.listen('3030', err => {
+  server.listen(apiConfig.apiPort, err => {
     if (err) {
       console.error('>>>>>>>>>>>>>>>>> API > API > ERROR:', err);
     }

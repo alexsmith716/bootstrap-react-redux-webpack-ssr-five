@@ -14,7 +14,7 @@ const webpack = require('webpack');
 const config = require('../config/config');
 
 const clientConfigDev = require('../webpack/dev.client');
-const serverConfigDev = require('../webpack/dev.server');
+// const serverConfigDev = require('../webpack/dev.server');
 
 const clientConfigProd = require('../webpack/prod.client');
 const serverConfigProd = require('../webpack/prod.server');
@@ -54,7 +54,7 @@ const normalizePort = val => {
   return false;
 };
 
-const port = normalizePort(__DEVELOPMENT__ ? Number(config.port) + 1 : config.port);
+const port = normalizePort(config.port);
 
 // const serverOptions = {
 //   contentBase: 'http://localhost:3001/dist/client/',
@@ -113,7 +113,7 @@ server.on('listening', () => {
 });
 
 const done = () => !isBuilt
-  && server.listen('3000', err => {
+  && server.listen(port, err => {
     isBuilt = true;
     console.log('>>>>>>>> BIN > START > STATS COMPILER COMPLETED BUILD !! __DEVELOPMENT__: ', __DEVELOPMENT__);
     if (err) {
@@ -151,11 +151,12 @@ if (config.port) {
 
     // // execute a callback function when the compiler bundle is valid, typically after compilation
     // devMiddleware.waitUntilValid(done);
-    webpack([clientConfigDev, serverConfigDev]).run((err, stats) => {
+
+    webpack([clientConfigProd, serverConfigProd]).run((err, stats) => {
       if (err) {
-        console.error('>>>>>>>> BIN > START > WEBPACK COMPILE > DEV > err: ', err.stack || err);
+        console.error('>>>>>>>> BIN > START > WEBPACK COMPILE > PROD > err: ', err.stack || err);
         if (err.details) {
-          console.error('>>>>>>>> BIN > START > WEBPACK COMPILE > DEV > err.details: ', err.details);
+          console.error('>>>>>>>> BIN > START > WEBPACK COMPILE > PROD > err.details: ', err.details);
         }
         return;
       }
@@ -163,14 +164,16 @@ if (config.port) {
       const clientStats = stats.toJson().children[0];
 
       if (stats.hasErrors()) {
-        console.error('>>>>>>>> BIN > START > WEBPACK COMPILE > DEV > stats.hasErrors: ', clientStats.errors);
+        console.error('>>>>>>>> BIN > START > WEBPACK COMPILE > PROD > stats.hasErrors: ', clientStats.errors);
       }
       if (stats.hasWarnings()) {
-        console.warn('>>>>>>>> BIN > START > WEBPACK COMPILE > DEV > stats.hasWarnings: ', clientStats.warnings);
+        console.warn('>>>>>>>> BIN > START > WEBPACK COMPILE > PROD > stats.hasWarnings: ', clientStats.warnings);
       }
 
       // Done processing ---------------------------------------------------------------------
       const render = require('../build/static/dist/server/server.js').default;
+
+      // console.log('>>>>>>>> BIN > START > WEBPACK COMPILE > render: ', render);
 
       app.use(render({ clientStats }));
 
