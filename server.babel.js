@@ -8,16 +8,16 @@ let config = {};
 
 try {
   config = JSON.parse(babelrc);
-  if (Array.isArray(config.plugins)) {
-  	const ioui = config.plugins.indexOf('universal-import');
-    if (ioui) {
-      config.plugins.splice(ioui,1);
-    }
-  }
-  console.error('>>>>>>>>>>>>>>>>>>> api.babel > SUCCESS: parsing .babelrc !!typeof: ', typeof config);
-  console.error('>>>>>>>>>>>>>>>>>>> api.babel > SUCCESS: parsing .babelrc !!: ', config);
+  // if (Array.isArray(config.plugins)) {
+  // 	const ioui = config.plugins.indexOf('universal-import');
+  //   if (ioui) {
+  //     config.plugins.splice(ioui,1);
+  //   }
+  // }
+  console.error('>>>>>>>>>>>>>>>>>>> server.babel > SUCCESS: parsing .babelrc !!typeof: ', typeof config);
+  console.error('>>>>>>>>>>>>>>>>>>> server.babel > SUCCESS: parsing .babelrc !!: ', config);
 } catch (err) {
-  console.error('>>>>>>>>>>>>>>>>>>> api.babel > Error parsing .babelrc: ', err);
+  console.error('>>>>>>>>>>>>>>>>>>> server.babel > Error parsing .babelrc: ', err);
 }
 
 require('@babel/register')(config);

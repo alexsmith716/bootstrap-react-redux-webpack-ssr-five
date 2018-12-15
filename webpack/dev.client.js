@@ -1,3 +1,6 @@
+// require('@babel/polyfill');
+
+const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const dllHelpers = require('./dllreferenceplugin');
@@ -8,10 +11,34 @@ const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 const rootPath = path.resolve(__dirname, '..');
-const assetsPath = path.resolve(rootPath, './build/static/dist/client');
+const assetsPath = path.resolve(__dirname, '../build/static/dist/client');
 
 const host = process.env.HOST || 'localhost';
 const port = +process.env.PORT + 1 || 3001;
+
+const babelrc = fs.readFileSync('./.babelrc', 'utf8');
+let babelrcObject = {};
+
+
+try {
+  babelrcObject = JSON.parse(babelrc);
+  // if (Array.isArray(config.plugins)) {
+  //  const ioui = config.plugins.indexOf('universal-import');
+  //   if (ioui) {
+  //     config.plugins.splice(ioui,1);
+  //   }
+  // }
+  console.error('>>>>>>>>>>>>>>>>>>> dev.client > SUCCESS: parsing .babelrc !!typeof: ', typeof babelrcObject);
+  console.error('>>>>>>>>>>>>>>>>>>> dev.client > SUCCESS: parsing .babelrc !!: ', babelrcObject);
+} catch (err) {
+  console.error('>>>>>>>>>>>>>>>>>>> dev.client > Error parsing .babelrc: ', err);
+}
+
+const babelrcObjectDevelopment = (babelrcObject.env && babelrcObject.env.development) || {};
+const combinedPlugins = (babelrcObject.plugins || []).concat(babelrcObjectDevelopment.plugins);
+
+const babelLoaderQuery = Object.assign({}, babelrcObject, babelrcObjectDevelopment, { plugins: combinedPlugins });
+delete babelLoaderQuery.env;
 
 // ==============================================================================================
 
@@ -37,7 +64,8 @@ let configuration = {
   output: {
     filename: '[name].[hash].js',
     chunkFilename: '[name].[chunkhash].chunk.js',
-    path: path.resolve(__dirname, '../build/static/dist/client'),
+    path: assetsPath,
+    // publicPath: `http://${host}:${port}/`
     publicPath: '/'
   },
 
@@ -46,7 +74,8 @@ let configuration = {
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
-        exclude: /node_modules(\/|\\)(?!(@feathersjs))/
+        exclude: /node_modules(\/|\\)(?!(@feathersjs))/,
+        options: babelLoaderQuery
       },
       {
         test: /\.(scss)$/,
@@ -236,7 +265,7 @@ let configuration = {
 
 // ==============================================================================================
 
-var validDLLs = dllHelpers.isValidDLLs('vendor', configuration.output.path);
+var validDLLs = dllHelpers.isValidDLLs('vendor', assetsPath);
 
 if (process.env.WEBPACK_DLLS === '1' && !validDLLs) {
   process.env.WEBPACK_DLLS = '0';
