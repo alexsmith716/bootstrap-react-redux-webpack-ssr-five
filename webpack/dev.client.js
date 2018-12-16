@@ -1,4 +1,4 @@
-// require('@babel/polyfill');
+require('@babel/polyfill');
 
 const fs = require('fs');
 const path = require('path');
@@ -49,12 +49,12 @@ let configuration = {
   name: 'client',
   target: 'web',
   mode: 'development',
-  devtool: 'source-map',
+  // devtool: 'source-map',
   // devtool: 'inline-source-map',
 
   entry: {
     main: [
-      'webpack-hot-middleware/client?path=http://localhost:3001/__webpack_hmr',
+      `webpack-hot-middleware/client?path=http://${host}:${port}/__webpack_hmr`,
       './client/assets/scss/bootstrap/bootstrap.global.scss',
       'bootstrap',
       './client/index.js'
@@ -75,7 +75,7 @@ let configuration = {
         test: /\.jsx?$/,
         loader: 'babel-loader',
         exclude: /node_modules(\/|\\)(?!(@feathersjs))/,
-        options: babelLoaderQuery
+        // options: babelLoaderQuery
       },
       {
         test: /\.(scss)$/,
@@ -97,13 +97,13 @@ let configuration = {
                 }
               },
               importLoaders: 2,
-              sourceMap: true,
+              //sourceMap: true,
             }
           },
           {
             loader: 'postcss-loader',
             options: {
-              sourceMap: true,
+              //sourceMap: true,
               config: {
                 path: 'postcss.config.js'
               }
@@ -116,8 +116,8 @@ let configuration = {
             loader: 'sass-loader',
             options: {
               outputStyle: 'expanded',
-              sourceMap: true,
-              sourceMapContents: true,
+              //sourceMap: true,
+              //sourceMapContents: true,
             }
           },
           {
@@ -142,13 +142,13 @@ let configuration = {
               modules: true,
               localIdentName: '[name]__[local]',
               importLoaders: 1,
-              sourceMap: true
+              //sourceMap: true
             }
           },
           {
             loader: 'postcss-loader',
             options: {
-              sourceMap: true,
+              //sourceMap: true,
               config: {
                 path: 'postcss.config.js'
               }

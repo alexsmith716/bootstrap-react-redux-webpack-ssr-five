@@ -14,7 +14,7 @@ const webpack = require('webpack');
 const config = require('../config/config');
 
 const clientConfigDev = require('../webpack/dev.client');
-// const serverConfigDev = require('../webpack/dev.server');
+const serverConfigDev = require('../webpack/dev.server');
 
 const clientConfigProd = require('../webpack/prod.client');
 const serverConfigProd = require('../webpack/prod.server');
@@ -130,29 +130,7 @@ if (config.port) {
   app.use(express.static(outputPath));
 
   if (__DEVELOPMENT__) {
-    // // https://webpack.js.org/api/node/#compiler-instance
-    // // If you don’t pass the webpack runner function a callback, it will return a webpack Compiler instance.
-    // // This instance can be used to manually trigger the webpack runner
-    // // return a webpack Compiler instance
-
-    // // convenient option ---------------------------------------------
-    // // https://github.com/60frames/webpack-hot-server-middleware
-
-    // const compiler = webpack([clientConfigDev, serverConfigDev]);
-
-    // const clientCompiler = compiler.compilers[0];
-    // // const serverCompiler = compiler.compilers[1];
-
-    // const devMiddleware = webpackDevMiddleware(compiler, serverOptions);
-
-    // app.use(devMiddleware);
-
-    // app.use(webpackHotMiddleware(clientCompiler));
-
-    // // execute a callback function when the compiler bundle is valid, typically after compilation
-    // devMiddleware.waitUntilValid(done);
-
-    webpack([clientConfigProd, serverConfigProd]).run((err, stats) => {
+    webpack([clientConfigDev, serverConfigDev]).run((err, stats) => {
       if (err) {
         console.error('>>>>>>>> BIN > START > WEBPACK COMPILE > PROD > err: ', err.stack || err);
         if (err.details) {
@@ -172,8 +150,6 @@ if (config.port) {
 
       // Done processing ---------------------------------------------------------------------
       const render = require('../build/static/dist/server/server.js').default;
-
-      // console.log('>>>>>>>> BIN > START > WEBPACK COMPILE > render: ', render);
 
       app.use(render({ clientStats }));
 
@@ -204,8 +180,6 @@ if (config.port) {
 
       // Done processing ---------------------------------------------------------------------
       const render = require('../build/static/dist/server/server.js').default;
-
-      // console.log('>>>>>>>> BIN > START > WEBPACK COMPILE > render: ', render);
 
       app.use(render({ clientStats }));
 
