@@ -11,17 +11,6 @@ const compiler = webpack(webpackConfig);
 const host = config.host || 'localhost';
 const port = Number(config.port) + 1 || 3001;
 
-// const serverOptions = {
-//   contentBase: `http://${host}:${port}`,
-//   quiet: true,
-//   noInfo: true,
-//   hot: true,
-//   inline: true,
-//   lazy: false,
-//   publicPath: webpackConfig.output.publicPath,
-//   headers: { 'Access-Control-Allow-Origin': '*' }
-// };
-
 const serverOptions = {
   contentBase: `http://${host}:${port}`,
   quiet: true,
