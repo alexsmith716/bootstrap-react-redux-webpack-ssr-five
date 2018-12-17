@@ -9,8 +9,9 @@ const http = require('http');
 const favicon = require('serve-favicon');
 const mongoose = require('mongoose');
 const webpack = require('webpack');
-// const webpackDevMiddleware = require('webpack-dev-middleware');
-// const webpackHotMiddleware = require('webpack-hot-middleware');
+const webpackDevMiddleware = require('webpack-dev-middleware');
+const webpackHotMiddleware = require('webpack-hot-middleware');
+const webpackHotServerMiddleware = require('webpack-hot-server-middleware');
 const config = require('../config/config');
 
 const clientConfigDev = require('../webpack/dev.client');
@@ -19,7 +20,7 @@ const serverConfigDev = require('../webpack/dev.server');
 const clientConfigProd = require('../webpack/prod.client');
 const serverConfigProd = require('../webpack/prod.server');
 
-// const { publicPath } = clientConfigDev.output
+const { publicPath } = clientConfigDev.output;
 const outputPath = clientConfigDev.output.path;
 
 console.log('>>>>>>>> BIN > START > STATS COMPILER COMPLETED BUILD !! outputPath: ', outputPath);
@@ -54,18 +55,22 @@ const normalizePort = val => {
   return false;
 };
 
-const port = normalizePort(config.port);
+const host = config.host || 'localhost';
+const portNum = Number(config.port);
+// const port = normalizePort( __DEVELOPMENT__ ? portNum + 1 : portNum);
+const port = normalizePort(__DEVELOPMENT__ ? portNum : portNum);
 
-// const serverOptions = {
-//   contentBase: 'http://localhost:3001/dist/client/',
-//   quiet: true,
-//   noInfo: true,
-//   hot: true,
-//   inline: true,
-//   lazy: false,
-//   publicPath: 'http://localhost:3001/dist/client/',
-//   headers: { 'Access-Control-Allow-Origin': '*' }
-// };
+const serverOptions = {
+  contentBase: `http://${host}:${port}`,
+  quiet: true,
+  noInfo: true,
+  hot: true,
+  inline: true,
+  lazy: false,
+  stats: { colors: true },
+  publicPath,
+  headers: { 'Access-Control-Allow-Origin': '*' }
+};
 
 // app.set('port', port);
 app.use(morgan('dev'));
@@ -130,31 +135,15 @@ if (config.port) {
   app.use(express.static(outputPath));
 
   if (__DEVELOPMENT__) {
-    webpack([clientConfigDev, serverConfigDev]).run((err, stats) => {
-      if (err) {
-        console.error('>>>>>>>> BIN > START > WEBPACK COMPILE > PROD > err: ', err.stack || err);
-        if (err.details) {
-          console.error('>>>>>>>> BIN > START > WEBPACK COMPILE > PROD > err.details: ', err.details);
-        }
-        return;
-      }
+    const compiler = webpack([clientConfigDev, serverConfigDev]);
+    const clientCompiler = compiler.compilers[0];
+    // const serverOptions = { publicPath, stats: { colors: true } };
+    const devMiddleware = webpackDevMiddleware(compiler, serverOptions);
 
-      const clientStats = stats.toJson().children[0];
-
-      if (stats.hasErrors()) {
-        console.error('>>>>>>>> BIN > START > WEBPACK COMPILE > PROD > stats.hasErrors: ', clientStats.errors);
-      }
-      if (stats.hasWarnings()) {
-        console.warn('>>>>>>>> BIN > START > WEBPACK COMPILE > PROD > stats.hasWarnings: ', clientStats.warnings);
-      }
-
-      // Done processing ---------------------------------------------------------------------
-      const render = require('../build/static/dist/server/server.js').default;
-
-      app.use(render({ clientStats }));
-
-      done();
-    });
+    app.use(devMiddleware);
+    app.use(webpackHotMiddleware(clientCompiler));
+    app.use(webpackHotServerMiddleware(compiler));
+    devMiddleware.waitUntilValid(done);
   } else {
     // webpack provides a Node.js API which can be used directly in Node.js runtime
     // the Node.js API is useful in scenarios in which you need to customize the build or development process
@@ -180,6 +169,8 @@ if (config.port) {
 
       // Done processing ---------------------------------------------------------------------
       const render = require('../build/static/dist/server/server.js').default;
+
+      // app.use(express.static(outputPath));
 
       app.use(render({ clientStats }));
 

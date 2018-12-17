@@ -19,6 +19,7 @@ const rootPath = path.resolve(__dirname, '..');
 // }
 
 // ==============================================================================================
+// https://github.com/facebook/regenerator/tree/master/packages/regenerator-runtime
 
 module.exports = {
 
@@ -29,7 +30,7 @@ module.exports = {
   mode: 'development',
 
   entry: {
-    server: [
+    main: [
       './server/server.js'
     ]
   },
@@ -49,7 +50,7 @@ module.exports = {
       },
       {
         test: /\.(scss)$/,
-        exclude: /node_modules/,
+        // exclude: /node_modules/,
         use: [
           {
             loader: 'css-loader',

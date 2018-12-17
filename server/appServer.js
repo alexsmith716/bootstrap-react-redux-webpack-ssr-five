@@ -1,8 +1,6 @@
 import feathers from '@feathersjs/feathers';
 const rest = require('@feathersjs/rest-client');
-const socketio = require('@feathersjs/socketio-client');
 const auth = require('@feathersjs/authentication-client');
-import io from 'socket.io-client';
 import axios from 'axios';
 import config from '../config/config';
 
@@ -51,11 +49,6 @@ const configureApp = transport =>
 
 // ===================================================================================
 
-// return instance of 'socket' if client '{ socket, createApp }'
-export const socket = io('', { path: host('http://localhost:3030/ws'), autoConnect: false });
-
-// ===================================================================================
-
 export function createApp(req) {
 
   console.log('################ APP.JS > SERVER 2 ???????: ', __SERVER__);
@@ -65,24 +58,17 @@ export function createApp(req) {
     return configureApp( rest(host('http://localhost:3030/api')).axios(axios) );
   }
 
-  // -------- SERVER ----------------------------------------------
-  if (__SERVER__ && req) {
-    console.log('################ APP.JS > 22222222222222222222');
-    console.log('################ APP.JS > storage 2 ???????: ', storage);
-    const app = configureApp( rest(host('http://localhost:3030/api')).axios(axios.create({
-      headers: {
-        Cookie: req.get('cookie'),
-        authorization: req.header('authorization') || ''
-      }
-    })) );
+  console.log('################ APP.JS > 22222222222222222222');
+  console.log('################ APP.JS > storage 2 ???????: ', storage);
+  const app = configureApp( rest(host('http://localhost:3030/api')).axios(axios.create({
+    headers: {
+      Cookie: req.get('cookie'),
+      authorization: req.header('authorization') || ''
+    }
+  })) );
 
-    const accessToken = req.header('authorization') || (req.cookies && req.cookies['feathers-jwt']);
-    app.set('accessToken', accessToken);
+  const accessToken = req.header('authorization') || (req.cookies && req.cookies['feathers-jwt']);
+  app.set('accessToken', accessToken);
 
-    return app;
-  }
-
-  // -------- CLIENT ----------------------------------------------
-  console.log('################ APP.JS > storage 3 ???????: ', storage);
-  return configureApp( socketio(socket) );
+  return app;
 }

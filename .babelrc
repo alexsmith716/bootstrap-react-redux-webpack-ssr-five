@@ -22,12 +22,5 @@
     "@babel/plugin-proposal-throw-expressions",
     "@babel/plugin-proposal-export-default-from",
     "@babel/plugin-proposal-object-rest-spread"
-  ],
-  "env": {
-    "development": {
-      "plugins": [
-        "react-hot-loader/babel"
-      ]
-    }
-  }
+  ]
 }

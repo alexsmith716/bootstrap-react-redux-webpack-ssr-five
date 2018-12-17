@@ -4,9 +4,9 @@ const express = require('express');
 const webpack = require('webpack');
 
 const config = require('../config/config');
-const webpackConfig = require('./dev.client.js');
+const clientConfigDev = require('./dev.client.js');
 
-const compiler = webpack(webpackConfig);
+const compiler = webpack(clientConfigDev);
 
 const host = config.host || 'localhost';
 const port = Number(config.port) + 1 || 3001;
