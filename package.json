@@ -7,9 +7,10 @@
   "author": "dev",
   "license": "MIT",
   "scripts": {
+    "developmentX": "npm-run-all --parallel start:dev",
     "development": "npm-run-all --parallel watch-client start:dev",
     "start:dev": "concurrently \"yarn start:dev:server\" \"yarn start:dev:api\"",
-    "watch-client": "NODE_PATH=client NODE_ENV=development WEBPACK_DLLS=1 PORT=3000 APIPORT=3030 node webpack/webpack.dev.server.js",
+    "watch-client": "NODE_ENV=development WEBPACK_DLLS=1 PORT=3000 APIPORT=3030 node webpack/webpack.dev.serverA.js",
     "start:dev:server": "NODE_PATH=server NODE_ENV=development WEBPACK_DLLS=1 PORT=3000 APIPORT=3030 nodemon ./bin/server.js --watch ./server --watch ./build/static/dist/server --no-update-notifier",
     "start:dev:api": "NODE_PATH=api  NODE_ENV=development BABEL_DISABLE_CACHE=1 APIPORT=3030 node ./bin/api.js",
     "start:prod": "concurrently \"yarn prod:bin:server\" \"yarn prod:bin:api\"",
@@ -194,6 +195,7 @@
     "webpack-cli": "^3.1.2",
     "webpack-dev-middleware": "^3.4.0",
     "webpack-hot-middleware": "^2.24.3",
+    "webpack-hot-server-middleware": "^0.5.0",
     "webpack-pwa-manifest": "^3.7.1",
     "write-file-webpack-plugin": "^4.5.0"
   },

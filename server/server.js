@@ -28,7 +28,7 @@ import Html from '../server/utils/Html';
 import routes from '../shared/routes';
 import { parse as parseUrl } from 'url';
 
-import { createApp } from '../server/app';
+import { createApp } from '../server/appServer';
 import apiClient from '../server/utils/apiClient';
 
 // holds a global cache of all the universal components that are rendered and makes them available via flushChunkNames
@@ -50,12 +50,21 @@ export default ({ clientStats }) => async (req, res) => {
     return res.sendFile(path.join(__dirname, '..', 'build', 'static', 'manifest.json'))
   }
 
-  if (req.url == '/dist/service-worker.js') {
-    console.log('>>>>>>>>>>>>>>>>> SERVER > service-worker <<<<<<<<<<<<<<<<<<<<<<<');
-    res.setHeader('Service-Worker-Allowed', '/');
-    res.setHeader('Cache-Control', 'no-store');
-    return;
-  }
+  // if (req.url == '/dist/service-worker.js') {
+  //   console.log('>>>>>>>>>>>>>>>>> SERVER > service-worker <<<<<<<<<<<<<<<<<<<<<<<');
+  //   res.setHeader('Service-Worker-Allowed', '/');
+  //   res.setHeader('Cache-Control', 'no-store');
+  //   return;
+  // }
+
+  if (req.url == '/dlls/:dllName.js') {
+    console.log('>>>>>>>>>>>>>>>>> SERVER > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ DLLs $$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
+    return fs.access(
+      path.join(__dirname, '..', 'build', 'static', 'dist', 'client', 'dlls', `${req.params.dllName}.js`),
+      fs.constants.R_OK,
+      err => (err ? res.send(`console.log('No dll file found (${req.originalUrl})')`) : null)
+    );
+  };
 
   res.setHeader('X-Forwarded-For', req.ip);
 

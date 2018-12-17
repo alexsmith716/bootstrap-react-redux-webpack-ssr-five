@@ -14,7 +14,8 @@ const rootPath = path.resolve(__dirname, '..');
 const assetsPath = path.resolve(__dirname, '../build/static/dist/client');
 
 const host = process.env.HOST || 'localhost';
-const port = +process.env.PORT + 1 || 3001;
+const port = process.env.PORT;
+// const port = +process.env.PORT + 1 || 3001;
 
 const babelrc = fs.readFileSync('./.babelrc', 'utf8');
 let babelrcObject = {};
@@ -42,7 +43,18 @@ delete babelLoaderQuery.env;
 
 // ==============================================================================================
 
-let configuration = {
+var validDLLs = dllHelpers.isValidDLLs('vendor', assetsPath);
+
+if (process.env.WEBPACK_DLLS === '1' && !validDLLs) {
+  process.env.WEBPACK_DLLS = '0';
+  console.warn('>>>>>> webpack.config.client.development.babel > WEBPACK_DLLS disabled !! <<<<<<<<<<');
+} else {
+  console.warn('>>>>>> webpack.config.client.development.babel > WEBPACK_DLLS ENABLED !! <<<<<<<<<<');
+};
+
+// ==============================================================================================
+
+const webpackConfig = {
 
   context: path.resolve(__dirname, '..'),
 
@@ -65,8 +77,7 @@ let configuration = {
     filename: '[name].[hash].js',
     chunkFilename: '[name].[chunkhash].chunk.js',
     path: assetsPath,
-    // publicPath: `http://${host}:${port}/`
-    publicPath: '/'
+    publicPath: `http://${host}:${port}/`
   },
 
   module: {
@@ -79,7 +90,7 @@ let configuration = {
       },
       {
         test: /\.(scss)$/,
-        exclude: /node_modules/,
+        // exclude: /node_modules/,
         use: [
           ExtractCssChunks.loader,
           {
@@ -207,6 +218,7 @@ let configuration = {
 
     // new WriteFilePlugin(),
     new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
 
     new ExtractCssChunks({
       filename: '[name].[contenthash].css',
@@ -265,17 +277,10 @@ let configuration = {
 
 // ==============================================================================================
 
-var validDLLs = dllHelpers.isValidDLLs('vendor', assetsPath);
 
-if (process.env.WEBPACK_DLLS === '1' && !validDLLs) {
-  process.env.WEBPACK_DLLS = '0';
-  console.warn('>>>>>> webpack.config.client.development.babel > WEBPACK_DLLS disabled !! <<<<<<<<<<');
-} else {
-  console.warn('>>>>>> webpack.config.client.development.babel > WEBPACK_DLLS ENABLED !! <<<<<<<<<<');
-};
 
 if (process.env.WEBPACK_DLLS === '1' && validDLLs) {
-  dllHelpers.installVendorDLL(configuration, 'vendor');
+  dllHelpers.installVendorDLL(webpackConfig, 'vendor');
 };
 
-module.exports = configuration;
+module.exports = webpackConfig;
