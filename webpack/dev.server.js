@@ -4,6 +4,7 @@ const webpack = require('webpack');
 const config = require('../config/config');
 
 const rootPath = path.resolve(__dirname, '..');
+const WriteFilePlugin = require('write-file-webpack-plugin');
 
 // ==============================================================================================
 
@@ -36,7 +37,7 @@ module.exports = {
   },
 
   output: {
-    path: path.resolve('./build/static/dist/server'),
+    path: path.resolve('./build/server'),
     filename: 'server.js',
     libraryTarget: 'commonjs2'
   },
@@ -176,6 +177,7 @@ module.exports = {
     // https://webpack.js.org/plugins/limit-chunk-count-plugin/
     // After compiling some chunks are too small - creating larger HTTP overhead
     // post-process chunks by merging them
+    new WriteFilePlugin(),
     new webpack.optimize.LimitChunkCountPlugin({
       maxChunks: 1
     }),

@@ -47,7 +47,7 @@ export default ({ clientStats }) => async (req, res) => {
 
   if (req.url == '/manifest.json') {
     console.log('>>>>>>>>>>>>>>>>> SERVER > manifest.json <<<<<<<<<<<<<<<<<<<<<<<');
-    return res.sendFile(path.join(__dirname, '..', 'build', 'static', 'manifest.json'))
+    return res.sendFile(path.join(__dirname, '..', 'static', 'dist', 'manifest.json'))
   }
 
   // if (req.url == '/dist/service-worker.js') {
@@ -60,7 +60,7 @@ export default ({ clientStats }) => async (req, res) => {
   if (req.url == '/dlls/:dllName.js') {
     console.log('>>>>>>>>>>>>>>>>> SERVER > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ DLLs $$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
     return fs.access(
-      path.join(__dirname, '..', 'build', 'static', 'dist', 'client', 'dlls', `${req.params.dllName}.js`),
+      path.join(__dirname, '..', 'build', 'static', 'dist', 'dlls', `${req.params.dllName}.js`),
       fs.constants.R_OK,
       err => (err ? res.send(`console.log('No dll file found (${req.originalUrl})')`) : null)
     );
