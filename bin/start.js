@@ -168,7 +168,7 @@ if (config.port) {
       }
 
       // Done processing ---------------------------------------------------------------------
-      const render = require('../build/static/dist/server/server.js').default;
+      const render = require('../build/static/server/server.js').default;
 
       // app.use(express.static(outputPath));
 

@@ -6,12 +6,13 @@ const webpack = require('webpack');
 const dllHelpers = require('./dllreferenceplugin');
 const config = require('../config/config');
 
-// const WriteFilePlugin = require('write-file-webpack-plugin');
+const WriteFilePlugin = require('write-file-webpack-plugin');
 const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 const rootPath = path.resolve(__dirname, '..');
-const assetsPath = path.resolve(__dirname, '../build/static/dist/client');
+const assetsPath = path.resolve(__dirname, '../build/static/dist');
 
 const host = process.env.HOST || 'localhost';
 const port = process.env.PORT;
@@ -77,7 +78,7 @@ const webpackConfig = {
     filename: '[name].[hash].js',
     chunkFilename: '[name].[chunkhash].chunk.js',
     path: assetsPath,
-    publicPath: `http://${host}:${port}/`
+    publicPath: `http://${host}:${port}/dist/`
   },
 
   module: {
@@ -216,7 +217,13 @@ const webpackConfig = {
 
   plugins: [
 
-    // new WriteFilePlugin(),
+    new WriteFilePlugin(),
+    new CopyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, '../build/static/manifest.json'),
+        to: assetsPath
+      }
+    ]),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
 
@@ -239,17 +246,18 @@ const webpackConfig = {
 
     // new webpack.NamedModulesPlugin(),
 
-    // new BundleAnalyzerPlugin({
-    //   analyzerMode: 'static',
-    //   reportFilename: '../../analyzers/bundleAnalyzer/client-production.html',
-    //   // analyzerMode: 'server',
-    //   // analyzerPort: 8888,
-    //   // defaultSizes: 'parsed',
-    //   openAnalyzer: false,
-    //   generateStatsFile: false
-    // }),
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      reportFilename: '../../analyzers/bundleAnalyzer/client-development.html',
+      // analyzerMode: 'server',
+      // analyzerPort: 8888,
+      // defaultSizes: 'parsed',
+      openAnalyzer: false,
+      generateStatsFile: false
+    }),
 
     // https://webpack.js.org/plugins/provide-plugin/
+    // Use modules without having to use import/require
     // ProvidePlugin: Whenever the identifier is encountered as free variable in a module, 
     //    the module is loaded automatically and the identifier is filled with the exports of 
     //    the loaded module (of property in order to support named exports).

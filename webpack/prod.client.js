@@ -8,6 +8,7 @@ const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 // const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 const rootPath = path.resolve(__dirname, '..');
 const assetsPath = path.resolve(rootPath, './build/static/dist/client');
@@ -277,6 +278,12 @@ module.exports = {
   },
 
   plugins: [
+    new CopyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, '../build/static/manifest.json'),
+        to: assetsPath
+      }
+    ]),
     new ExtractCssChunks({
       filename: '[name].[contenthash].css',
       // chunkFilename: '[name].[contenthash].chunk.css',
@@ -329,6 +336,7 @@ module.exports = {
     // }),
 
     // https://webpack.js.org/plugins/provide-plugin/
+    // Use modules without having to use import/require
     // ProvidePlugin: Whenever the identifier is encountered as free variable in a module, 
     //    the module is loaded automatically and the identifier is filled with the exports of 
     //    the loaded module (of property in order to support named exports).
