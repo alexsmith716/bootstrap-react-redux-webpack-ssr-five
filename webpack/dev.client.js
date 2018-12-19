@@ -9,7 +9,7 @@ const config = require('../config/config');
 const WriteFilePlugin = require('write-file-webpack-plugin');
 const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-const CopyWebpackPlugin = require("copy-webpack-plugin");
+// const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const rootPath = path.resolve(__dirname, '..');
 const assetsPath = path.resolve(__dirname, '../build/static/dist');
@@ -20,7 +20,6 @@ const port = process.env.PORT;
 
 const babelrc = fs.readFileSync('./.babelrc', 'utf8');
 let babelrcObject = {};
-
 
 try {
   babelrcObject = JSON.parse(babelrc);
@@ -76,9 +75,9 @@ const webpackConfig = {
 
   output: {
     filename: '[name].[hash].js',
-    chunkFilename: '[name].[chunkhash].chunk.js',
     path: assetsPath,
-    publicPath: `http://${host}:${port}/dist/`
+    // publicPath: `http://${host}:${port}/dist/`
+    publicPath: '/dist/'
   },
 
   module: {
@@ -218,13 +217,15 @@ const webpackConfig = {
   plugins: [
 
     new WriteFilePlugin(),
-    new CopyWebpackPlugin([
-      {
-        from: path.resolve(__dirname, '../build/static/manifest.json'),
-        to: assetsPath
-      }
-    ]),
+
+    // new CopyWebpackPlugin([
+    //   {
+    //     from: path.resolve(__dirname, '../build/static/manifest.json'),
+    //     to: assetsPath
+    //   }
+    // ]),
     new webpack.HotModuleReplacementPlugin(),
+
     new webpack.NoEmitOnErrorsPlugin(),
 
     new ExtractCssChunks({
@@ -284,8 +285,6 @@ const webpackConfig = {
 };
 
 // ==============================================================================================
-
-
 
 if (process.env.WEBPACK_DLLS === '1' && validDLLs) {
   dllHelpers.installVendorDLL(webpackConfig, 'vendor');
