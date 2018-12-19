@@ -8,7 +8,6 @@ const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 // const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 const rootPath = path.resolve(__dirname, '..');
 const assetsPath = path.resolve(rootPath, './build/static/dist/client');
@@ -278,12 +277,7 @@ module.exports = {
   },
 
   plugins: [
-    new CopyWebpackPlugin([
-      {
-        from: path.resolve(__dirname, '../build/static/manifest.json'),
-        to: assetsPath
-      }
-    ]),
+
     new ExtractCssChunks({
       filename: '[name].[contenthash].css',
       // chunkFilename: '[name].[contenthash].chunk.css',

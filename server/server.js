@@ -36,6 +36,8 @@ import { flushChunkNames } from 'react-universal-component/server';
 import flushChunks from 'webpack-flush-chunks';
 import { flushFiles } from 'webpack-flush-chunks';
 
+import manifest from './manifest';
+
 const targetUrl = `http://${config.apiHost}:${config.apiPort}`;
 
 const proxy = httpProxy.createProxyServer({
@@ -45,9 +47,11 @@ const proxy = httpProxy.createProxyServer({
 
 export default ({ clientStats }) => async (req, res) => {
 
+  // progressive app manifest
+  // https://www.w3.org/TR/appmanifest/
   if (req.url == '/manifest.json') {
     console.log('>>>>>>>>>>>>>>>>> SERVER > manifest.json <<<<<<<<<<<<<<<<<<<<<<<');
-    return res.sendFile(path.join(__dirname, '..', 'static', 'dist', 'manifest.json'))
+    return res.sendFile(path.join(__dirname, '..', 'build', 'static', 'manifest.json'));
   }
 
   // if (req.url == '/dist/service-worker.js') {
@@ -58,7 +62,7 @@ export default ({ clientStats }) => async (req, res) => {
   // }
 
   if (req.url == '/dlls/:dllName.js') {
-    console.log('>>>>>>>>>>>>>>>>> SERVER > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ DLLs $$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
+    console.log('>>>>>>>>>>>>>>>>> SERVER > /dlls/:dllName.js <<<<<<<<<<<<<<<<<<<<<<<');
     return fs.access(
       path.join(__dirname, '..', 'build', 'static', 'dist', 'dlls', `${req.params.dllName}.js`),
       fs.constants.R_OK,

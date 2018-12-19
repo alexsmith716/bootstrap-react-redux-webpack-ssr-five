@@ -1,6 +1,6 @@
 {
   "short_name": "ElectionApp2018!",
-  "name": "react-redux-webpack-bootstrap-mongo-universal-webpack",
+  "name": "Bootstrap React Redux Webpack SSR five",
   "icons": [
     {
       "src": "launcher-icon-2x.png",

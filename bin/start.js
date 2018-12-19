@@ -20,7 +20,6 @@ const serverConfigDev = require('../webpack/dev.server');
 const clientConfigProd = require('../webpack/prod.client');
 const serverConfigProd = require('../webpack/prod.server');
 
-const { publicPath } = clientConfigDev.output;
 const outputPath = clientConfigDev.output.path;
 
 console.log('>>>>>>>> BIN > START > STATS COMPILER COMPLETED BUILD !! outputPath: ', outputPath);
@@ -55,20 +54,19 @@ const normalizePort = val => {
   return false;
 };
 
-const host = config.host || 'localhost';
+// const host = config.host || 'localhost';
 const portNum = Number(config.port);
 // const port = normalizePort( __DEVELOPMENT__ ? portNum + 1 : portNum);
 const port = normalizePort(__DEVELOPMENT__ ? portNum : portNum);
 
+// https://github.com/webpack/webpack.js.org/blob/master/src/content/configuration/dev-server.md
+// https://github.com/webpack/webpack-dev-middleware
+// https://webpack.js.org/configuration/stats/#stats
 const serverOptions = {
-  contentBase: `http://${host}:${port}`,
-  quiet: true,
-  noInfo: true,
-  hot: true,
-  inline: true,
   lazy: false,
-  stats: { colors: true },
-  publicPath,
+  stats: 'normal',
+  serverSideRender: true,
+  publicPath: clientConfigDev.output.publicPath,
   headers: { 'Access-Control-Allow-Origin': '*' }
 };
 
@@ -132,7 +130,7 @@ if (config.port) {
   console.log('>>>>>>>> BIN > START > __DEVELOPMENT__ ?: ', __DEVELOPMENT__);
   console.log('>>>>>>>> BIN > START > STATS COMPILER ATTEMPTING BUILD !! ...');
 
-  app.use(express.static(outputPath));
+  app.use(express.static(path.join(__dirname, '..', 'build', 'static')));
 
   if (__DEVELOPMENT__) {
     const compiler = webpack([clientConfigDev, serverConfigDev]);

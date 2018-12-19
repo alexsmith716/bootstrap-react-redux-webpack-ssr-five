@@ -38,7 +38,7 @@ const Html = ({ assets, store, content, bundles }) => {
         {assets.stylesheets 
           && Object.keys(assets.stylesheets).map(key => (
             <link
-              href={assets.stylesheets[key]}
+              href={`${assets.publicPath}/${assets.stylesheets[key]}`}
               key={key}
               media="screen, projection"
               rel="stylesheet"
@@ -63,12 +63,12 @@ const Html = ({ assets, store, content, bundles }) => {
         )}
 
         {/* (will be present only in development mode) */}
-        { __DLLS__ && <script key="dlls__vendor" src="/dlls/dll__vendor.js" charSet="UTF-8" /> }
+        { __DLLS__ && <script key="dlls__vendor" src="/dist/dlls/dll__vendor.js" charSet="UTF-8" /> }
 
         {/* (>>>>>>> JS - SCRIPTS  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<) */}
         {assets.scripts 
           && Object.keys(assets.scripts).map(key => (
-            <script key={key} src={assets.scripts[key]} charSet="UTF-8" />
+            <script key={key} src={`${assets.publicPath}/${assets.scripts[key]}`} charSet="UTF-8" />
           ))}
 
       </body>
