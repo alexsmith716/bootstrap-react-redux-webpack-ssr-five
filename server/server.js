@@ -36,8 +36,6 @@ import { flushChunkNames } from 'react-universal-component/server';
 import flushChunks from 'webpack-flush-chunks';
 import { flushFiles } from 'webpack-flush-chunks';
 
-import manifest from './manifest';
-
 const targetUrl = `http://${config.apiHost}:${config.apiPort}`;
 
 const proxy = httpProxy.createProxyServer({
