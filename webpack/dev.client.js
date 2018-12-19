@@ -9,7 +9,6 @@ const config = require('../config/config');
 const WriteFilePlugin = require('write-file-webpack-plugin');
 const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-// const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const rootPath = path.resolve(__dirname, '..');
 const assetsPath = path.resolve(__dirname, '../build/static/dist');
@@ -61,8 +60,8 @@ const webpackConfig = {
   name: 'client',
   target: 'web',
   mode: 'development',
-  // devtool: 'source-map',
-  // devtool: 'inline-source-map',
+  // devtool: 'source-map',       // A full SourceMap is emitted as a separate file
+  devtool: 'inline-source-map',   // A SourceMap is added as a DataUrl to the bundle
 
   entry: {
     main: [
@@ -108,13 +107,13 @@ const webpackConfig = {
                 }
               },
               importLoaders: 2,
-              //sourceMap: true,
+              sourceMap: true,
             }
           },
           {
             loader: 'postcss-loader',
             options: {
-              //sourceMap: true,
+              sourceMap: true,
               config: {
                 path: 'postcss.config.js'
               }
@@ -127,8 +126,8 @@ const webpackConfig = {
             loader: 'sass-loader',
             options: {
               outputStyle: 'expanded',
-              //sourceMap: true,
-              //sourceMapContents: true,
+              sourceMap: true,
+              sourceMapContents: true,
             }
           },
           {
@@ -153,13 +152,13 @@ const webpackConfig = {
               modules: true,
               localIdentName: '[name]__[local]',
               importLoaders: 1,
-              //sourceMap: true
+              sourceMap: true
             }
           },
           {
             loader: 'postcss-loader',
             options: {
-              //sourceMap: true,
+              sourceMap: true,
               config: {
                 path: 'postcss.config.js'
               }
@@ -218,12 +217,6 @@ const webpackConfig = {
 
     new WriteFilePlugin(),
 
-    // new CopyWebpackPlugin([
-    //   {
-    //     from: path.resolve(__dirname, '../build/static/manifest.json'),
-    //     to: assetsPath
-    //   }
-    // ]),
     new webpack.HotModuleReplacementPlugin(),
 
     new webpack.NoEmitOnErrorsPlugin(),
