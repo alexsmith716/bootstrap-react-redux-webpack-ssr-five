@@ -148,7 +148,10 @@ module.exports = {
       }, 
       {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file-loader'
+        loader: 'file-loader',
+        // options: {
+        //   name: '[path][name].[ext]',
+        // },
       }, 
       {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
