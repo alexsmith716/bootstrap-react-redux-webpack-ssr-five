@@ -1,10 +1,14 @@
-var path = require('path');
-var webpack = require('webpack');
-var projectRootPath = path.resolve(__dirname, '../');
+const path = require('path');
+const webpack = require('webpack');
+const projectRootPath = path.resolve(__dirname, '../');
+
+// The DllPlugin and DllReferencePlugin provide means to split bundles in a way that can drastically improve build time performance
+// This plugin can be used in two different modes, scoped and mapped.
+// https://webpack.js.org/plugins/dll-plugin/#modes
 
 module.exports = {
+
   mode: 'development',
-  // devtool: 'inline-source-map',
 
   output: {
     // dll bundle build
@@ -87,11 +91,16 @@ module.exports = {
       'socket.io-client'
     ]
   },
+
   plugins: [
+
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     }),
 
+    // create the dll-only-bundle
+    // create webpack/dlls/vendor.json file which is used by the DllReferencePlugin to map dependencies
+    // https://webpack.js.org/plugins/dll-plugin/#dllplugin
     new webpack.DllPlugin({
       // dll bundle reference path file (.json)
       path: path.join(projectRootPath, 'webpack/dlls/[name].json'),

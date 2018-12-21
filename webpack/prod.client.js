@@ -187,7 +187,7 @@ module.exports = {
       minChunks: 1,
       maxAsyncRequests: 5,
       maxInitialRequests: 3,
-      automaticNameDelimiter: '~',
+      automaticNameDelimiter: '.',
       name: true,
       cacheGroups: {
         // no difference between the builds of below 'optimization.splitChunks.cacheGroups' objects
