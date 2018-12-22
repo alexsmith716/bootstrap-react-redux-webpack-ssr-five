@@ -17,29 +17,6 @@ const host = process.env.HOST || 'localhost';
 const port = process.env.PORT;
 // const port = +process.env.PORT + 1 || 3001;
 
-const babelrc = fs.readFileSync('./.babelrc', 'utf8');
-let babelrcObject = {};
-
-try {
-  babelrcObject = JSON.parse(babelrc);
-  // if (Array.isArray(config.plugins)) {
-  //  const ioui = config.plugins.indexOf('universal-import');
-  //   if (ioui) {
-  //     config.plugins.splice(ioui,1);
-  //   }
-  // }
-  console.error('>>>>>>>>>>>>>>>>>>> dev.client > SUCCESS: parsing .babelrc !!typeof: ', typeof babelrcObject);
-  console.error('>>>>>>>>>>>>>>>>>>> dev.client > SUCCESS: parsing .babelrc !!: ', babelrcObject);
-} catch (err) {
-  console.error('>>>>>>>>>>>>>>>>>>> dev.client > Error parsing .babelrc: ', err);
-}
-
-const babelrcObjectDevelopment = (babelrcObject.env && babelrcObject.env.development) || {};
-const combinedPlugins = (babelrcObject.plugins || []).concat(babelrcObjectDevelopment.plugins);
-
-const babelLoaderQuery = Object.assign({}, babelrcObject, babelrcObjectDevelopment, { plugins: combinedPlugins });
-delete babelLoaderQuery.env;
-
 // ==============================================================================================
 
 var validDLLs = dllHelpers.isValidDLLs('vendor', assetsPath);
