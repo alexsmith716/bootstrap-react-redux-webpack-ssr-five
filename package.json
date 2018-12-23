@@ -14,7 +14,7 @@
     "start:prod": "concurrently \"yarn prod:bin:server\" \"yarn prod:bin:api\"",
     "prod:bin:server": "NODE_ENV=production PORT=8080 node --trace-deprecation ./bin/server.js",
     "prod:bin:api": "NODE_ENV=production BABEL_DISABLE_CACHE=1 APIPORT=3030 node ./bin/api.js",
-    "prod:build:client": "NODE_ENV=production webpack --mode production --display-error-details --config ./webpack/prod.client.js",
+    "prod:build:client": "NODE_ENV=production webpack --display-error-details --config ./webpack/prod.client.js",
     "dlls": "webpack --display-error-details --config webpack/dllplugin.vendor.config.js",
     "clean": "rimraf build/static/dist build/server build/analyzers",
     "prettier": "prettier-eslint --write --eslint-config-path .eslintrc './+(bin)/**/*.js'",

@@ -12,7 +12,7 @@ module.exports = {
 
   output: {
     // dll bundle build
-    path: path.join(projectRootPath, 'build/static/dist/dlls'),
+    path: path.join(projectRootPath, 'build/static/dlls'),
     filename: 'dll__[name].js',
     library: 'DLL_[name]_[hash]'
   },

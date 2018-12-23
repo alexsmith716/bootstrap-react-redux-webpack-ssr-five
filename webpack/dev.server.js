@@ -38,8 +38,7 @@ module.exports = {
 
   output: {
     path: path.resolve('./build/server'),
-    filename: 'server.js',
-    chunkFilename: '[name].js',
+    filename: '[name].js',
     libraryTarget: 'commonjs2'
   },
 
