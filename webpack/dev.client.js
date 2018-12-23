@@ -19,7 +19,7 @@ const port = process.env.PORT;
 
 // ==============================================================================================
 
-var validDLLs = dllHelpers.isValidDLLs('vendor', assetsPath);
+var validDLLs = dllHelpers.isValidDLLs('vendor', path.resolve(__dirname, '../build/static'));
 
 if (process.env.WEBPACK_DLLS === '1' && !validDLLs) {
   process.env.WEBPACK_DLLS = '0';
@@ -50,7 +50,8 @@ const webpackConfig = {
   },
 
   output: {
-    filename: '[name].[hash].js',
+    filename: '[name].js',
+    chunkFilename: '[name].js',
     path: assetsPath,
     // publicPath: `http://${host}:${port}/dist/`
     publicPath: '/dist/'
@@ -169,9 +170,6 @@ const webpackConfig = {
       {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'file-loader',
-        // options: {
-        //   name: '[path][name].[ext]',
-        // },
       }, 
       {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,

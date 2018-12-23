@@ -10,7 +10,7 @@ const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const rootPath = path.resolve(__dirname, '..');
-const assetsPath = path.resolve(rootPath, './build/static/dist/client');
+const assetsPath = path.resolve(rootPath, './build/static/dist');
 
 // ==============================================================================================
 
@@ -31,10 +31,10 @@ module.exports = {
   },
 
   output: {
-    filename: '[name].[chunkhash].bundle.js',
-    chunkFilename: '[name].[chunkhash].chunk.js',
-    path: path.resolve(__dirname, '../build/static/dist/client'),
-    publicPath: '/'
+    filename: '[name].[chunkhash].js',
+    chunkFilename: '[name].[chunkhash].js',
+    path: path.resolve(__dirname, '../build/static/dist'),
+    publicPath: '/dist/'
   },
 
   module: {
@@ -142,7 +142,7 @@ module.exports = {
       }, 
       {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file-loader'
+        loader: 'file-loader',
       }, 
       {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,

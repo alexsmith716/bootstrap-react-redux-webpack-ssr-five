@@ -20,9 +20,7 @@ const serverConfigDev = require('../webpack/dev.server');
 const clientConfigProd = require('../webpack/prod.client');
 const serverConfigProd = require('../webpack/prod.server');
 
-const outputPath = clientConfigDev.output.path;
-
-console.log('>>>>>>>> BIN > START > STATS COMPILER COMPLETED BUILD !! outputPath: ', outputPath);
+// const outputPath = clientConfigDev.output.path;
 
 process.on('unhandledRejection', (error, promise) => {
   console.error('>>>>>>>> BIN > START > process > unhandledRejection > error:', error);
@@ -118,7 +116,7 @@ server.on('listening', () => {
 const done = () => !isBuilt
   && server.listen(port, err => {
     isBuilt = true;
-    console.log('>>>>>>>> BIN > START > STATS COMPILER COMPLETED BUILD !! __DEVELOPMENT__: ', __DEVELOPMENT__);
+    console.log('>>>>>>>> BIN > START > STATS COMPILER HAS COMPLETED BUILD !! WAIT IS OVER !');
     if (err) {
       console.error('>>>>>>>> BIN > START > ERROR:', err);
     }
@@ -128,7 +126,7 @@ const done = () => !isBuilt
 
 if (config.port) {
   console.log('>>>>>>>> BIN > START > __DEVELOPMENT__ ?: ', __DEVELOPMENT__);
-  console.log('>>>>>>>> BIN > START > STATS COMPILER ATTEMPTING BUILD !! ...');
+  console.log('>>>>>>>> BIN > START > STATS COMPILER ATTEMPTING BUILD ! PLEASE WAIT ! ...');
 
   app.use(express.static(path.join(__dirname, '..', 'build', 'static')));
 
@@ -166,7 +164,7 @@ if (config.port) {
       }
 
       // Done processing ---------------------------------------------------------------------
-      const render = require('../build/static/server/server.js').default;
+      const render = require('../build/server/server.js').default;
 
       // app.use(express.static(outputPath));
 
