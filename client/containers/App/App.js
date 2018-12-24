@@ -178,7 +178,8 @@ class App extends Component {
                 </li>
 
                 <li className="nav-item">
-                  <Link to='/login' className="nav-link js-scroll-trigger">Login</Link>
+                  <Link to='/login' className="nav-link js-scroll-trigger">
+                    <span className={`fas fa-fw fa-sign-in-alt ${styles.sharedVarColorRutgersScarletXX}`}></span>Login</Link>
                 </li>
 
                 <li className="nav-item">
@@ -186,8 +187,7 @@ class App extends Component {
                 </li>
 
                 <li className="nav-item">
-                  <a className="nav-link font-old-english" data-toggle="modal" href="#appModal1">
-                    <span className="fa fa-fw fa-sign-in"></span>Modal</a>
+                  <a className="nav-link font-old-english" data-toggle="modal" href="#appModal1">Modal</a>
                 </li>
 
                 <li className="nav-item">
