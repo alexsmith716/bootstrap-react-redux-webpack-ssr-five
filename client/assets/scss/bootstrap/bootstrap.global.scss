@@ -53,8 +53,10 @@ $dropdown-bg: darken($dropdown-bg, 20%);
 //		@import "~font-awesome/scss/font-awesome.scss";
 //	}
 
-$fa-font-path: "~font-awesome/fonts";
-@import "~font-awesome/scss/font-awesome.scss";
+@import "~@fortawesome/fontawesome-free/scss/fontawesome.scss";
+@import "~@fortawesome/fontawesome-free/scss/brands.scss";
+@import "~@fortawesome/fontawesome-free/scss/solid.scss";
+@import "~@fortawesome/fontawesome-free/scss/regular.scss";
 
 @import "../app/mixins.scss";
 

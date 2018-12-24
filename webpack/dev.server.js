@@ -30,11 +30,7 @@ module.exports = {
   target: 'node',
   mode: 'development',
 
-  entry: {
-    main: [
-      './server/server.js'
-    ]
-  },
+  entry: './server/server.js',
 
   output: {
     path: path.resolve('./build/server'),
