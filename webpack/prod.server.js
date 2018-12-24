@@ -28,11 +28,7 @@ module.exports = {
   target: 'node',
   mode: 'production',
 
-  entry: {
-    server: [
-      './server/server.js'
-    ]
-  },
+  entry: './server/server.js',
 
   output: {
     path: path.resolve('./build/server'),

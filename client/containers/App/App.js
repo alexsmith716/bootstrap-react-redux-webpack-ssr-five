@@ -192,7 +192,7 @@ class App extends Component {
 
                 <li className="nav-item">
                   <a className="nav-link font-norwester" href="#">
-                    <span className={`fa fa-fw fa-headphones ${styles.colorGoldLocal}`}></span><span className={styles.testColorFont}>Headphones!</span></a>
+                    <span className={`fas fa-fw fa-headphones ${styles.colorGoldLocal}`}></span><span className={styles.testColorFont}>Headphones!</span></a>
                 </li>
 
                 <li className="nav-item dropdown">
@@ -232,7 +232,7 @@ class App extends Component {
           <div className="container h-100">
             <div className={`h-100 d-flex flex-column justify-content-center align-items-center ${styles.flexContainer}`}>
               <div>Copyright &copy; 2018 · Election App 2018</div>
-              <div><span className={`fa fa-headphones fa-padding ${styles.colorGoldLocal}`}></span><span className={`font-norwester ${styles.colorGoldLocal}`}>Footer Headphones!</span></div>
+              <div><span className={`fas fa-headphones fa-padding ${styles.colorGoldLocal}`}></span><span className={`font-norwester ${styles.colorGoldLocal}`}>Footer Headphones!</span></div>
             </div>
           </div>
         </div>
