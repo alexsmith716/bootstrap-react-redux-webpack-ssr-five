@@ -22,13 +22,15 @@ const rootPath = path.resolve(__dirname, '..');
 
 module.exports = {
 
-  context: path.resolve(__dirname, '..'),
+  // context: path.resolve(__dirname, '..'),
 
   name: 'server',
   target: 'node',
   mode: 'production',
+  // devtool: 'hidden-source-map',
 
-  entry: './server/server.js',
+  // entry: './server/server.js',
+  entry: path.resolve(__dirname, '../server/server.js'),
 
   output: {
     path: path.resolve('./build/server'),
@@ -74,11 +76,14 @@ module.exports = {
             }
           },
           {
-            loader: 'resolve-url-loader'
+            loader: 'resolve-url-loader',
+            // options: {}
           },
           {
             loader: 'sass-loader',
             options: {
+              //sourceMap: true,
+              //sourceMapContents: false,
               outputStyle: 'expanded' // https://github.com/sass/node-sass#outputstyle
             }
           },
