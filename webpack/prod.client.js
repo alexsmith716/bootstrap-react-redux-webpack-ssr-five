@@ -16,19 +16,31 @@ const assetsPath = path.resolve(rootPath, './build/static/dist');
 
 // ==============================================================================================
 
+// https://github.com/bholloway/resolve-url-loader/blob/master/packages/resolve-url-loader/README.md#configure-webpack
+// source-maps required for loaders preceding resolve-url-loader (regardless of devtool)
+
+// ==============================================================================================
+
 module.exports = {
 
-  context: path.resolve(__dirname, '..'),
+  // context: path.resolve(__dirname, '..'),
+  // the home directory for webpack
+  // the entry and module.rules.loader option is resolved relative to this directory
 
   name: 'client',
   target: 'web',
   mode: 'production',
+  devtool: 'hidden-source-map', // SourceMap without reference in original file
+  // devtool: 'source-map', // most detailed at the expense of build speed
+  // enhance debugging by adding meta info for the browser devtools
 
   entry: {
     main: [
-      './client/assets/scss/bootstrap/bootstrap.global.scss',
+      //'./client/assets/scss/bootstrap/bootstrap.global.scss',
+      path.resolve(__dirname, '../client/assets/scss/bootstrap/bootstrap.global.scss'),
       'bootstrap',
-      './client/index.js'
+      //'./client/index.js'
+      path.resolve(__dirname, '../client/index.js')
     ]
   },
 
@@ -77,11 +89,14 @@ module.exports = {
             }
           },
           {
-            loader: 'resolve-url-loader'
+            loader: 'resolve-url-loader',
+            // options: {}
           },
           {
             loader: 'sass-loader',
             options: {
+              sourceMap: true,
+              sourceMapContents: false,
               outputStyle: 'expanded'
             }
           },

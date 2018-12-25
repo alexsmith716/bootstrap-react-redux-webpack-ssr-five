@@ -81,7 +81,9 @@ module.exports = {
           {
             loader: 'sass-loader',
             options: {
-              outputStyle: 'expanded' // https://github.com/sass/node-sass#outputstyle
+              sourceMap: true,
+              sourceMapContents: false,
+              outputStyle: 'expanded', // https://github.com/sass/node-sass#outputstyle
             }
           },
           {

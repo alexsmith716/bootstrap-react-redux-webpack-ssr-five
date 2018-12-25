@@ -30,6 +30,11 @@ if (process.env.WEBPACK_DLLS === '1' && !validDLLs) {
 
 // ==============================================================================================
 
+// https://github.com/bholloway/resolve-url-loader/blob/master/packages/resolve-url-loader/README.md#configure-webpack
+// source-maps required for loaders preceding resolve-url-loader (regardless of devtool)
+
+// ==============================================================================================
+
 const webpackConfig = {
 
   context: path.resolve(__dirname, '..'),
@@ -103,9 +108,9 @@ const webpackConfig = {
           {
             loader: 'sass-loader',
             options: {
-              outputStyle: 'expanded',
               sourceMap: true,
               sourceMapContents: true,
+              outputStyle: 'expanded',
             }
           },
           {
