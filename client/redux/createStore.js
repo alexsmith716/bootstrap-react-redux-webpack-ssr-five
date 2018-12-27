@@ -86,10 +86,10 @@ export default function createStore({ history, data, helpers, persistConfig }) {
   // -----------------------------------------
 
   // Redux logger
-  if (__CLIENT__ && __DEVELOPMENT__) {
-    const logger = require('redux-logger').createLogger({ collapsed: true });
-    middleware.push(logger.__esModule ? logger.default : logger);
-  }
+  // if (__CLIENT__ && __DEVELOPMENT__) {
+  //   const logger = require('redux-logger').createLogger({ collapsed: true });
+  //   middleware.push(logger.__esModule ? logger.default : logger);
+  // }
 
   // -----------------------------------------
 
@@ -97,17 +97,17 @@ export default function createStore({ history, data, helpers, persistConfig }) {
 
   // -----------------------------------------
 
-  if (__CLIENT__ && __DEVTOOLS__) {
-    console.log('>>>>>>>>>>>>>>>>>>> CreateStore > __CLIENT__ && __DEVTOOLS__ <<<<<<<<<<<<<<<<<<');
+  // if (__CLIENT__ && __DEVTOOLS__) {
+  //   console.log('>>>>>>>>>>>>>>>>>>> CreateStore > __CLIENT__ && __DEVTOOLS__ <<<<<<<<<<<<<<<<<<');
 
-    const { persistState } = require('redux-devtools');
-    const DevTools = require('../containers/DevTools/DevTools').default;
-    
-    Array.prototype.push.apply(enhancers, [
-      window.devToolsExtension ? window.devToolsExtension() : DevTools.instrument(),
-      persistState(window.location.href.match(/[?&]debug_session=([^&]+)\b/))
-    ]);
-  }
+  //   const { persistState } = require('redux-devtools');
+  //   const DevTools = require('../containers/DevTools/DevTools').default;
+  //   
+  //   Array.prototype.push.apply(enhancers, [
+  //     window.devToolsExtension ? window.devToolsExtension() : DevTools.instrument(),
+  //     persistState(window.location.href.match(/[?&]debug_session=([^&]+)\b/))
+  //   ]);
+  // }
 
   // -----------------------------------------
 
@@ -118,6 +118,8 @@ export default function createStore({ history, data, helpers, persistConfig }) {
 
   // -----------------------------------------
 
+  // const store = finalCreateStore( combine({ ...noopReducers, ...reducers }, persistConfig), data);
+  // const store = finalCreateStore(connectRouter(history)(combine({ ...noopReducers, ...reducers }, persistConfig)), data);
   const store = finalCreateStore(combine({ ...noopReducers, ...reducers }, persistConfig), data);
   console.log('>>>>>>>>>>>>>>>>>>> createStore.JS > store 1: ', store);
   // -----------------------------------------
@@ -145,6 +147,7 @@ export default function createStore({ history, data, helpers, persistConfig }) {
       let reducer = require('./reducer').default;
       console.log('>>>>>>>>>>>>>>>>>>> createStore > createStore > reducer !!!: ', reducer);
       reducer = combine((reducer.__esModule ? reducer.default : reducer)(store.asyncReducers), persistConfig);
+      // store.replaceReducer(connectRouter(history)(reducer));
       store.replaceReducer(createReducers(history));
     });
   }

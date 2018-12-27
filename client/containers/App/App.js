@@ -1,4 +1,3 @@
-// import "@babel/polyfill";
 import _ from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
@@ -91,7 +90,7 @@ class App extends Component {
   };
 
   static contextTypes = {
-    store: PropTypes.object.isRequired,
+    store: PropTypes.object.isRequired
   };
 
   // getDerivedStateFromProps(): enables component to update internal state as the result of changes in props

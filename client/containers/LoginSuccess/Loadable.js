@@ -1,14 +1,27 @@
 import React from 'react';
-import Loadable from 'react-loadable';
+import universal from 'react-universal-component';
+import path from 'path';
 
-const LoginSuccessLoadable = Loadable({
-
-  loader: () => import('./LoginSuccess' /* webpackChunkName: 'login-success' */).then(module => module.default),
-  // loader: () => import('./LoginSuccess').then(module => module.default),
-
-  loading: () => <div>Loading</div>
-
-});
-
+const LoginSuccessLoadable = universal(() => import(/* webpackChunkName: 'login-success' */ './LoginSuccess'), {
+  path: path.resolve(__dirname, './LoginSuccess'),
+  resolve: () => require.resolveWeak('./LoginSuccess'),
+  chunkName: 'login-success',
+  minDelay: 500
+})
 
 export default LoginSuccessLoadable;
+
+// import React from 'react';
+// import Loadable from 'react-loadable';
+// 
+// const LoginSuccessLoadable = Loadable({
+// 
+//   loader: () => import('./LoginSuccess' /* webpackChunkName: 'login-success' */).then(module => module.default),
+//   // loader: () => import('./LoginSuccess').then(module => module.default),
+// 
+//   loading: () => <div>Loading</div>
+// 
+// });
+// 
+// 
+// export default LoginSuccessLoadable;
