@@ -90,7 +90,8 @@ class App extends Component {
   };
 
   static contextTypes = {
-    store: PropTypes.object.isRequired
+    // store: PropTypes.object.isRequired
+    store: PropTypes.objectOf(PropTypes.any).isRequired
   };
 
   // getDerivedStateFromProps(): enables component to update internal state as the result of changes in props

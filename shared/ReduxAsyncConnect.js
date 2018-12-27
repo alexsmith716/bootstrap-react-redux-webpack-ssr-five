@@ -118,7 +118,11 @@ export default class ReduxAsyncConnect extends Component {
     // if location changed, update the state in response to location prop changes
     // a page refresh has both 'locations' returning false (same key values)
     // (key prop to prevent remounting component when transition was made from route with the same component and same key prop)
-    const navigated = nextProps.location !== location;
+
+    // const navigated = nextProps.location !== location;
+
+    const {location: { pathname, search }} = nextProps;
+    const navigated = `${pathname}${search}` !== `${location.pathname}${location.search}`;
 
     console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > componentWillReceiveProps() > navigated?:', navigated);
 
