@@ -24,13 +24,14 @@ const WriteFilePlugin = require('write-file-webpack-plugin');
 
 module.exports = {
 
-  context: path.resolve(__dirname, '..'),
+  // context: path.resolve(__dirname, '..'),
 
   name: 'server',
   target: 'node',
   mode: 'development',
+  // devtool: 'eval',  // generated code 
 
-  entry: './server/server.js',
+  entry: path.resolve(__dirname, '../server/server.js'),
 
   output: {
     path: path.resolve('./build/server'),

@@ -16,6 +16,7 @@ build/public/assets/
 build/static/dist/
 build/static/assets/
 build/server/
+build/static/dlls/
 webpack/dlls/
 coverage/
 gh-pages/

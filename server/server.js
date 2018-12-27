@@ -148,18 +148,7 @@ export default ({ clientStats }) => async (req, res) => {
     helpers: providers
   });
 
-  function hydrate() {
-    res.write('<!doctype html>');
-    // ReactDOM.renderToNodeStream():
-    // Returns a Readable stream that outputs an HTML string
-    // HTML output by this stream is exactly equal to what ReactDOM.renderToString() returns
-    ReactDOM.renderToNodeStream(<Html assets={webpackAssets} store={store} />).pipe(res);
-  }
-
-  console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > __DISABLE_SSR__:', __DISABLE_SSR__);
-  if (__DISABLE_SSR__) {
-    return hydrate();
-  }
+  console.log('>>>>>>>>>>>>>>>> SERVER > !!!STORE!!!: ', store);
 
   try {
 
@@ -272,6 +261,20 @@ export default ({ clientStats }) => async (req, res) => {
     console.log('>>>>>>>>>>>>>>>>> SERVER > flushChunks > outputPath: ', assets.outputPath);
 
     // ------------------------------------------------------------------------------------------------------
+    // ------------------------------------------------------------------------------------------------------
+
+    function hydrate() {
+      res.write('<!doctype html>');
+      ReactDOM.renderToNodeStream(<Html assets={assets} store={store} />).pipe(res);
+    }
+
+    console.log('>>>>>>>>>>>>>>>>> SERVER > __DISABLE_SSR__:', __DISABLE_SSR__);
+    if (__DISABLE_SSR__) {
+      return hydrate();
+    }
+
+    // ------------------------------------------------------------------------------------------------------
+    // ------------------------------------------------------------------------------------------------------
 
     // console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > context: ', context);
 
@@ -280,6 +283,8 @@ export default ({ clientStats }) => async (req, res) => {
     }
 
     const locationState = store.getState().router.location;
+
+    console.log('>>>>>>>>>>>>>>>>> SERVER > locationState:', locationState);
 
     if (decodeURIComponent(req.originalUrl) !== decodeURIComponent(locationState.pathname + locationState.search)) {
       return res.redirect(301, locationState.pathname);

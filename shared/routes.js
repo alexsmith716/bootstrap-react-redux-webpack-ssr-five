@@ -23,9 +23,9 @@ import AboutTwo from '../client/containers/AboutTwo/Loadable';
 import AboutThree from '../client/containers/AboutThree/Loadable';
 import AboutFour from '../client/containers/AboutFour/Loadable';
 import StickyFooter from '../client/containers/StickyFooter/Loadable';
-// import Login from '../client/containers/Login/Loadable';
-// import Register from '../client/containers/Register/Loadable';
-// import LoginSuccess from '../client/containers/LoginSuccess/Loadable';
+import Login from '../client/containers/Login/Loadable';
+import Register from '../client/containers/Register/Loadable';
+import LoginSuccess from '../client/containers/LoginSuccess/Loadable';
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Helper 'connectedRouterRedirect' builds HOC 'isAuthenticated/isNotAuthenticated'
@@ -85,9 +85,9 @@ const routes = [{
     { path: '/about-three', component: AboutThree },
     { path: '/about-four', component: AboutFour },
     { path: '/sticky-footer', component: StickyFooter },
-    // { path: '/login', component: Login },
-    // { path: '/login-success', component: isAuthenticated(LoginSuccess) },
-    // { path: '/register', component: isNotAuthenticated(Register) },
+    { path: '/login', component: Login },
+    { path: '/login-success', component: isAuthenticated(LoginSuccess) },
+    { path: '/register', component: isNotAuthenticated(Register) },
     { component: NotFound }
   ]
 }];

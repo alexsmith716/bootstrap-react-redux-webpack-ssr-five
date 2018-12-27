@@ -37,20 +37,21 @@ if (process.env.WEBPACK_DLLS === '1' && !validDLLs) {
 
 const webpackConfig = {
 
-  context: path.resolve(__dirname, '..'),
+  // context: path.resolve(__dirname, '..'),
 
   name: 'client',
   target: 'web',
   mode: 'development',
+  devtool: 'eval-source-map',  // best quality SourceMaps for development
   // devtool: 'source-map',       // A full SourceMap is emitted as a separate file
-  devtool: 'inline-source-map',   // A SourceMap is added as a DataUrl to the bundle
+  // devtool: 'inline-source-map',   // A SourceMap is added as a DataUrl to the bundle
 
   entry: {
     main: [
       `webpack-hot-middleware/client?path=http://${host}:${port}/__webpack_hmr`,
-      './client/assets/scss/bootstrap/bootstrap.global.scss',
+      path.resolve(__dirname, '../client/assets/scss/bootstrap/bootstrap.global.scss'),
       'bootstrap',
-      './client/index.js'
+      path.resolve(__dirname, '../client/index.js'),
     ]
   },
 
@@ -58,8 +59,8 @@ const webpackConfig = {
     filename: '[name].js',
     chunkFilename: '[name].js',
     path: assetsPath,
-    // publicPath: `http://${host}:${port}/dist/`
-    publicPath: '/dist/'
+    publicPath: `http://${host}:${port}/dist/`
+    // publicPath: '/dist/'
   },
 
   module: {

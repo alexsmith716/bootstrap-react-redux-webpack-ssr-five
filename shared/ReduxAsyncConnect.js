@@ -57,7 +57,7 @@ export default class ReduxAsyncConnect extends Component {
   // invoked just before mounting occurs
   // called before 'render()'
   // only lifecycle hook called on server rendering
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     // progress bars for Ajax applications
     NProgress.configure({ trickleSpeed: 222200 });
   }
@@ -106,7 +106,7 @@ export default class ReduxAsyncConnect extends Component {
   // to update the state in response to prop changes (for example, to reset it), compare 'this.props' and 'nextProps'
   // ---------------------------------------------------------
   // <ReduxAsyncConnect routes={routes} store={store} helpers={providers}>
-  async componentWillReceiveProps(nextProps) {
+  async UNSAFE_componentWillReceiveProps(nextProps) {
 
     // current props
     const { history, location, routes, store, helpers } = this.props;
@@ -170,9 +170,9 @@ export default class ReduxAsyncConnect extends Component {
     const { children, location } = this.props;
     const { previousLocation } = this.state;
 
-    // console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > render() > children:', children);
-    // console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > render() > location:', location);
-    // console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > render() > previousLocation:', previousLocation);
+    console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > render() > children:', children);
+    console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > render() > location:', location);
+    console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > render() > previousLocation:', previousLocation);
 
     // use a controlled <Route> to trick all descendants into
     // rendering the old location
