@@ -16,7 +16,9 @@
     "prod:bin:api": "NODE_ENV=production BABEL_DISABLE_CACHE=1 APIPORT=3030 node ./bin/api.js",
     "prod:build:client": "NODE_ENV=production webpack --display-error-details --config ./webpack/prod.client.js",
     "dlls": "webpack --display-error-details --config webpack/dllplugin.vendor.config.js",
+    "clean:all": "npm-run-all --parallel clean clean:dlls",
     "clean": "rimraf build/static/dist build/server build/analyzers",
+    "clean:dlls": "rimraf build/static/dlls  webpack/dlls",
     "prettier": "prettier-eslint --write --eslint-config-path .eslintrc './+(bin)/**/*.js'",
     "lint": "eslint -c .eslintrc bin && flow",
     "test": "NODE_PATH=client jest client"
@@ -97,12 +99,14 @@
     "redux-logger": "^3.0.6",
     "redux-persist": "^5.10.0",
     "redux-persist-cookie-storage": "^1.0.0",
+    "remove": "^0.1.5",
     "rimraf": "^2.6.2",
     "serialize-javascript": "^1.6.0",
     "serve-favicon": "^2.5.0",
     "socket.io-client": "^2.2.0",
     "url": "^0.11.0",
-    "webpack-flush-chunks": "^2.0.3"
+    "webpack-flush-chunks": "^2.0.3",
+    "yarn": "^1.12.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",

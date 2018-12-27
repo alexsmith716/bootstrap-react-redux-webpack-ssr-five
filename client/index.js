@@ -132,6 +132,7 @@ initSocket();
     // 'trigger' function ('server' && 'client') will initiate 'fetch' event for components with '@provideHooks' decorator
     // for initial load, components App && Home. only App - '@@redial-hooks': {fetch: [Function: fetch]}
 
+    console.log('>>>>>>>>>>>>>>>>>>> CLIENT.JS > triggerLocals > STORE 1: ', store);
     // Define locals to be provided to all lifecycle hooks (@provideHooks)
     const triggerLocals = {
       ...providers,
@@ -154,7 +155,7 @@ initSocket();
     }
     await trigger('defer', components, triggerLocals);
 
-    console.log('>>>>>>>>>>>>>>>>>>> CLIENT.JS > triggerLocals > STORE: ', store);
+    console.log('>>>>>>>>>>>>>>>>>>> CLIENT.JS > triggerLocals > STORE 2: ', store);
 
     // server-rendered markup ('ReactDOMServer.renderToString()') sent here
     // 'ReactDOM.hydrate()' preserves server-sent server-rendered markup

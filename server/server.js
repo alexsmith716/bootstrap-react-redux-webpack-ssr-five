@@ -148,7 +148,7 @@ export default ({ clientStats }) => async (req, res) => {
     helpers: providers
   });
 
-  console.log('>>>>>>>>>>>>>>>> SERVER > !!!STORE!!!: ', store);
+  console.log('>>>>>>>>>>>>>>>>>>> SERVER.JS > APP LOADER > !!!STORE!!1!: ', store);
 
   try {
 
@@ -168,6 +168,8 @@ export default ({ clientStats }) => async (req, res) => {
     };
 
     await trigger( 'fetch', components, locals);
+
+    console.log('>>>>>>>>>>>>>>>>>>> SERVER.JS > APP LOADER > !!!STORE!!2!: ', store);
 
     // const chunkNames = [];
     const context = {};
