@@ -77,7 +77,7 @@ const Html = ({ assets, store, content, bundles }) => {
 };
 
 Html.propTypes = {
-  assets: PropTypes.shape({ stylesheets: PropTypes.object, scripts: PropTypes.object }),
+  assets: PropTypes.shape({ stylesheets: PropTypes.array, scripts: PropTypes.array }),
   bundles: PropTypes.arrayOf(PropTypes.any),
   content: PropTypes.string,
   store: PropTypes.shape({ getState: PropTypes.func }).isRequired,
