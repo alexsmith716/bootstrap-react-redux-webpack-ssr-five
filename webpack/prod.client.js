@@ -36,10 +36,8 @@ module.exports = {
 
   entry: {
     main: [
-      //'./client/assets/scss/bootstrap/bootstrap.global.scss',
       path.resolve(__dirname, '../client/assets/scss/bootstrap/bootstrap.global.scss'),
       'bootstrap',
-      //'./client/index.js'
       path.resolve(__dirname, '../client/index.js')
     ]
   },

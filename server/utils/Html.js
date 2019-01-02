@@ -10,7 +10,6 @@ const Html = ({ assets, store, content, bundles }) => {
   // console.log('>>>>>> HTML.JS > assets.styles length: ', Object.keys(assets.styles).length);
   console.log('#######################>>>>>> HTML.JS > store: ', store);
   // console.log('>>>>>> HTML.JS > content: ', content);
-  console.log('>>>>>> HTML.JS > bundles: ', bundles);
 
   const head = Helmet.renderStatic();
 
@@ -34,7 +33,7 @@ const Html = ({ assets, store, content, bundles }) => {
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="manifest" href="/manifest.json" />
 
-        {/* (>>>>>>> STYLES - will be present only in production) */}
+        {/* (>>>>>>> STYLES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<) */}
         {assets.stylesheets 
           && Object.keys(assets.stylesheets).map(key => (
             <link
@@ -51,10 +50,10 @@ const Html = ({ assets, store, content, bundles }) => {
 
       <body>
 
-        {/* (>>>>>>> CONTENT <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<) */}
+        {/* (>>>>>>> CONTENT <<<<<<<<<<<<<<<<<<<<<<<<<<<<<) */}
         <div id="content" dangerouslySetInnerHTML={{ __html: content }} />
 
-        {/* (>>>>>>> STORE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<) */}
+        {/* (>>>>>>> STORE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<) */}
         {store && (
           <script
             dangerouslySetInnerHTML={{ __html: `window.__PRELOADED__=true;window.__data=${serialize(store.getState())};` }}
@@ -65,7 +64,7 @@ const Html = ({ assets, store, content, bundles }) => {
         {/* (will be present only in development mode) */}
         { __DLLS__ && <script key="dlls__vendor" src="/dlls/dll__vendor.js" charSet="UTF-8" /> }
 
-        {/* (>>>>>>> JS - SCRIPTS  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<) */}
+        {/* (>>>>>>> SCRIPTS  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<) */}
         {assets.scripts 
           && Object.keys(assets.scripts).map(key => (
             <script key={key} src={`${assets.publicPath}/${assets.scripts[key]}`} charSet="UTF-8" />
@@ -78,7 +77,6 @@ const Html = ({ assets, store, content, bundles }) => {
 
 Html.propTypes = {
   assets: PropTypes.shape({ stylesheets: PropTypes.array, scripts: PropTypes.array }),
-  bundles: PropTypes.arrayOf(PropTypes.any),
   content: PropTypes.string,
   store: PropTypes.shape({ getState: PropTypes.func }).isRequired,
 };
