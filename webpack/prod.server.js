@@ -34,7 +34,7 @@ module.exports = {
 
   output: {
     path: path.resolve('./build/server'),
-    filename: 'prod-server.js',
+    filename: 'server.js',
     libraryTarget: 'commonjs2'
   },
 
