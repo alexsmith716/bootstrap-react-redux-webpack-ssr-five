@@ -4,7 +4,7 @@ import serialize from 'serialize-javascript';
 import Helmet from 'react-helmet';
 import config from '../../config/config';
 
-const Html = ({ assets, store, content, bundles }) => {
+const Html = ({ assets, store, content }) => {
 
   console.log('>>>>>> HTML.JS > assets: ', assets);
   // console.log('>>>>>> HTML.JS > assets.styles length: ', Object.keys(assets.styles).length);
@@ -82,8 +82,7 @@ Html.propTypes = {
 };
 
 Html.defaultProps = {
-  assets: {},
-  bundles: [],
+  assets: [],
   content: '',
 };
 
