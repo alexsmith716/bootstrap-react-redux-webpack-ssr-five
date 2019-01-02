@@ -10,11 +10,7 @@ import config from '../config/config';
 // store any type in localForage
 // localForage automatically does `JSON.parse()` and `JSON.stringify()` when getting/setting values
 
-console.log('################ APP.JS > SERVER 1 ???????: ', __SERVER__);
-
 const storage = __SERVER__ ? null : require('localforage');
-
-console.log('################ APP.JS > storage 1 ???????: ', storage);
 
 // const host = clientUrl => (__SERVER__ ? `http://${config.apiHost}:${config.apiPort}` : clientUrl);
 
@@ -51,15 +47,11 @@ const configureApp = transport =>
 
 export function createApp(req) {
 
-  console.log('################ APP.JS > SERVER 2 ???????: ', __SERVER__);
   // test if 'rest-client' (server)
   if (req === 'rest') {
-    console.log('################ APP.JS > 1111111111111111111');
     return configureApp( rest(host('http://localhost:3030/api')).axios(axios) );
   }
 
-  console.log('################ APP.JS > 22222222222222222222');
-  console.log('################ APP.JS > storage 2 ???????: ', storage);
   const app = configureApp( rest(host('http://localhost:3030/api')).axios(axios.create({
     headers: {
       Cookie: req.get('cookie'),

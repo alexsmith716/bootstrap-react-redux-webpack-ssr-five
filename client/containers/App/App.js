@@ -24,7 +24,7 @@ import config from '../../../config/config';
 
 // --------------------------------------------------------------------------
 // HOC: apply HOCs outside the component definition so that the resulting component is created only once. 
-// Then, its identity will be consistent across renders
+// Then, it's identity will be consistent across renders
 // Decorators are applied in the order that you declare them
 // '@provideHooks' && '@connect' are being applied to class 'App'
 // Decorators are functions that return another function
@@ -90,7 +90,6 @@ class App extends Component {
   };
 
   static contextTypes = {
-    // store: PropTypes.object.isRequired
     store: PropTypes.objectOf(PropTypes.any).isRequired
   };
 

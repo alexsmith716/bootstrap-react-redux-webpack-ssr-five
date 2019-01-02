@@ -5,29 +5,48 @@ import http from 'http';
 import httpProxy from 'http-proxy';
 import Cookies from 'cookies';
 
+global.__CLIENT__ = false;
+global.__SERVER__ = true;
+
 import { getStoredState } from 'redux-persist';
 import { CookieStorage, NodeCookiesWrapper } from 'redux-persist-cookie-storage';
 
 import React from 'react';
-import ReactDOM from 'react-dom/server';
-import { StaticRouter } from 'react-router';
 
+// ----------------------------------
 import asyncMatchRoutes from '../server/utils/asyncMatchRoutes';
-import { ReduxAsyncConnect, Provider } from '../shared';
+// ----------------------------------
+
+// ----------------------------------
+import { Provider } from '../shared';
+// ----------------------------------
+
+// ----------------------------------
+import { ConnectedRouter } from 'connected-react-router';
+import { StaticRouter } from 'react-router';
+// ----------------------------------
+
+// ----------------------------------
+import { ReduxAsyncConnect } from '../shared';
+// ----------------------------------
+
+// ----------------------------------
+import { renderRoutes } from 'react-router-config';
+// ----------------------------------
+
+// ----------------------------------
+import ReactDOM from 'react-dom/server';
+// ----------------------------------
 
 import createMemoryHistory from 'history/createMemoryHistory';
 
 import createStore from '../client/redux/createStore';
 
-import { ConnectedRouter } from 'connected-react-router';
-import { renderRoutes } from 'react-router-config';
+import routes from '../shared/routes';
 
 import { trigger } from 'redial';
 
-import Html from '../server/utils/Html';
-import routes from '../shared/routes';
-import { parse as parseUrl } from 'url';
-
+// import { createApp } from './app';
 import { createApp } from '../server/appServer';
 import apiClient from '../server/utils/apiClient';
 
@@ -35,6 +54,11 @@ import apiClient from '../server/utils/apiClient';
 import { flushChunkNames } from 'react-universal-component/server';
 import flushChunks from 'webpack-flush-chunks';
 import { flushFiles } from 'webpack-flush-chunks';
+
+import Html from '../server/utils/Html';
+
+// ------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------
 
 const targetUrl = `http://${config.apiHost}:${config.apiPort}`;
 
@@ -296,7 +320,8 @@ export default ({ clientStats }) => async (req, res) => {
 
     console.log('>>>>>>>>>>>>>>>> SERVER > ==================== content: ', content);
 
-    const html = <Html assets={assets} store={store} content={content} bundles={flushedFiles} />;
+    // const html = <Html assets={assets} store={store} content={content} bundles={flushedFiles} />;
+    const html = <Html assets={assets} store={store} content={content} />;
     const ssrHtml = `<!doctype html>${ReactDOM.renderToString(html)}`;
     console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > RESPOND TO CLIENT !! > ReactDOM.renderToString(html):', ssrHtml);
 
