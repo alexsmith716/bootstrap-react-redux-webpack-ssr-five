@@ -1,4 +1,6 @@
-require('@babel/polyfill');
+
+global.__CLIENT__ = true;
+global.__SERVER__ = false;
 
 const fs = require('fs');
 const path = require('path');
