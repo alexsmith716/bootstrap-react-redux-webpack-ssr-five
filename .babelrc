@@ -8,11 +8,10 @@
     }]
   ],
   "plugins": [
-    "universal-import",
-    "react-hot-loader/babel",
     ["@babel/plugin-transform-runtime",{"corejs": 2}],
     ["@babel/plugin-proposal-decorators", { "legacy": true }],
     "@babel/plugin-syntax-dynamic-import",
+    "universal-import",
     "@babel/plugin-syntax-import-meta",
     ["@babel/plugin-proposal-class-properties", { "loose": false }],
     "@babel/plugin-proposal-json-strings",
@@ -22,5 +21,12 @@
     "@babel/plugin-proposal-throw-expressions",
     "@babel/plugin-proposal-export-default-from",
     "@babel/plugin-proposal-object-rest-spread"
-  ]
+  ],
+  "env": {
+    "development": {
+      "plugins": [
+        "react-hot-loader/babel"
+      ]
+    }
+  }
 }

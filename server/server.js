@@ -225,7 +225,7 @@ export default ({ clientStats }) => async (req, res) => {
     // array of chunks flushed from react-universal-component
     const chunkNames = flushChunkNames();
 
-    console.log('>>>>>>>>>>>>>>>>> SERVER > chunkNames: ', chunkNames);
+    console.log('>>>>>>>>>>>>>>>>> SERVER > HERE !!! > chunkNames: ', chunkNames);
 
     // flushChunks and flushFiles: called immediately after ReactDOMServer.renderToString. 
     // They are used in server-rendering to extract the minimal amount of chunks to send to the client, 
