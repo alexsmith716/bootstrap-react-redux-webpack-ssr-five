@@ -27,9 +27,6 @@ import { getStoredState } from 'redux-persist';
 import { CookieStorage } from 'redux-persist-cookie-storage';
 import Cookies from 'cookies-js'; // Client-Side Cookie Manipulation 'cookies-js'
 
-global.__CLIENT__ = true;
-global.__SERVER__ = false;
-
 import './assets/js/app';
 
 // =====================================================================

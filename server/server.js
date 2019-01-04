@@ -5,9 +5,6 @@ import http from 'http';
 import httpProxy from 'http-proxy';
 import Cookies from 'cookies';
 
-global.__CLIENT__ = false;
-global.__SERVER__ = true;
-
 import { getStoredState } from 'redux-persist';
 import { CookieStorage, NodeCookiesWrapper } from 'redux-persist-cookie-storage';
 
