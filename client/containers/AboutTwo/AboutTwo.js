@@ -4,7 +4,7 @@ import Helmet from 'react-helmet';
 // import MiniInfoBar from 'components/MiniInfoBar/MiniInfoBar';
 // import { isLoaded as isInfoLoaded, load as loadInfo } from 'redux/modules/info';
 
-class AboutToo extends Component {
+class AboutTwo extends Component {
 
   render() {
 
@@ -102,4 +102,4 @@ class AboutToo extends Component {
   }
 }
 
-export default AboutToo;
+export default AboutTwo;
