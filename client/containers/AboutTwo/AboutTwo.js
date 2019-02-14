@@ -6,6 +6,18 @@ import Helmet from 'react-helmet';
 
 class AboutTwo extends Component {
 
+  UNSAFE_componentWillMount() {
+    console.log('>>>>>>>>>>>>>>>> ABOUT-TWO > UNSAFE_componentWillMount() <<<<<<<<<<<<<<');
+  }
+
+  componentDidMount() {
+    console.log('>>>>>>>>>>>>>>>> ABOUT-TWO > componentDidMount() <<<<<<<<<<<<<<');
+  }
+
+  componentWillUnmount() {
+    console.log('>>>>>>>>>>>>>>>> ABOUT-TWO > componentWillUnmount() <<<<<<<<<<<<<<');
+  }
+
   render() {
 
     const aboutImageMain = require('../../assets/images/about-750-450.png');

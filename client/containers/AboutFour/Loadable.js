@@ -2,10 +2,10 @@ import React from 'react';
 import universal from 'react-universal-component';
 import path from 'path';
 
-const AboutFourLoadable = universal(() => import(/* webpackChunkName: 'about-four' */ './AboutFour'), {
+const AboutFourLoadable = universal(() => import(/* webpackChunkName: 'aboutfour' */ './AboutFour'), {
   path: path.resolve(__dirname, './AboutFour'),
   resolve: () => require.resolveWeak('./AboutFour'),
-  chunkName: 'about-four',
+  chunkName: 'aboutfour',
   minDelay: 500
 })
 

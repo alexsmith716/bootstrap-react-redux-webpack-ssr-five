@@ -1,28 +1,26 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import Helmet from 'react-helmet';
-import { connect } from 'react-redux';
 import config from '../../../config/config';
 
-// connect component to redux store
-@connect(
-  state => ({
-    online: state.online
-  })
-)
-
-// <h1>Election App 2018</h1>
+// --------------------------------------------------------------------------
 
 class Home extends Component {
 
-  static propTypes = {
-    online: PropTypes.bool.isRequired
-  };
+  UNSAFE_componentWillMount() {
+    console.log('>>>>>>>>>>>>>>>> HOME > UNSAFE_componentWillMount() <<<<<<<<<<<<<<');
+  }
+
+  componentDidMount() {
+    console.log('>>>>>>>>>>>>>>>> HOME > componentDidMount() <<<<<<<<<<<<<<');
+  }
+
+  componentWillUnmount() {
+    console.log('>>>>>>>>>>>>>>>> HOME > componentWillUnmount() <<<<<<<<<<<<<<');
+  }
 
   render() {
 
-    const { online } = this.props;
     const styles = require('./scss/Home.scss');
 
     return (
@@ -97,7 +95,7 @@ class Home extends Component {
 
           <div className="row">
             <div className="col-lg-12 d-flex justify-content-center">
-              <p className="color-crimson font-opensans-bold-webfont">{`'online' store state is ${online} !!!!!!!!!!!!!!!!`}</p>
+              <p className="color-crimson font-opensans-bold-webfont">'online' store state is online !!!!!!!!!!!!!!!!</p>
             </div>
           </div>
 

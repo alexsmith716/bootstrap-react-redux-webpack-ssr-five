@@ -6,8 +6,19 @@ const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const config = require('../config/config');
+const externals = require('./node-externals');
 
 const rootPath = path.resolve(__dirname, '..');
+
+const generatedIdent = (name, localName, lr) => {
+  const r = Buffer.from(lr).toString('base64');
+  return name + '__' + localName + '--' + r.substring( r.length-12, r.length-3 );
+};
+
+const handler = (percentage, message, ...args) => {
+  // e.g. Output each progress message directly to the console:
+  console.info(percentage, message, ...args);
+};
 
 // ==============================================================================================
 
@@ -30,6 +41,7 @@ module.exports = {
 
   name: 'server',
   target: 'node',
+  externals,
   mode: 'production',
   // devtool: 'hidden-source-map',
 
@@ -46,8 +58,8 @@ module.exports = {
     rules: [
       {
         test: /\.jsx?$/,
-        loader: 'babel-loader',
-        exclude: /node_modules(\/|\\)(?!(@feathersjs))/
+        exclude: /node_modules/,
+        loader: 'babel-loader'
       },
       {
         test: /\.(scss)$/,
@@ -65,7 +77,7 @@ module.exports = {
                   return localName
                 } else {
                   const name = fileName.replace(/\.[^/.]+$/, "")
-                  return `${name}__${localName}`
+                  return generatedIdent(name, localName, loaderContext.resourcePath);
                 }
               },
               importLoaders: 2
@@ -86,8 +98,8 @@ module.exports = {
           {
             loader: 'sass-loader',
             options: {
-              //sourceMap: true,
-              //sourceMapContents: false,
+              sourceMap: true,
+              sourceMapContents: false,
               outputStyle: 'expanded' // https://github.com/sass/node-sass#outputstyle
             }
           },
@@ -111,7 +123,15 @@ module.exports = {
             options: {
               modules: true,
               exportOnlyLocals: true,
-              localIdentName: '[name]__[local]',
+              getLocalIdent: (loaderContext, localIdentName, localName, options) => {
+                const fileName = path.basename(loaderContext.resourcePath)
+                if (fileName.indexOf('global.css') !== -1) {
+                  return localName
+                } else {
+                  const name = fileName.replace(/\.[^/.]+$/, "")
+                  return generatedIdent(name, localName, loaderContext.resourcePath);
+                }
+              },
               importLoaders: 1
             }
           },
@@ -173,6 +193,7 @@ module.exports = {
   },
 
   plugins: [
+    // new webpack.ProgressPlugin(handler),
     // https://webpack.js.org/plugins/module-concatenation-plugin/
     new webpack.optimize.ModuleConcatenationPlugin(),
     // https://webpack.js.org/plugins/internal-plugins/#occurrenceorderplugin

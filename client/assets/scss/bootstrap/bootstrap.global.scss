@@ -49,10 +49,6 @@ $dropdown-bg: darken($dropdown-bg, 20%);
 @import "~bootstrap/scss/_utilities.scss";
 @import "~bootstrap/scss/_print.scss";
 
-//	:global {
-//		@import "~font-awesome/scss/font-awesome.scss";
-//	}
-
 @import "~@fortawesome/fontawesome-free/scss/fontawesome.scss";
 @import "~@fortawesome/fontawesome-free/scss/brands.scss";
 @import "~@fortawesome/fontawesome-free/scss/solid.scss";
@@ -60,10 +56,6 @@ $dropdown-bg: darken($dropdown-bg, 20%);
 
 @import "../app/mixins.scss";
 
-//	:global {
-//		@import '../app/nprogress.scss';
-//	}
 @import '../app/nprogress.scss';
 
-// ':global' switch applied in file
 @import "../app/app.scss";

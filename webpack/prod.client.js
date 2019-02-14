@@ -16,6 +16,16 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const rootPath = path.resolve(__dirname, '..');
 const assetsPath = path.resolve(rootPath, './build/static/dist');
 
+const generatedIdent = (name, localName, lr) => {
+  const r = Buffer.from(lr).toString('base64');
+  return name + '__' + localName + '--' + r.substring( r.length-12, r.length-3 );
+};
+
+const handler = (percentage, message, ...args) => {
+  // e.g. Output each progress message directly to the console:
+  console.info(percentage, message, ...args);
+};
+
 // ==============================================================================================
 
 // https://github.com/bholloway/resolve-url-loader/blob/master/packages/resolve-url-loader/README.md#configure-webpack
@@ -55,8 +65,8 @@ module.exports = {
     rules: [
       {
         test: /\.jsx?$/,
-        loader: 'babel-loader',
-        exclude: /node_modules(\/|\\)(?!(@feathersjs))/
+        exclude: /node_modules/,
+        loader: 'babel-loader'
       },
       {
         test: /\.(scss)$/,
@@ -74,7 +84,7 @@ module.exports = {
                   return localName
                 } else {
                   const name = fileName.replace(/\.[^/.]+$/, "")
-                  return `${name}__${localName}`
+                  return generatedIdent(name, localName, loaderContext.resourcePath);
                 }
               },
               importLoaders: 2
@@ -120,7 +130,15 @@ module.exports = {
             loader : 'css-loader',
             options: {
               modules: true,
-              localIdentName: '[name]__[local]',
+              getLocalIdent: (loaderContext, localIdentName, localName, options) => {
+                const fileName = path.basename(loaderContext.resourcePath)
+                if (fileName.indexOf('global.css') !== -1) {
+                  return localName
+                } else {
+                  const name = fileName.replace(/\.[^/.]+$/, "")
+                  return generatedIdent(name, localName, loaderContext.resourcePath);
+                }
+              },
               importLoaders: 1
             }
           },
@@ -295,13 +313,15 @@ module.exports = {
 
   plugins: [
 
+    // new webpack.ProgressPlugin(handler),
+
     new ExtractCssChunks({
       filename: '[name].[contenthash].css',
       // chunkFilename: '[name].[contenthash].chunk.css',
-      hot: false,
-      orderWarning: true,
+      // hot: false,
+      // orderWarning: true,
       // reloadAll: true,
-      cssModules: true
+      // cssModules: true
     }),
 
     new webpack.optimize.ModuleConcatenationPlugin(),

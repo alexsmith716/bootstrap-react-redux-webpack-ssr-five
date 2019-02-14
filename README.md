@@ -10,20 +10,13 @@ App is somewhat of a continuation of repo 'bootstrap-react-redux-webpack-ssr-fou
 
 =========================================
 
+https://react-redux.js.org/api/provider
+
+context: You may provide a context instance. If you do so, you will need to provide the same context instance to all of your connected components as well. Failure to provide the correct context results in runtime error:
+
 react-redux v6 uses new context not legacy context.
 
 https://reactjs.org/docs/context.html
 https://reactjs.org/docs/legacy-context.html
 
 https://github.com/reduxjs/react-redux
-https://github.com/reduxjs/react-redux/issues/1126
-https://github.com/reduxjs/react-redux/issues/1133
-https://github.com/reduxjs/react-redux/issues/1150
-
-## Going back over basics and beyond for React, Redux and React-Router. Development skills for config (and more) are good enough and planned to focus entirely on React/Redux at this point anyways so turns out this "warning" is well timed!
-
-https://nodejs.org/api/cli.html
-https://nodejs.org/api/debugger.html
-
-https://webpack.js.org/contribute/debugging/#devtools
-https://webpack.js.org/configuration/devtool/#src/components

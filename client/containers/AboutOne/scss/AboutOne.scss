@@ -1,6 +1,20 @@
 
-@import '../../../assets/scss/app/sharedresources.scss';
+@import '../../sharedresources.scss';
 
 .uniqueColor {
   color: #00CED1; // darkturquoise
+}
+
+.cardBodyContainer {
+  padding: calculate-rem(2px);
+  border: calculate-rem(1px) solid #d8dee2;
+  border-radius: calculate-rem(6px);
+  // background-color: #F4F4F4;
+}
+
+.cardBodyContent {
+  padding: calculate-rem(5px);
+  border: calculate-rem(1px) solid #d8dee2;
+  border-radius: calculate-rem(3px);
+  // background-color: #FFFFF0;
 }

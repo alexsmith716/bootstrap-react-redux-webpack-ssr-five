@@ -1,0 +1,31 @@
+[{
+  "category": "Sporting Goods Small",
+  "stocked": true,
+  "name": "Football",
+  "price": "49.99"
+},{
+  "category": "Sporting Goods Small",
+  "stocked": true,
+  "name": "Baseball",
+  "price": "9.99"
+},{
+  "category": "Sporting Goods Small",
+  "stocked": false,
+  "name": "Basketball",
+  "price": "29.99"
+},{
+  "category": "Electronics Small",
+  "stocked": true,
+  "name": "iPod Touch",
+  "price": "99.99"
+},{
+  "category": "Electronics Small",
+  "stocked": false,
+  "name": "iPhone 5",
+  "price": "399.99"
+},{
+  "category": "Electronics Small",
+  "stocked": true,
+  "name": "Nexus 7",
+  "price": "199.99"
+}]

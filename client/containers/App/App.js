@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { push } from 'connected-react-router';
 
-// https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 import renderRoutes from 'react-router-config/renderRoutes';
 
 import { provideHooks } from 'redial';
@@ -16,11 +15,27 @@ import qs from 'qs';
 
 import { Link } from 'react-router-dom';
 
-import { isLoaded as isAuthLoaded, load as loadAuth, logout } from '../../redux/modules/auth';
+// import { isLoaded as isAuthLoaded, load as loadAuth, logout } from '../../redux/modules/auth';
 import { isLoaded as isInfoLoaded, load as loadInfo } from '../../redux/modules/info';
 
 import { Notifs, InfoBar } from '../../components';
 import config from '../../../config/config';
+
+@provideHooks({
+  fetch: async ( { store: { dispatch, getState } } ) => {
+    // access state 'getState()' of 'info'
+    if (!isInfoLoaded(getState())) {
+      await dispatch(loadInfo()).catch(() => null);
+    }
+  }
+})
+
+@connect(
+  state => ({
+    notifs: state.notifs
+  }),
+  { pushState: push }
+)
 
 // --------------------------------------------------------------------------
 // HOC: apply HOCs outside the component definition so that the resulting component is created only once. 
@@ -30,43 +45,16 @@ import config from '../../../config/config';
 // Decorators are functions that return another function
 // class decorators evaluated on runtime && decorated code is replaced with the return value
 
-// 'provideHooks' data fetching and advanced route lifecycle management 
-// define (@provideHooks) and (trigger) route-level lifecycle hooks
-// HOC to ensure all data for routes is prefetched on server before attempting to 'render()'
-// define hooks for custom lifecycle events
-// 'trigger' function ('server' && 'client') will initiate 'fetch' request on components with '@provideHooks' decorator
-@provideHooks({
-  fetch: async ( { store: { dispatch, getState } } ) => {
-
-    // access state 'getState()' of 'auth' && 'info'
-    if (!isAuthLoaded(getState())) {
-
-      // if 'state' of 'auth' or 'info' is false
-      // send 'action' 'LOAD, LOAD_SUCCESS, LOAD_FAIL' payload 'data' from 'app' to 'store'
-      // dispatch action creator 'load()' to create action 'LOAD, LOAD_SUCCESS, LOAD_FAIL'
-      await dispatch(loadAuth()).catch(() => null);
-    }
-    if (!isInfoLoaded(getState())) {
-      await dispatch(loadInfo()).catch(() => null);
-    }
-  }
-})
-
-// connect component to redux store
-// passes state and action creators into component derived from supplied arguments
-// connect([mapStateToProps], [mapDispatchToProps], [mergeProps], [options])
-// mapStateToProps: subscribe to store updates (any time store is updated, 'mapStateToProps' is called)
-// mapDispatchToProps: action creators
-// pushState(href) — pushes a new location onto the history stack (push history method)
-// function mapStateToProps(state) // inject 'notifs' and 'user'
-// function mapDispatchToProps(dispatch) inject action creators 'logout' and 'pushState'
-// does not modify the component class passed to it; it returns a new, connected component class to use
-@connect( state => ({ notifs: state.notifs, user: state.auth.user }), { logout, pushState: push } )
-
 // HOC to access the imperative API
 // You can get access to the history object's properties and the closest <Route>'s 
 //   match via the withRouter higher-order component.
 // withRouter will pass updated match, location, and history props to the wrapped component whenever it renders.
+
+// Each history object has the following properties:
+//  history.length - The number of entries in the history stack
+//  history.location - The current location (see below)
+//  history.action - The current navigation action (PUSH, REPLACE, POP)
+
 @withRouter 
 
 // --------------------------------------------------------------------------
@@ -76,51 +64,26 @@ import config from '../../../config/config';
 
 class App extends Component {
 
-  static propTypes = {
-    route: PropTypes.objectOf(PropTypes.any).isRequired,
-    location: PropTypes.objectOf(PropTypes.any).isRequired,
-    user: PropTypes.shape({email: PropTypes.string}),
-    notifs: PropTypes.shape({global: PropTypes.array}).isRequired,
-    logout: PropTypes.func.isRequired,
-    pushState: PropTypes.func.isRequired
-  };
-
-  static defaultProps = {
-    user: null
-  };
+static propTypes = {
+  route: PropTypes.objectOf(PropTypes.any).isRequired,
+  location: PropTypes.objectOf(PropTypes.any).isRequired,
+  notifs: PropTypes.shape({global: PropTypes.array}).isRequired,
+  pushState: PropTypes.func.isRequired,
+};
 
   static contextTypes = {
-    store: PropTypes.objectOf(PropTypes.any).isRequired
+    store: PropTypes.object.isRequired,
   };
 
-  // getDerivedStateFromProps(): enables component to update internal state as the result of changes in props
-  // lifecycle is invoked after a component is instantiated as well as before it is re-rendered
-  // returns an object to update state, or null to indicate that the new props do not require any state updates
-  // called every time a component is rendered
-  static getDerivedStateFromProps(props, state) {
-    const { prevProps } = state;
-    // Compare the incoming prop to previous prop
-    const user = !_.isEqual(prevProps.user, props.user) ? props.user : state.user;
-
-    if (!prevProps.user && props.user) {
-      const query = qs.parse(props.location.search, { ignoreQueryPrefix: true });
-      props.pushState(query.redirect || '/login-success');
-    } else if (prevProps.user && !props.user) {
-      // logout
-      props.pushState('/');
-    }
-
-    return {
-      // Store the previous props in state
-      prevProps: props,
-      user
-    };
-  }
+  // static defaultProps = {};
 
   state = {
-    prevProps: this.props,
-    user: this.props.user
+    prevProps: this.props
   };
+
+  componentDidMount() {
+    console.log('>>>>>>>>>>>>>>>> APP > componentDidMount() <<<<<<<<<<<<<<');
+  }
 
   // executed after the render() method is done
   // and the new changes to the underlying DOM have been applied
@@ -130,27 +93,22 @@ class App extends Component {
   // && network requests as long as you compare the current props to previous props 
   // (e.g. a network request may not be necessary if the props have not changed)
   componentDidUpdate(prevProps) {
+    console.log('>>>>>>>>>>>>>>>> APP > componentDidUpdate() <<<<<<<<<<<<<<');
     if (this.props.location !== prevProps.location) {
       window.scrollTo(0, 0);
     }
   }
 
-  handleLogout = event => {
-    event.preventDefault();
-    this.props.logout();
-  };
-
   render() {
 
     const { notifs, route } = this.props;
-    const { user } = this.state;
 
     const styles = require('./styles/App.scss');
     const stylesCss = require('./css/AppCss1.css');
 
     return (
 
-      <div className={styles.app}>
+      <div data-reactroot="" className={styles.app}>
 
         <Helmet {...config.app.head} />
 
@@ -173,7 +131,7 @@ class App extends Component {
                 </li>
 
                 <li className="nav-item">
-                  <Link to='/sticky-footer' className="nav-link js-scroll-trigger">StickyFooter</Link>
+                  <Link to='/stickyfooter' className="nav-link js-scroll-trigger">StickyFooter</Link>
                 </li>
 
                 <li className="nav-item">
@@ -195,12 +153,13 @@ class App extends Component {
                 </li>
 
                 <li className="nav-item dropdown">
-                  <a className="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">About Us</a>
+                  <a className="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Links</a>
                   <div className="dropdown-menu" aria-labelledby="dropdown01">
-                    <Link to='/about-one' className="dropdown-item js-scroll-trigger">AboutOne</Link>
-                    <Link to='/about-two' className="dropdown-item js-scroll-trigger">AboutTwo</Link>
-                    <Link to='/about-three' className="dropdown-item js-scroll-trigger">AboutThree</Link>
-                    <Link to='/about-four' className="dropdown-item js-scroll-trigger">AboutFour</Link>
+                    <Link to='/aboutone' className="dropdown-item js-scroll-trigger">About One</Link>
+                    <Link to='/abouttwo' className="dropdown-item js-scroll-trigger">About Two</Link>
+                    <Link to='/aboutthree' className="dropdown-item js-scroll-trigger">About Three</Link>
+                    <Link to='/aboutfour' className="dropdown-item js-scroll-trigger">About Four</Link>
+                    <Link to='/boardgames' className="dropdown-item js-scroll-trigger">Board Games</Link>
                   </div>
                 </li>
               </ul>
@@ -209,22 +168,9 @@ class App extends Component {
         </nav>
 
         <div className={styles.appContent}>
-          {notifs.global && (
-            <div>
-              <Notifs
-                className={styles.notifs}
-                namespace="global"
-                NotifComponent={props => <div>{props.message}</div>}
-              />
-            </div>
-          )}
 
           {renderRoutes(route.routes)}
 
-        </div>
-
-        <div className={styles.appInfoBar}>
-          <InfoBar />
         </div>
 
         <div className={styles.footer}>

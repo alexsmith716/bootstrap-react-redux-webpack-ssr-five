@@ -1,105 +1,139 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
-// import { provideHooks } from 'redial';
-// import MiniInfoBar from 'components/MiniInfoBar/MiniInfoBar';
-// import { isLoaded as isInfoLoaded, load as loadInfo } from 'redux/modules/info';
+
+import AxiosComponentLoaderBasic from '../../components/AxiosComponentLoaderBasic/AxiosComponentLoaderBasic';
+
+import Clock from '../../components/widgets/Clock/Clock';
+import RandomBootstrapAlert from '../../components/widgets/RandomBootstrapAlert/RandomBootstrapAlert';
+import FilterableTable from '../../components/FilterableTable/FilterableTable';
+
+import TemperatureCalculator from '../../components/widgets/LiftingStateUp/TemperatureCalculator';
+
 
 class AboutOne extends Component {
 
+  componentDidMount() {
+    console.log('>>>>>>>>>>>>>>>> AboutOne > componentDidMount() <<<<<<<<<<<<<<');
+  }
+
+  componentWillUnmount() {
+    console.log('>>>>>>>>>>>>>>>> AboutOne > componentWillUnmount() <<<<<<<<<<<<<<');
+  }
+
   render() {
 
-    const aboutImageMain = require('../../assets/images/about-750-450.png');
-    const aboutImageOurCustomers = require('../../assets/images/about-500-300.png');
     const styles = require('./scss/AboutOne.scss');
+    // const uri = encodeURI('/product-categories-small.json');
+    const uri = encodeURI('/product-categories.json');
 
     return (
 
       <div className="container">
 
-        <h1 className={`mt-4 mb-3 ${styles.uniqueColor}`}>About One</h1>
+        <Helmet title="About One" />
+
+        <h1 className={styles.uniqueColor}>About One!</h1>
+
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, consequuntur, modi mollitia corporis ipsa voluptate corrupti eum ratione ex ea praesentium quibusdam? Aut, in eum facere corrupti necessitatibus perspiciatis quis?</p>
 
         <div className="row">
-          <div className="col-lg-6">
-            <img className="img-fluid rounded mb-4" src={aboutImageMain} alt="" />
-          </div>
-          <div className="col-lg-6">
-            <h2>About One Modern Business</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sed voluptate nihil eum consectetur similique? Consectetur, quod, incidunt, harum nisi dolores delectus reprehenderit voluptatem perferendis dicta dolorem non blanditiis ex fugiat.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe, magni, aperiam vitae illum voluptatum aut sequi impedit non velit ab ea pariatur sint quidem corporis eveniet. Odit, temporibus reprehenderit dolorum!</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, consequuntur, modi mollitia corporis ipsa voluptate corrupti eum ratione ex ea praesentium quibusdam? Aut, in eum facere corrupti necessitatibus perspiciatis quis?</p>
-          </div>
-        </div>
 
-        <h2>Our Team</h2>
+          <div className="col-lg-12 mb-4">
 
-        <div className="row">
-          <div className="col-lg-4 mb-4">
-            <div className="card h-100 text-center">
-              <img className="card-img-top" src={aboutImageMain} alt="" />
-              <div className="card-body">
-                <h4 className="card-title">Team Member</h4>
-                <h6 className="card-subtitle mb-2 text-muted">Position</h6>
-                <p className="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus aut mollitia eum ipsum fugiat odio officiis odit.</p>
+            <div className="card h-100">
+
+              <h2 className="card-header text-center">
+                Clock: state and lifecycle in a basic React component!
+              </h2>
+
+              <div className="card-body text-center">
+
+                <div className="card-title">
+
+                  <RandomBootstrapAlert />
+
+                  <p>With supporting text below as a natural lead-in to additional content.</p>
+
+                  <a href="#" className="btn btn-primary">Go somewhere</a>
+
+                </div>
               </div>
-              <div className="card-footer">
-                <a href="#">name@example.com</a>
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-4 mb-4">
-            <div className="card h-100 text-center">
-              <img className="card-img-top" src={aboutImageMain} alt="" />
-              <div className="card-body">
-                <h4 className="card-title">Team Member</h4>
-                <h6 className="card-subtitle mb-2 text-muted">Position</h6>
-                <p className="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus aut mollitia eum ipsum fugiat odio officiis odit.</p>
-              </div>
-              <div className="card-footer">
-                <a href="#">name@example.com</a>
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-4 mb-4">
-            <div className="card h-100 text-center">
-              <img className="card-img-top" src={aboutImageMain} alt="" />
-              <div className="card-body">
-                <h4 className="card-title">Team Member</h4>
-                <h6 className="card-subtitle mb-2 text-muted">Position</h6>
-                <p className="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus aut mollitia eum ipsum fugiat odio officiis odit.</p>
-              </div>
-              <div className="card-footer">
-                <a href="#">name@example.com</a>
+
+              <div className="card-footer text-muted text-center">
+
+                <Clock />
+
               </div>
             </div>
           </div>
         </div>
 
-        <h2>Our Customers</h2>
         <div className="row">
-          <div className="col-lg-2 col-sm-4 mb-4">
-            <img className="img-fluid" src={aboutImageOurCustomers} alt="" />
+
+          <div className="col-lg-12 mb-4">
+
+            <div className="card h-100">
+
+              <h2 className="card-header text-center">
+                Thinking in React!
+              </h2>
+
+              <div className="card-body">
+
+                <h5 className="card-title text-center">
+                  Filterable Product Table
+                </h5>
+
+                <div className={`${styles.cardBodyContainer}`}>
+
+                  <div className={`${styles.cardBodyContent}`}>
+
+                    <AxiosComponentLoaderBasic component={FilterableTable} requestURL={uri} />
+
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
           </div>
-          <div className="col-lg-2 col-sm-4 mb-4">
-            <img className="img-fluid" src={aboutImageOurCustomers} alt="" />
-          </div>
-          <div className="col-lg-2 col-sm-4 mb-4">
-            <img className="img-fluid" src={aboutImageOurCustomers} alt="" />
-          </div>
-          <div className="col-lg-2 col-sm-4 mb-4">
-            <img className="img-fluid" src={aboutImageOurCustomers} alt="" />
-          </div>
-          <div className="col-lg-2 col-sm-4 mb-4">
-            <img className="img-fluid" src={aboutImageOurCustomers} alt="" />
-          </div>
-          <div className="col-lg-2 col-sm-4 mb-4">
-            <img className="img-fluid" src={aboutImageOurCustomers} alt="" />
+        </div>
+
+        <div className="row">
+
+          <div className="col-lg-12 mb-4">
+
+            <div className="card h-100">
+
+              <h2 className="card-header text-center">
+                Thinking in React!
+              </h2>
+
+              <div className="card-body">
+
+                <h5 className="card-title text-center">
+                  Lifting State Up
+                </h5>
+
+                <div className={`${styles.cardBodyContainer}`}>
+
+                  <div className={`${styles.cardBodyContent}`}>
+
+                    <TemperatureCalculator />
+
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
           </div>
         </div>
 
       </div>
-
     );
   }
-};
+}
 
 export default AboutOne;
