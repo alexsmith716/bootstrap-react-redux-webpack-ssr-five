@@ -1,7 +1,6 @@
 import React from 'react';
-import { Form, Field } from 'react-final-form';
 import PropTypes from 'prop-types';
-
+import { Form, Field } from 'react-final-form';
 import loginValidation from './loginValidation';
 
 
@@ -21,7 +20,7 @@ const Input = ({input, label, type, meta: { touched, error, submitError }, ...re
         <label htmlFor={input.name} className="font-weight-600">{label}</label>
 
         <div>
-          <a className="font-size-smaller-90" href="/password_reset">Forgot password?</a>
+          <a className="font-size-smaller-90" href="#">Forgot password?</a>
         </div>
 
       </div>
@@ -31,7 +30,7 @@ const Input = ({input, label, type, meta: { touched, error, submitError }, ...re
 
       <input {...input} {...rest} type={type} className="form-control" />
 
-      {(error || submitError) && touched && <span className="glyphicon glyphicon-remove form-control-feedback" />}
+      {(error || submitError) && touched && <span className="form-control-feedback" />}
 
       {(error || submitError) &&
         touched && (
@@ -45,11 +44,12 @@ const Input = ({input, label, type, meta: { touched, error, submitError }, ...re
 );
 
 Input.propTypes = {
-  input: PropTypes.objectOf(PropTypes.any).isRequired,
+  input: PropTypes.objectOf(PropTypes.any),
   label: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
-  meta: PropTypes.objectOf(PropTypes.any).isRequired
+  meta: PropTypes.objectOf(PropTypes.any)
 };
+
 
 const LoginForm = ({ onSubmit }) => (
 
@@ -57,11 +57,9 @@ const LoginForm = ({ onSubmit }) => (
 
     onSubmit={values => onSubmit(values).then(() => {}, err => err)}
 
-    validate={loginValidation}
+    render = { () => (
 
-    render = { ({ handleSubmit, submitError }) => (
-
-      <form onSubmit={handleSubmit}>
+      <form>
 
         <div className="form-group">
           <Field name="email" type="text" component={Input} label="Username or email address" />
@@ -71,14 +69,8 @@ const LoginForm = ({ onSubmit }) => (
           <Field name="password" type="password" component={Input} label="Password" />
         </div>
 
-        {submitError && (
-          <p className="text-danger">
-            <strong>{submitError}</strong>
-          </p>
-        )}
-
         <div className="d-flex justify-content-center mt-4">
-          <a className="btn btn-success btn-width-one-half" href="index.html">Sign in</a>
+          <a className="btn btn-success btn-width-one-half" href="#">Sign in</a>
         </div>
 
       </form>
@@ -86,9 +78,5 @@ const LoginForm = ({ onSubmit }) => (
     )}
   />
 );
-
-LoginForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-};
 
 export default LoginForm;

@@ -6,6 +6,18 @@ import Helmet from 'react-helmet';
 
 class AboutFour extends Component {
 
+  UNSAFE_componentWillMount() {
+    console.log('>>>>>>>>>>>>>>>> HOME > UNSAFE_componentWillMount() <<<<<<<<<<<<<<');
+  }
+
+  componentDidMount() {
+    console.log('>>>>>>>>>>>>>>>> HOME > componentDidMount() <<<<<<<<<<<<<<');
+  }
+
+  componentWillUnmount() {
+    console.log('>>>>>>>>>>>>>>>> HOME > componentWillUnmount() <<<<<<<<<<<<<<');
+  }
+
   render() {
 
     const aboutImageMain = require('../../assets/images/about-750-450.png');

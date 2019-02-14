@@ -2,10 +2,10 @@ import React from 'react';
 import universal from 'react-universal-component';
 import path from 'path';
 
-const LoginSuccessLoadable = universal(() => import(/* webpackChunkName: 'login-success' */ './LoginSuccess'), {
+const LoginSuccessLoadable = universal(() => import(/* webpackChunkName: 'loginsuccess' */ './LoginSuccess'), {
   path: path.resolve(__dirname, './LoginSuccess'),
   resolve: () => require.resolveWeak('./LoginSuccess'),
-  chunkName: 'login-success',
+  chunkName: 'loginsuccess',
   minDelay: 500
 })
 

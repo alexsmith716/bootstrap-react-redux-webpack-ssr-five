@@ -1,17 +1,7 @@
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
-import { provideHooks } from 'redial';
-import { isLoaded as isInfoLoaded, load as loadInfo } from '../../redux/modules/info';
 
 // --------------------------------------------------------------------------
-
-// HOC to ensure all data for routes is prefetched on server before attempting to render
-// define hooks for custom lifecycle events
-// 'trigger' function ('server' && 'client') will initiate 'fetch' request on components with '@provideHooks' decorator
-@provideHooks({
-  fetch: ({ store: { dispatch, getState } }) =>
-    !isInfoLoaded(getState()) ? dispatch(loadInfo()).catch(() => null) : Promise.resolve()
-})
 
 class About extends Component {
 
@@ -19,6 +9,24 @@ class About extends Component {
     componentButtonState: false,
     // componentHourlyState: false
   };
+
+
+  UNSAFE_componentWillMount() {
+    console.log('>>>>>>>>>>>>>>>> ABOUT > UNSAFE_componentWillMount() <<<<<<<<<<<<<<');
+  }
+
+  componentDidMount() {
+    console.log('>>>>>>>>>>>>>>>> ABOUT > componentDidMount() <<<<<<<<<<<<<<');
+  }
+
+  componentWillUnmount() {
+    console.log('>>>>>>>>>>>>>>>> ABOUT > componentWillUnmount() <<<<<<<<<<<<<<');
+  }
+
+  componentDidUpdate() {
+    console.log('>>>>>>>>>>>>>>>> ABOUT > componentDidUpdate() <<<<<<<<<<<<<<');
+    this._isMounted = false;
+  }
 
   handleButtonState = () => this.setState({ componentButtonState: !this.state.componentButtonState });
 
@@ -120,7 +128,7 @@ class About extends Component {
         <h2>This Component's State!!!</h2>
         <div className="row">
           <div className="col-lg-12 d-flex justify-content-center">
-            <p className="color-crimson font-opensans-bold-webfont">{`'componentButtonState' store state is ${componentButtonState} !!!!!!!!!!!!!!!!`}</p>
+            <p className="color-crimson font-opensans-bold-webfont">'componentButtonState' store state is componentButtonState !!!!!!!!!!!!!!!!</p>
           </div>
         </div>
 

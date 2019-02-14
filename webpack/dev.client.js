@@ -25,9 +25,30 @@ var validDLLs = dllHelpers.isValidDLLs('vendor', path.resolve(__dirname, '../bui
 
 if (process.env.WEBPACK_DLLS === '1' && !validDLLs) {
   process.env.WEBPACK_DLLS = '0';
-  console.warn('>>>>>> webpack.config.client.development.babel > WEBPACK_DLLS disabled !! <<<<<<<<<<');
+  console.log('>>>>>>>>>>>>>>>> dev.client > WEBPACK_DLLS DISABLED !! <<<<<<<<<<<<<<<');
 } else {
-  console.warn('>>>>>> webpack.config.client.development.babel > WEBPACK_DLLS ENABLED !! <<<<<<<<<<');
+  console.log('>>>>>>>>>>>>>>>> dev.client > WEBPACK_DLLS ENABLED !! <<<<<<<<<<<<<<<');
+};
+
+// loaderContext: ton of data about loaded object
+// loaderContext.resourcePath: '/....../bootstrap-react-redux-webpack-ssr-seven/client/containers/About/scss/About.scss'
+
+// generate classname based on a different schema
+// https://nodejs.org/api/buffer.html
+// Node 'Buffer' class enables manipulation of binary data
+// 'Buffer.from(string[, encoding])': returns a new Buffer that contains a copy of the provided string
+// 'Buffer.from('hello world', 'ascii')'
+// strings are immutable (will return new string, not modify)
+// ident unique based on scss directory
+const generatedIdent = (name, localName, lr) => {
+  const r = Buffer.from(lr).toString('base64');
+  return name + '__' + localName + '--' + r.substring( r.length-12, r.length-3 );
+  // substring args based on resourcePath length
+};
+
+const handler = (percentage, message, ...args) => {
+  // e.g. Output each progress message directly to the console:
+  console.info(percentage, message, ...args);
 };
 
 // ==============================================================================================
@@ -35,22 +56,28 @@ if (process.env.WEBPACK_DLLS === '1' && !validDLLs) {
 // https://github.com/bholloway/resolve-url-loader/blob/master/packages/resolve-url-loader/README.md#configure-webpack
 // source-maps required for loaders preceding resolve-url-loader (regardless of devtool)
 
+// https://webpack.js.org/guides/caching/#module-identifiers
+
 // ==============================================================================================
 
 const webpackConfig = {
 
-  // context: path.resolve(__dirname, '..'),
+  context: path.resolve(__dirname, '..'),
 
   name: 'client',
   target: 'web',
   mode: 'development',
-  devtool: 'eval-source-map',  // best quality SourceMaps for development
+  // devtool: 'eval', // Each module is executed with eval() and //@ sourceURL
+  // devtool: false, // disables default devtool configuration
+  // devtool: 'eval-source-map',  // best quality SourceMaps for development
   // devtool: 'source-map',       // A full SourceMap is emitted as a separate file
-  // devtool: 'inline-source-map',   // A SourceMap is added as a DataUrl to the bundle
+  devtool: 'inline-source-map',   // A SourceMap is added as a DataUrl to the bundle
 
   entry: {
     main: [
       `webpack-hot-middleware/client?path=http://${host}:${port}/__webpack_hmr`,
+      // 'webpack-hot-middleware/client?reload=true',
+      // 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=false&quiet=false&noInfo=false',
       path.resolve(__dirname, '../client/assets/scss/bootstrap/bootstrap.global.scss'),
       'bootstrap',
       path.resolve(__dirname, '../client/index.js'),
@@ -59,19 +86,21 @@ const webpackConfig = {
 
   output: {
     filename: '[name].js',
-    chunkFilename: '[name].js',
+    chunkFilename: '[name].chunk.js',
     path: assetsPath,
     publicPath: `http://${host}:${port}/dist/`
     // publicPath: '/dist/'
   },
 
+  cache: false,
+
   module: {
     rules: [
       {
         test: /\.jsx?$/,
-        loader: 'babel-loader',
-        exclude: /node_modules(\/|\\)(?!(@feathersjs))/,
-        // options: babelLoaderQuery
+        exclude: /node_modules/,
+        // options: babelLoaderQuery,
+        loader: 'babel-loader'
       },
       {
         test: /\.(scss)$/,
@@ -82,14 +111,16 @@ const webpackConfig = {
             loader: 'css-loader',
             options: {
               modules: true,
-              // localIdentName: '[name]__[local]__[hash:base64:5]',
+              // localIdentName: '[name]__[local]--[hash:base64:5]',
               getLocalIdent: (loaderContext, localIdentName, localName, options) => {
                 const fileName = path.basename(loaderContext.resourcePath)
                 if (fileName.indexOf('global.scss') !== -1) {
                   return localName
                 } else {
                   const name = fileName.replace(/\.[^/.]+$/, "")
-                  return `${name}__${localName}`
+                  // console.log('>>>>>>>>>>>>>>>> dev.client > getLocalIdent > loaderContext.resourcePath: ', loaderContext.resourcePath);
+                  // console.log('>>>>>>>>>>>>>>>> dev.client > getLocalIdent > ${name}__${localName}: ', `${name}__${localName}`);
+                  return generatedIdent(name, localName, loaderContext.resourcePath);
                 }
               },
               importLoaders: 2,
@@ -136,7 +167,15 @@ const webpackConfig = {
             loader : 'css-loader',
             options: {
               modules: true,
-              localIdentName: '[name]__[local]',
+              getLocalIdent: (loaderContext, localIdentName, localName, options) => {
+                const fileName = path.basename(loaderContext.resourcePath)
+                if (fileName.indexOf('global.css') !== -1) {
+                  return localName
+                } else {
+                  const name = fileName.replace(/\.[^/.]+$/, "")
+                  return generatedIdent(name, localName, loaderContext.resourcePath);
+                }
+              },
               importLoaders: 1,
               sourceMap: true
             }
@@ -201,20 +240,22 @@ const webpackConfig = {
 
   plugins: [
 
+    // new webpack.ProgressPlugin(handler),
     new WriteFilePlugin(),
-
     new webpack.HotModuleReplacementPlugin(),
-
     new webpack.NoEmitOnErrorsPlugin(),
 
     new ExtractCssChunks({
       filename: '[name].[contenthash].css',
       // chunkFilename: '[name].[contenthash].chunk.css',
+      // chunkFilename: '[name]-[hash:8].css',
       hot: true,
-      orderWarning: true,
+      // orderWarning: true,
       reloadAll: true,
-      cssModules: true
+      // cssModules: true
     }),
+
+    new webpack.NamedModulesPlugin(),
 
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: JSON.stringify('development') },
@@ -235,6 +276,18 @@ const webpackConfig = {
       openAnalyzer: false,
       generateStatsFile: false
     }),
+
+    // This plugin enables more fine grained control of source map generation.
+    // https://webpack.js.org/plugins/source-map-dev-tool-plugin/#exclude-vendor-maps
+    // https://webpack.js.org/plugins/source-map-dev-tool-plugin/#host-source-maps-externally
+    // It is also enabled automatically by certain settings of the devtool configuration option.
+    // filename: (string): Defines the output filename of the SourceMap (will be inlined if no value is provided).
+    // exclude: (string|regex|array): Exclude modules that match the given value from source map generation.
+    // *** exclude source maps for any modules in vendor.js bundle ***
+    // new webpack.SourceMapDevToolPlugin({
+    //   filename: '[name].js.map',
+    //   // exclude: ['vendor.js']
+    // }),
 
     // https://webpack.js.org/plugins/provide-plugin/
     // Use modules without having to use import/require

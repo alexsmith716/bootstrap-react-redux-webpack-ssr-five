@@ -2,8 +2,6 @@ import React from 'react';
 import { Form, Field } from 'react-final-form';
 import PropTypes from 'prop-types';
 
-import registerValidation from './registerValidation';
-
 
 const Input = ({input, label, type, meta: { touched, error, submitError }, ...rest}) => (
 
@@ -15,7 +13,7 @@ const Input = ({input, label, type, meta: { touched, error, submitError }, ...re
 
       <input {...input} {...rest} type={type} className="form-control" />
 
-      {(error || submitError) && touched && <span className="glyphicon glyphicon-remove form-control-feedback" />}
+      {(error || submitError) && touched && <span className="form-control-feedback" />}
 
       {(error || submitError) &&
         touched && (
@@ -38,17 +36,15 @@ Input.propTypes = {
 };
 
 
-const RegisterForm = ({ onSubmit, initialValues }) => (
+const RegisterForm = ({ onSubmit }) => (
 
   <Form
 
-    initialValues={initialValues}
     onSubmit={values => onSubmit(values).then(() => {}, err => err)}
-    validate={registerValidation}
 
-    render={({ handleSubmit, submitError }) => (
+    render = { () => (
 
-      <form onSubmit={handleSubmit}>
+      <form>
 
         <div className="form-group">
           <Field name="username" type="text" component={Input} label="Username" />
@@ -66,14 +62,8 @@ const RegisterForm = ({ onSubmit, initialValues }) => (
           <Field name="password_confirmation" type="password" component={Input} label="Password confirmation" />
         </div>
 
-        {submitError && (
-          <p className="text-danger">
-            <strong>{submitError}</strong>
-          </p>
-        )}
-
         <div className="d-flex justify-content-center mt-4">
-          <a className="btn btn-success btn-width-one-third" href="index.html">Register</a>
+          <a className="btn btn-success btn-width-one-third" href="#">Register</a>
         </div>
 
       </form>
@@ -81,15 +71,5 @@ const RegisterForm = ({ onSubmit, initialValues }) => (
     )}
   />
 );
-
-
-RegisterForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-  initialValues: PropTypes.objectOf(PropTypes.any)
-};
-
-RegisterForm.defaultProps = {
-  initialValues: {}
-};
 
 export default RegisterForm;

@@ -1,4 +1,5 @@
 import "@babel/polyfill";
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -198,7 +199,10 @@ initSocket();
   // Server-side rendering check
   if (process.env.NODE_ENV !== 'production') {
     window.React = React; // enable debugger
-    console.log('>>>>>>>>>>>>>>>>>>> CLIENT.JS > Server-side rendering check <<<<<<<<<<<<<<<<<<<<<<');
+    console.log('>>>>>>>>>>>>>>>>>>> CLIENT.JS > Server-side rendering check <<<<<<<<<<<<<<<<<<<<<< dest1: ', dest);
+    console.log('>>>>>>>>>>>>>>>>>>> CLIENT.JS > Server-side rendering check <<<<<<<<<<<<<<<<<<<<<< dest2: ', dest.firstChild);
+    console.log('>>>>>>>>>>>>>>>>>>> CLIENT.JS > Server-side rendering check <<<<<<<<<<<<<<<<<<<<<< dest3: ', dest.firstChild.attributes);
+    console.log('>>>>>>>>>>>>>>>>>>> CLIENT.JS > Server-side rendering check <<<<<<<<<<<<<<<<<<<<<< dest4: ', dest.firstChild.attributes['data-reactroot']);
 
     if (!dest || !dest.firstChild || !dest.firstChild.attributes || !dest.firstChild.attributes['data-reactroot']) {
       console.error('Server-side React render was discarded.' + 'Make sure that your initial render does not contain any client-side code.');

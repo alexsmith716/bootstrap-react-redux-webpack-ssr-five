@@ -6,9 +6,22 @@ const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const config = require('../config/config');
+const externals = require('./node-externals');
+
+const loaderUtils = require('loader-utils').stringifyRequest;
 
 const rootPath = path.resolve(__dirname, '..');
 const WriteFilePlugin = require('write-file-webpack-plugin');
+
+const generatedIdent = (name, localName, lr) => {
+  const r = Buffer.from(lr).toString('base64');
+  return name + '__' + localName + '--' + r.substring( r.length-12, r.length-3 );
+};
+
+const handler = (percentage, message, ...args) => {
+  // e.g. Output each progress message directly to the console:
+  console.info(percentage, message, ...args);
+};
 
 // ==============================================================================================
 
@@ -32,8 +45,11 @@ module.exports = {
 
   name: 'server',
   target: 'node',
+  externals,
   mode: 'development',
-  // devtool: 'eval',  // generated code 
+  // devtool: 'eval',  // generated code
+  // devtool: false,
+  devtool: 'source-map',
 
   entry: path.resolve(__dirname, '../server/server.js'),
 
@@ -47,8 +63,8 @@ module.exports = {
     rules: [
       {
         test: /\.jsx?$/,
-        loader: 'babel-loader',
-        exclude: /node_modules(\/|\\)(?!(@feathersjs))/
+        exclude: /node_modules/,
+        loader: 'babel-loader'
       },
       {
         test: /\.(scss)$/,
@@ -59,17 +75,17 @@ module.exports = {
             options: {
               modules: true,
               exportOnlyLocals: true,
-              // localIdentName: '[name]__[local]__[hash:base64:5]',
+              // localIdentName: '[name]__[local]--[hash:base64:5]',
               getLocalIdent: (loaderContext, localIdentName, localName, options) => {
                 const fileName = path.basename(loaderContext.resourcePath)
                 if (fileName.indexOf('global.scss') !== -1) {
                   return localName
                 } else {
                   const name = fileName.replace(/\.[^/.]+$/, "")
-                  return `${name}__${localName}`
+                  return generatedIdent(name, localName, loaderContext.resourcePath);
                 }
               },
-              importLoaders: 2
+              // importLoaders: 2
             }
           },
           {
@@ -111,8 +127,16 @@ module.exports = {
             options: {
               modules: true,
               exportOnlyLocals: true,
-              localIdentName: '[name]__[local]',
-              importLoaders: 1
+              getLocalIdent: (loaderContext, localIdentName, localName, options) => {
+                const fileName = path.basename(loaderContext.resourcePath)
+                if (fileName.indexOf('global.css') !== -1) {
+                  return localName
+                } else {
+                  const name = fileName.replace(/\.[^/.]+$/, "")
+                  return generatedIdent(name, localName, loaderContext.resourcePath);
+                }
+              },
+              // importLoaders: 1
             }
           },
           {
@@ -176,6 +200,7 @@ module.exports = {
   },
 
   plugins: [
+    // new webpack.ProgressPlugin(handler),
     // https://webpack.js.org/plugins/module-concatenation-plugin/
     // new webpack.optimize.ModuleConcatenationPlugin(),
     // https://webpack.js.org/plugins/internal-plugins/#occurrenceorderplugin

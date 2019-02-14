@@ -1,0 +1,43 @@
+// --------------------------------------------------------------------------------
+// GLOBAL FONTS
+// --------------------------------------------------------------------------------
+
+.font-montserratlight {
+  @include montserratlight-font;
+}
+
+// .font-bootstrap-default {
+//   @include bootstrap-default-font;
+// }
+
+.font-opensans-bold-webfont {
+  @include opensans-bold-webfont-font;
+}
+
+.font-opensans-italic-webfont {
+  @include opensans-italic-webfont-font;
+}
+
+.font-norwester {
+  @include norwester-font;
+}
+
+.font-old-english {
+  @include old-english-font;
+}
+
+.font-philosopher-bold-webfont {
+  @include philosopher-bold-webfont-font;
+}
+
+.font-lobster-v20-latin-regular {
+  @include lobster-v20-latin-regular-font;
+}
+
+.font-sourcesanspro-regular-webfont {
+  @include sourcesanspro-regular-webfont-font;
+}
+
+.font-roboto-mono-v4-latin-regular {
+  @include roboto-mono-v4-latin-regular-font;
+}

@@ -33,9 +33,9 @@ import { withContext } from 'recompose';
 
 const Provider = withContext(
   {
-    app: PropTypes.objectOf(PropTypes.any).isRequired   // an object of React prop types
+    store: PropTypes.objectOf(PropTypes.any).isRequired   // an object of React prop types
   },
-  ({ app }) => ({ app })                                // function that returns the child context
+  ({ store }) => ({ store })                                // function that returns the child context
 )(ReduxProvider);
 
 export default Provider;

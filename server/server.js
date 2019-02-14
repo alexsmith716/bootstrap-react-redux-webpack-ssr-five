@@ -15,16 +15,12 @@ import asyncMatchRoutes from '../server/utils/asyncMatchRoutes';
 // ----------------------------------
 
 // ----------------------------------
-import { Provider } from '../shared';
+import { ReduxAsyncConnect, Provider } from '../shared';
 // ----------------------------------
 
 // ----------------------------------
 import { ConnectedRouter } from 'connected-react-router';
 import { StaticRouter } from 'react-router';
-// ----------------------------------
-
-// ----------------------------------
-import { ReduxAsyncConnect } from '../shared';
 // ----------------------------------
 
 // ----------------------------------
@@ -43,9 +39,9 @@ import routes from '../shared/routes';
 
 import { trigger } from 'redial';
 
-// import { createApp } from './app';
-import { createApp } from '../server/appServer';
-import apiClient from '../server/utils/apiClient';
+import { createApp } from './app';
+// import { createApp } from '../server/appServer';
+import apiClient from './utils/apiClient';
 
 // holds a global cache of all the universal components that are rendered and makes them available via flushChunkNames
 import { flushChunkNames } from 'react-universal-component/server';

@@ -1,10 +1,12 @@
-
-// global styling --------------------------------------
+// ================================================================================
+// GLOBAL STYLING
+// ================================================================================
 
 html {
   position: relative;
   min-height: 100%;
 }
+
 body {
   /* Margin bottom by footer height plus a 'margin-top: 15px' */
   margin-bottom: calculate-rem($footer-height + $footer-margin-top);
@@ -71,6 +73,10 @@ hr.light {
   border-color: #EEEEE0;
 }
 
+.form-control-feedback {
+  text-align: inherit;
+}
+
 .btn-width-one-quarter {
   width: 25%;
 }
@@ -99,375 +105,81 @@ hr.light {
   font-size: 90%;
 }
 
-// --------------------------------------------------------------------------------
-// GLOBAL FONTS
-// --------------------------------------------------------------------------------
-
-.font-montserratlight {
-  @include montserratlight-font;
+.width-100 {
+  width: calculate-rem(100px);
 }
 
-// .font-bootstrap-default {
-//   @include bootstrap-default-font;
-// }
-
-.font-opensans-bold-webfont {
-  @include opensans-bold-webfont-font;
+.width-200 {
+  width: calculate-rem(200px);
 }
 
-.font-opensans-italic-webfont {
-  @include opensans-italic-webfont-font;
+.width-300 {
+  width: calculate-rem(300px);
 }
 
-.font-norwester {
-  @include norwester-font;
+.width-400 {
+  width: calculate-rem(400px);
 }
 
-.font-old-english {
-  @include old-english-font;
+.width-500 {
+  width: calculate-rem(500px);
 }
 
-.font-philosopher-bold-webfont {
-  @include philosopher-bold-webfont-font;
+.width-600 {
+  width: calculate-rem(600px);
 }
 
-.font-lobster-v20-latin-regular {
-  @include lobster-v20-latin-regular-font;
+.width-800 {
+  width: calculate-rem(800px);
 }
 
-.font-sourcesanspro-regular-webfont {
-  @include sourcesanspro-regular-webfont-font;
+.width-one-quarter {
+  width: 25%;
 }
 
-.font-roboto-mono-v4-latin-regular {
-  @include roboto-mono-v4-latin-regular-font;
+.width-one-third {
+  width: 33%;
 }
 
-// -------------------------------------------------------------
-// GLOBAL BACKGROUNDS
-// -------------------------------------------------------------
-
-.bg-color-slategray {
-  background-color: #C6E2FF;
+.width-one-half {
+  width: 50%;
 }
 
-.bg-color-olivedrab-2 {
-  background-color: #B3EE3A;
+.width-three-quarters {
+  width: 75%;
 }
 
-.bg-color-mediumorchid-1 {
-  background-color: #E066FF;
+.container-flex {
+  display: flex;
 }
 
-.bg-color-turquoise-1 {
-  background-color: #00F5FF;
+.container-padding-border-radius-1 {
+  padding: calculate-rem(10px);
+  border: calculate-rem(1px) solid #d8dee2;
+  border-radius: calculate-rem(3px);
 }
 
-.bg-color-darkgoldenrod-1 {
-  background-color: #FFB90F;
+.container-padding-border-radius-2 {
+  padding: calculate-rem(10px);
+  border: calculate-rem(2px) solid #d8dee2;
+  border-radius: calculate-rem(3px);
 }
 
-.bg-color-lightcoral {
-  background-color: #F08080;
+.container-padding-border-radius-3 {
+  padding: calculate-rem(10px);
+  border: calculate-rem(4px) solid #d8dee2;
+  border-radius: calculate-rem(3px);
 }
 
-.bg-color-mediumspringgreen {
-  background-color: #00FA9A;
-}
+// ---------------------------------------------------------------
+// GLOBAL @imports
+// ---------------------------------------------------------------
 
-.bg-color-plum {
-  background-color: #DDA0DD;
-}
+// FONTS
+@import "./global-fonts.scss";
 
-.bg-color-banana {
-  background-color: #E3CF57;
-}
+// BACKGROUNDS
+@import "./global-backgrounds.scss";
 
-// -------------------------------------------------------------
-// GLOBAL COLORS
-// -------------------------------------------------------------
-
-.color-purple {
-  color: #9B30FF;
-}
-
-.color-olive {
-  color: #808000;
-}
-
-.color-crimson {
-  color: #DC143C;
-}
-
-.color-gold {
-  color: #FFD700;
-}
-
-.color-lightblue {
-  color: #BFEFFF;
-}
-
-.color-lavender {
-  color: #E6E6FA;
-}
-
-.color-turquoise {
-  color: #00F5FF;
-}
-
-.color-yellow {
-  color: #FFFF00;
-}
-
-.color-springgreen {
-  color: #00EE76;
-}
-
-.color-azure {
-  color: #F0FFFF;
-}
-
-.color-darkgray {
-  color: #A9A9A9;
-}
-
-.color-salmon {
-  color: #FF8C69;
-}
-
-.color-orangered {
-  color: #FF4500;
-}
-
-// :global {
-// 
-//   #main-nav .navbar-collapse .navbar-nav .nav-item .nav-link {
-//     cursor: pointer;
-//   }
-//   
-//   h2 {
-//     @include tester-font2;
-//   }
-//   
-//   hr {
-//     border-color: $secondary;
-//   }
-//   
-//   hr.light {
-//     border-color: $light;
-//   }
-//   
-//   .fa-padding {
-//     padding-left: calculate-rem(4px);
-//     padding-right: calculate-rem(4px);
-//   }
-//   
-//   .button-facebook,
-//   .button-google {
-//     line-height: 1.2;
-//     width: calculate-rem(116px);
-//     height: calculate-rem(40px);
-//     border-radius: calculate-rem(3px);
-//     border: calculate-rem(1px) solid #B8B8B8;
-//     background-color: #ffffff;
-//   
-//     -webkit-transition: all 0.4s;
-//     -o-transition: all 0.4s;
-//     -moz-transition: all 0.4s;
-//     transition: all 0.4s;
-//   }
-//   
-//   .button-facebook {
-//     color: #3b5998;
-//   }
-//   
-//   .button-facebook i {
-//     font-size: calculate-rem(20px);
-//     margin-right: calculate-rem(10px);
-//     padding-bottom: calculate-rem(1px);
-//   }
-//   
-//   .button-google {
-//     color: #555555;
-//   }
-//   
-//   .button-google img {
-//     width: calculate-rem(19px);
-//     margin-right: calculate-rem(10px);
-//     padding-bottom: calculate-rem(1px);
-//   }
-//   
-//   .button-facebook:hover,
-//   .button-google:hover {
-//     border-color: #EEEEE0;
-//   }
-//   
-//   .btn-width-one-quarter {
-//     width: 25%;
-//   }
-//   
-//   .btn-width-one-third {
-//     width: 33%;
-//   }
-//   
-//   .btn-width-one-half {
-//     width: 50%;
-//   }
-//   
-//   .btn-width-three-quarters {
-//     width: 75%;
-//   }
-//   
-//   .font-weight-bold {
-//     font-weight: bold;
-//   }
-//   
-//   .font-weight-600 {
-//     font-weight: 600;
-//   }
-//   
-//   .font-size-smaller-90 {
-//     font-size: 90%;
-//   }
-//   
-//   // --------------------------------------------------------------------------------
-//   // GLOBAL FONTS
-//   // --------------------------------------------------------------------------------
-//   
-//   .font-montserratlight {
-//     @include montserratlight-font;
-//   }
-//   
-//   // .font-bootstrap-default {
-//   //   @include bootstrap-default-font;
-//   // }
-//   
-//   .font-opensans-bold-webfont {
-//     @include opensans-bold-webfont-font;
-//   }
-//   
-//   .font-opensans-italic-webfont {
-//     @include opensans-italic-webfont-font;
-//   }
-//   
-//   .font-norwester {
-//     @include norwester-font;
-//   }
-//   
-//   .font-old-english {
-//     @include old-english-font;
-//   }
-//   
-//   .font-philosopher-bold-webfont {
-//     @include philosopher-bold-webfont-font;
-//   }
-//   
-//   .font-lobster-v20-latin-regular {
-//     @include lobster-v20-latin-regular-font;
-//   }
-//   
-//   .font-sourcesanspro-regular-webfont {
-//     @include sourcesanspro-regular-webfont-font;
-//   }
-//   
-//   .font-roboto-mono-v4-latin-regular {
-//     @include roboto-mono-v4-latin-regular-font;
-//   }
-//   
-//   // -------------------------------------------------------------
-//   // GLOBAL BACKGROUNDS
-//   // -------------------------------------------------------------
-//   
-//   .bg-color-slategray {
-//     background-color: #C6E2FF;
-//   }
-//   
-//   .bg-color-olivedrab-2 {
-//     background-color: #B3EE3A;
-//   }
-//   
-//   .bg-color-mediumorchid-1 {
-//     background-color: #E066FF;
-//   }
-//   
-//   .bg-color-turquoise-1 {
-//     background-color: #00F5FF;
-//   }
-//   
-//   .bg-color-darkgoldenrod-1 {
-//     background-color: #FFB90F;
-//   }
-//   
-//   .bg-color-lightcoral {
-//     background-color: #F08080;
-//   }
-//   
-//   .bg-color-mediumspringgreen {
-//     background-color: #00FA9A;
-//   }
-//   
-//   .bg-color-plum {
-//     background-color: #DDA0DD;
-//   }
-//   
-//   .bg-color-banana {
-//     background-color: #E3CF57;
-//   }
-//   
-//   // -------------------------------------------------------------
-//   // GLOBAL COLORS
-//   // -------------------------------------------------------------
-//   
-//   .color-purple {
-//     color: #9B30FF;
-//   }
-//   
-//   .color-olive {
-//     color: #808000;
-//   }
-//   
-//   .color-crimson {
-//     color: #DC143C;
-//   }
-//   
-//   .color-gold {
-//     color: #FFD700;
-//   }
-//   
-//   .color-lightblue {
-//     color: #BFEFFF;
-//   }
-//   
-//   .color-lavender {
-//     color: #E6E6FA;
-//   }
-//   
-//   .color-turquoise {
-//     color: #00F5FF;
-//   }
-//   
-//   .color-yellow {
-//     color: #FFFF00;
-//   }
-//   
-//   .color-springgreen {
-//     color: #00EE76;
-//   }
-//   
-//   .color-azure {
-//     color: #F0FFFF;
-//   }
-//   
-//   .color-darkgray {
-//     color: #A9A9A9;
-//   }
-//   
-//   .color-salmon {
-//     color: #FF8C69;
-//   }
-//   
-//   .color-orangered {
-//     color: #FF4500;
-//   }
-// 
-// }
+// COLORS
+@import "./global-colors.scss";
