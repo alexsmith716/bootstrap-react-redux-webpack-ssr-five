@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 
+import { withStore } from '../../../hoc';
+
 import AxiosComponentLoaderBasic from '../../components/AxiosComponentLoaderBasic/AxiosComponentLoaderBasic';
 
 import Clock from '../../components/widgets/Clock/Clock';
@@ -10,8 +12,15 @@ import FilterableTable from '../../components/FilterableTable/FilterableTable';
 
 import TemperatureCalculator from '../../components/widgets/LiftingStateUp/TemperatureCalculator';
 
+// --------------------------------------------------------------------------
+
+@withStore
 
 class AboutOne extends Component {
+
+  static propTypes = {
+    store: PropTypes.objectOf(PropTypes.any).isRequired
+  };
 
   componentDidMount() {
     console.log('>>>>>>>>>>>>>>>> AboutOne > componentDidMount() <<<<<<<<<<<<<<');
@@ -21,11 +30,17 @@ class AboutOne extends Component {
     console.log('>>>>>>>>>>>>>>>> AboutOne > componentWillUnmount() <<<<<<<<<<<<<<');
   }
 
+  // static contextTypes = {
+  //   store: PropTypes.objectOf(PropTypes.any).isRequired
+  // };
+
   render() {
 
     const styles = require('./scss/AboutOne.scss');
     // const uri = encodeURI('/product-categories-small.json');
     const uri = encodeURI('/product-categories.json');
+
+    console.log('>>>>>>>>>>>>>>>> AboutOne > render() <<<<<<<<<<<<<< !!STORE!!: ', this.props.store);
 
     return (
 

@@ -1,19 +1,26 @@
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
+import PropTypes from 'prop-types';
+
+import { withStore } from '../../../hoc';
 
 // --------------------------------------------------------------------------
 
+@withStore
+
 class About extends Component {
+
+  static propTypes = {
+    store: PropTypes.objectOf(PropTypes.any).isRequired
+  };
 
   state = {
     componentButtonState: false,
-    // componentHourlyState: false
   };
 
-
-  UNSAFE_componentWillMount() {
-    console.log('>>>>>>>>>>>>>>>> ABOUT > UNSAFE_componentWillMount() <<<<<<<<<<<<<<');
-  }
+  // static contextTypes = {
+  //   store: PropTypes.objectOf(PropTypes.any).isRequired
+  // };
 
   componentDidMount() {
     console.log('>>>>>>>>>>>>>>>> ABOUT > componentDidMount() <<<<<<<<<<<<<<');
@@ -32,8 +39,9 @@ class About extends Component {
 
   render() {
 
+    console.log('>>>>>>>>>>>>>>>> ABOUT > render() <<<<<<<<<<<<<< !!STORE!!: ',this.props.store);
+
     const { componentButtonState } = this.state;
-    // const { componentHourlyState } = this.state;
 
     const aboutImageMain = require('../../assets/images/about-750-450.png');
     const aboutImageOurCustomers = require('../../assets/images/about-500-300.png');

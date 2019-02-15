@@ -21,6 +21,8 @@ import { isLoaded as isInfoLoaded, load as loadInfo } from '../../redux/modules/
 import { Notifs, InfoBar } from '../../components';
 import config from '../../../config/config';
 
+import { withStore } from '../../../hoc';
+
 @provideHooks({
   fetch: async ( { store: { dispatch, getState } } ) => {
     // access state 'getState()' of 'info'
@@ -55,7 +57,9 @@ import config from '../../../config/config';
 //  history.location - The current location (see below)
 //  history.action - The current navigation action (PUSH, REPLACE, POP)
 
-@withRouter 
+@withRouter
+
+@withStore
 
 // --------------------------------------------------------------------------
 
@@ -64,16 +68,17 @@ import config from '../../../config/config';
 
 class App extends Component {
 
-static propTypes = {
-  route: PropTypes.objectOf(PropTypes.any).isRequired,
-  location: PropTypes.objectOf(PropTypes.any).isRequired,
-  notifs: PropTypes.shape({global: PropTypes.array}).isRequired,
-  pushState: PropTypes.func.isRequired,
-};
-
-  static contextTypes = {
-    store: PropTypes.object.isRequired,
+  static propTypes = {
+    route: PropTypes.objectOf(PropTypes.any).isRequired,
+    location: PropTypes.objectOf(PropTypes.any).isRequired,
+    notifs: PropTypes.shape({global: PropTypes.array}).isRequired,
+    pushState: PropTypes.func.isRequired,
+    store: PropTypes.objectOf(PropTypes.any).isRequired
   };
+
+  // static contextTypes = {
+  //   store: PropTypes.objectOf(PropTypes.any).isRequired
+  // };
 
   // static defaultProps = {};
 
@@ -105,6 +110,8 @@ static propTypes = {
 
     const styles = require('./styles/App.scss');
     const stylesCss = require('./css/AppCss1.css');
+
+    console.log('>>>>>>>>>>>>>>>> APP > render() <<<<<<<<<<<<<< !!STORE!!: ', this.props.store);
 
     return (
 
