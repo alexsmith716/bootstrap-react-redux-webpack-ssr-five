@@ -31,11 +31,19 @@ import { Provider as ReduxProvider } from 'react-redux';
 
 import { withContext } from 'recompose';
 
+// const Provider = withContext(
+//   {
+//     store: PropTypes.objectOf(PropTypes.any).isRequired,
+//   },
+//   ({ store }) => ({ store })
+// )(ReduxProvider);
+
 const Provider = withContext(
   {
-    store: PropTypes.objectOf(PropTypes.any).isRequired   // an object of React prop types
+    store: PropTypes.objectOf(PropTypes.any).isRequired,
+    app: PropTypes.objectOf(PropTypes.any).isRequired
   },
-  ({ store }) => ({ store })                                // function that returns the child context
+  ({ app, store }) => ({ app, store })
 )(ReduxProvider);
 
 export default Provider;

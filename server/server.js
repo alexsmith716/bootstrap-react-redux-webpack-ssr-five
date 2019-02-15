@@ -165,7 +165,7 @@ export default ({ clientStats }) => async (req, res) => {
     helpers: providers
   });
 
-  console.log('>>>>>>>>>>>>>>>>>>> SERVER.JS > APP LOADER > !!!STORE!!1!: ', store);
+  console.log('>>>>>>>>>>>>>>>>>>> SERVER.JS > APP LOADER > STORE: ', store);
 
   try {
 
@@ -185,8 +185,6 @@ export default ({ clientStats }) => async (req, res) => {
     };
 
     await trigger( 'fetch', components, locals);
-
-    console.log('>>>>>>>>>>>>>>>>>>> SERVER.JS > APP LOADER > !!!STORE!!2!: ', store);
 
     // const chunkNames = [];
     const context = {};
@@ -314,11 +312,13 @@ export default ({ clientStats }) => async (req, res) => {
     console.log('>>>>>>>>>>>>>>>> SERVER > ==================== content: ', content);
 
     // const html = <Html assets={assets} store={store} content={content} bundles={flushedFiles} />;
-    const html = <Html assets={assets} store={store} content={content} />;
-    const ssrHtml = `<!doctype html>${ReactDOM.renderToString(html)}`;
-    console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > RESPOND TO CLIENT !! > ReactDOM.renderToString(html):', ssrHtml);
 
-    res.status(200).send(ssrHtml);
+    const html = <Html assets={assets} store={store} content={content} />;
+
+    // const ssrHtml = `<!doctype html>${ReactDOM.renderToString(html)}`;
+    // console.log('>>>>>>>>>>>>>>>> SERVER > APP LOADER > RESPOND TO CLIENT !! > ReactDOM.renderToString(html):', ssrHtml);
+
+    res.status(200).send(`<!doctype html>${ReactDOM.renderToString(html)}`);
     // res.status(200).send('SERVER > Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
 
   } catch (error) {
