@@ -18,6 +18,10 @@ import TemperatureCalculator from '../../components/widgets/LiftingStateUp/Tempe
 
 class AboutOne extends Component {
 
+  constructor(props) {
+    super(props);
+  }
+
   static propTypes = {
     store: PropTypes.objectOf(PropTypes.any).isRequired
   };

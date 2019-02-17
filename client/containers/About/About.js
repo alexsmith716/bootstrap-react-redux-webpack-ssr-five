@@ -10,6 +10,10 @@ import { withStore } from '../../../hoc';
 
 class About extends Component {
 
+  constructor(props) {
+    super(props);
+  }
+
   static propTypes = {
     store: PropTypes.objectOf(PropTypes.any).isRequired
   };
@@ -18,9 +22,9 @@ class About extends Component {
     componentButtonState: false,
   };
 
-  // static contextTypes = {
-  //   store: PropTypes.objectOf(PropTypes.any).isRequired
-  // };
+  //  static contextTypes = {
+  //    store: PropTypes.objectOf(PropTypes.any).isRequired
+  //  };
 
   componentDidMount() {
     console.log('>>>>>>>>>>>>>>>> ABOUT > componentDidMount() <<<<<<<<<<<<<<');
