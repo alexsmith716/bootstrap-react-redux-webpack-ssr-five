@@ -217,8 +217,6 @@ module.exports = {
       __CLIENT__: false,
       __SERVER__: true,
       __DEVELOPMENT__: true,
-      // __DEVTOOLS__: false,
-      // __DLLS__: false
     }),
   ]
 };
