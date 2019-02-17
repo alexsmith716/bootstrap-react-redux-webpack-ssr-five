@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter, Route } from 'react-router';
 import { trigger } from 'redial';
-// import NProgress from 'nprogress';
+import NProgress from 'nprogress';
 import asyncMatchRoutes from '../server/utils/asyncMatchRoutes';
 
 // >>>>>>>>>>>>>>>> ReduxAsyncConnect > componentDidMount() 111111a :  
@@ -36,9 +36,22 @@ import asyncMatchRoutes from '../server/utils/asyncMatchRoutes';
 // >>>>>>>>>>>>>>>> ReduxAsyncConnect > componentDidMount() 33333z :  true
 // >>>>>>>>>>>>>>>> ReduxAsyncConnect > componentDidMount() 444444z :  true
 
+// getDerivedStateFromProps
+// render
+// componentDidMount
+
 @withRouter
 
 export default class ReduxAsyncConnect extends Component {
+
+  constructor(props) {
+
+    super(props);
+
+    this.state = {
+      previousLocation: null
+    };
+  }
 
   static propTypes = {
     children: PropTypes.node.isRequired,
@@ -46,12 +59,11 @@ export default class ReduxAsyncConnect extends Component {
     location: PropTypes.objectOf(PropTypes.any).isRequired
   };
 
-  state = {
-    previousLocation: null
-  };
+  componentDidMount() {
+    console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > componentDidMount() <<<<<<<<<<<<<<');
+  }
 
   static getDerivedStateFromProps(props, state) {
-
     console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > getDerivedStateFromProps() <<<<<<<<<<<<<<');
 
     console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > getDerivedStateFromProps() 111111z : ', state.lastLocation); // <<< pathname: "/"
@@ -71,16 +83,31 @@ export default class ReduxAsyncConnect extends Component {
     }
 
     return null;
-
   }
 
-  componentDidMount() {
-    console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > componentDidMount() <<<<<<<<<<<<<<');
-  }
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > shouldComponentUpdate() <<<<<<<<<<<<<<');
+  //   if (prevProps.list.length < this.props.list.length) {
+  //     const list = this.listRef.current;
+  //     return list.scrollHeight - list.scrollTop;
+  //   }
+  //   return null;
+  // }
+
+  // getSnapshotBeforeUpdate(prevProps, prevState) {
+  //   console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > getSnapshotBeforeUpdate() <<<<<<<<<<<<<<');
+  //   if (prevProps.list.length < this.props.list.length) {
+  //     const list = this.listRef.current;
+  //     return list.scrollHeight - list.scrollTop;
+  //   }
+  //   return null;
+  // }
 
   async componentDidUpdate(prevProps, prevState) {
 
     console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > componentDidUpdate() <<<<<<<<<<<<<<');
+    NProgress.configure({ trickleSpeed: 200 });
+    NProgress.start();
 
     if (prevState.previousLocation === null) {
 
@@ -107,8 +134,12 @@ export default class ReduxAsyncConnect extends Component {
       if (__CLIENT__) {
         await trigger('defer', components, triggerLocals);
       }
-
+      NProgress.done();
     }
+  }
+
+  componentWillUnmount() {
+    console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > componentWillUnmount() <<<<<<<<<<<<<<');
   }
 
   render() {

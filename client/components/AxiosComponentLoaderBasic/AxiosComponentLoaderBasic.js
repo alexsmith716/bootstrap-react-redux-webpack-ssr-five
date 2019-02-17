@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import NProgress from 'nprogress';
 
 import Loading from '../Loading/Loading';
 
@@ -35,7 +36,7 @@ class AxiosComponentLoaderBasic extends React.Component {
       // })
       .then(response => {
         console.log('>>>>>>>>>>>>>>>> AxiosComponentLoaderBasic > requestDataPromise() > json > SUCCESS: ', response.data);
-        this.timerID = setInterval( () => this.setIntervalCallback(response.data), 5000 );
+        this.setIntervalCallbackID = setInterval( () => this.setIntervalCallback(response.data), 5000 );
         // this.setState({ data: response.data, isLoading: false });
       })
       .catch(error => {
@@ -56,7 +57,7 @@ class AxiosComponentLoaderBasic extends React.Component {
   async requestDataAsyncAwait() {
     try {
       const response = await axios.get(this.props.requestURL);
-      this.timerID = setInterval( () => this.setIntervalCallback(response.data), 5000 );
+      this.setIntervalCallbackID = setInterval( () => this.setIntervalCallback(response.data), 5000 );
       // this.setState({ data: response.data, isLoading: false });
       console.log('>>>>>>>>>>>>>>>> AxiosComponentLoaderBasic > requestDataAsyncAwait() > json > SUCCESS: ', response.data);
     } catch (error) {
@@ -65,9 +66,7 @@ class AxiosComponentLoaderBasic extends React.Component {
     }
   }
 
-  setIntervalCallback = (d) => {
-    this.setState({ data: d, isLoading: false });
-  }
+  setIntervalCallback = (d) => this.setState({ data: d, isLoading: false });
 
   componentDidMount() {
     console.log('>>>>>>>>>>>>>>>> AxiosComponentLoaderBasic > componentDidMount() <<<<<<<<<<<<<<');
@@ -77,7 +76,7 @@ class AxiosComponentLoaderBasic extends React.Component {
 
   componentWillUnmount() {
     console.log('>>>>>>>>>>>>>>>> AxiosComponentLoaderBasic > componentWillUnmount() <<<<<<<<<<<<<<');
-    clearInterval(this.timerID);
+    clearInterval(this.setIntervalCallbackID);
   }
 
   render () {
@@ -85,6 +84,7 @@ class AxiosComponentLoaderBasic extends React.Component {
     const { isLoading, data } = this.state;
 
     let Component = this.props.component;
+    const t = 'Loading...';
 
     if ( !isLoading ) {
 
@@ -92,7 +92,7 @@ class AxiosComponentLoaderBasic extends React.Component {
 
     } else {
 
-      return <Loading text={ 'Loading...' } />;
+      return <Loading text={ t } />;
 
     }
   }
