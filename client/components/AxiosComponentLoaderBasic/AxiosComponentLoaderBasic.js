@@ -10,8 +10,6 @@ class AxiosComponentLoaderBasic extends React.Component {
 
     super(props);
 
-    this.handleChange = this.handleChange.bind(this);
-
     this.state = {
       isLoading: true,
       error: null,
@@ -24,7 +22,7 @@ class AxiosComponentLoaderBasic extends React.Component {
     requestURL: PropTypes.string.isRequired
   };
 
-  requestData() {
+  requestDataPromise() {
     axios.get(decodeURI(this.props.requestURL))
       // map the req endpoints to props
       // .then(response => {
@@ -36,40 +34,50 @@ class AxiosComponentLoaderBasic extends React.Component {
       //   }))
       // })
       .then(response => {
-        console.log('>>>>>>>>>>>>>>>> AxiosComponentLoaderBasic > componentDidMount() > json > SUCCESS typeof: ', typeof response.data);
-        console.log('>>>>>>>>>>>>>>>> AxiosComponentLoaderBasic > componentDidMount() > json > SUCCESS data: ', response.data);
-        this.setState({ data: response.data, isLoading: false });
+        console.log('>>>>>>>>>>>>>>>> AxiosComponentLoaderBasic > requestDataPromise() > json > SUCCESS: ', response.data);
+        this.timerID = setInterval( () => this.setIntervalCallback(response.data), 5000 );
+        // this.setState({ data: response.data, isLoading: false });
       })
       .catch(error => {
         if (error.response) {
           // The request was made and the server responded with a status code that falls out of the range of 2xx
-          console.log('>>>>>>>>>>>>>>>> AxiosComponentLoaderBasic > componentDidMount() > json > ERROR.response.data: ', error.response.data);
-          console.log('>>>>>>>>>>>>>>>> AxiosComponentLoaderBasic > componentDidMount() > json > ERROR.response.status: ', error.response.status);
-          console.log('>>>>>>>>>>>>>>>> AxiosComponentLoaderBasic > componentDidMount() > json > ERROR.response.headers: ', error.response.headers);
+          console.log('>>>>>>>>>>>>>>>> AxiosComponentLoaderBasic > requestDataPromise() > json > ERROR.response.data: ', error.response.data);
+          console.log('>>>>>>>>>>>>>>>> AxiosComponentLoaderBasic > requestDataPromise() > json > ERROR.response.status: ', error.response.status);
+          console.log('>>>>>>>>>>>>>>>> AxiosComponentLoaderBasic > requestDataPromise() > json > ERROR.response.headers: ', error.response.headers);
         } else {
           // Something happened in setting up the request that triggered an Error
-          console.log('>>>>>>>>>>>>>>>> AxiosComponentLoaderBasic > componentDidMount() > json > ERROR.message: ', error.message);
+          console.log('>>>>>>>>>>>>>>>> AxiosComponentLoaderBasic > requestDataPromise() > json > ERROR.message: ', error.message);
         }
-        console.log('>>>>>>>>>>>>>>>> AxiosComponentLoaderBasic > componentDidMount() > json > ERROR.config: ', error.config);
+        console.log('>>>>>>>>>>>>>>>> AxiosComponentLoaderBasic > requestDataPromise() > json > ERROR.config: ', error.config);
         this.setState({ error, isLoading: false });
       });
   }
 
+  async requestDataAsyncAwait() {
+    try {
+      const response = await axios.get(this.props.requestURL);
+      this.timerID = setInterval( () => this.setIntervalCallback(response.data), 5000 );
+      // this.setState({ data: response.data, isLoading: false });
+      console.log('>>>>>>>>>>>>>>>> AxiosComponentLoaderBasic > requestDataAsyncAwait() > json > SUCCESS: ', response.data);
+    } catch (error) {
+      console.log('>>>>>>>>>>>>>>>> AxiosComponentLoaderBasic > requestDataAsyncAwait() > json > ERROR: ', error);
+      this.setState({ error, isLoading: false });
+    }
+  }
+
+  setIntervalCallback = (d) => {
+    this.setState({ data: d, isLoading: false });
+  }
+
   componentDidMount() {
     console.log('>>>>>>>>>>>>>>>> AxiosComponentLoaderBasic > componentDidMount() <<<<<<<<<<<<<<');
-    this.requestData();
+    // this.requestDataPromise();
+    this.requestDataAsyncAwait();
   }
 
   componentWillUnmount() {
     console.log('>>>>>>>>>>>>>>>> AxiosComponentLoaderBasic > componentWillUnmount() <<<<<<<<<<<<<<');
-    DataSource.removeChangeListener(this.handleChange);
-  }
-
-  handleChange() {
-    // Update component state whenever the data source changes
-    this.setState({
-      comments: DataSource.getComments()
-    });
+    clearInterval(this.timerID);
   }
 
   render () {
