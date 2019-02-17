@@ -31,6 +31,7 @@ class Tables extends Component {
 
   render() {
 
+    const data = this.props.tablesData;
     const filterText = this.props.filterText;
     const inStockOnly = this.props.inStockOnly;
 
@@ -51,7 +52,7 @@ class Tables extends Component {
 
     // ======================================================================================================
 
-    this.props.tablesData.forEach((tablesDataObject, index, arr) => {
+    data.forEach((tablesDataObject, index, arr) => {
 
       if (tablesDataObject.name.toLowerCase().indexOf(filterText.toLowerCase()) === -1) {
         return;

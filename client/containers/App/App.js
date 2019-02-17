@@ -68,6 +68,10 @@ import { withStore } from '../../../hoc';
 
 class App extends Component {
 
+  constructor(props) {
+    super(props);
+  }
+
   static propTypes = {
     route: PropTypes.objectOf(PropTypes.any).isRequired,
     location: PropTypes.objectOf(PropTypes.any).isRequired,
@@ -76,6 +80,7 @@ class App extends Component {
     store: PropTypes.objectOf(PropTypes.any).isRequired
   };
 
+  // If contextTypes is not defined, then context will be an empty object
   // static contextTypes = {
   //   store: PropTypes.objectOf(PropTypes.any).isRequired
   // };
