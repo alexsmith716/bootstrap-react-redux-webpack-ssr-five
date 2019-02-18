@@ -10,7 +10,6 @@ import Tables from './components/Tables';
 class FilterableTable extends Component {
 
   constructor(props) {
-
     super(props);
 
     this.state = {
@@ -37,13 +36,12 @@ class FilterableTable extends Component {
     this.setState({ inStockOnly: inStockOnly })
   }
 
-  componentDidMount() {
-    console.log('>>>>>>>>>>>>>>>> FilterableTable > componentDidMount() <<<<<<<<<<<<<<');
-  }
+  // ================================================================================================
 
-  componentWillMount() {
-    console.log('>>>>>>>>>>>>>>>> FilterableTable > componentWillMount() <<<<<<<<<<<<<<');
-    this._asyncRequest = axios.get(this.props.requestURL)
+  setIntervalCallback = (d) => this.setState({ externalData: d, isLoading: false });
+
+  requestDataPromise(requestURL) {
+    this._asyncRequest = axios.get(requestURL)
       .then(response => {
         console.log('>>>>>>>>>>>>>>>> FilterableTable > requestDataPromise() > json > SUCCESS2: ', response.data);
           this._asyncRequest = null;
@@ -65,13 +63,49 @@ class FilterableTable extends Component {
       });
   }
 
-  setIntervalCallback = (d) => this.setState({ externalData: d, isLoading: false });
+  async requestDataAsyncAwait(requestURL) {
+    try {
+      const response = await axios.get(requestURL);
+      // this.setState({ externalData: response.data, isLoading: false });
+      this.setIntervalCallbackID = setInterval( () => this.setIntervalCallback(response.data), 5000 );
+      console.log('>>>>>>>>>>>>>>>> AxiosComponentLoaderBasic > requestDataAsyncAwait() > json > SUCCESS: ', response.data);
+    } catch (error) {
+      console.log('>>>>>>>>>>>>>>>> AxiosComponentLoaderBasic > requestDataAsyncAwait() > json > ERROR: ', error);
+      this.setState({ error, isLoading: false });
+    }
+  }
+
+  // ================================================================================================
+
+  static getDerivedStateFromProps(props, state) {
+    // Store prevId in state so we can compare when props change
+    // Clear out previously-loaded data (so we don't render stale stuff)
+    if (props.requestURL !== state.prevId) {
+      return {
+        externalData: null,
+        prevId: props.requestURL,
+      };
+    }
+    // No state update necessary
+    return null;
+  }
+
+  componentDidMount() {
+    console.log('>>>>>>>>>>>>>>>> FilterableTable > componentDidMount() <<<<<<<<<<<<<<');
+    this.requestDataPromise(this.props.requestURL);
+    // this.requestDataAsyncAwait(this.props.requestURL);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    console.log('>>>>>>>>>>>>>>>> FilterableTable > componentDidUpdate() <<<<<<<<<<<<<<');
+    if (this.state.externalData === null) {
+      this.requestDataPromise(this.props.requestURL);
+    }
+  }
 
   componentWillUnmount() {
     console.log('>>>>>>>>>>>>>>>> FilterableTable > componentWillUnmount() <<<<<<<<<<<<<<');
-    if (this._asyncRequest) {
-      this._asyncRequest.cancel();
-    }
+    // if (this._asyncRequest) {}
     clearInterval(this.setIntervalCallbackID);
   }
 
