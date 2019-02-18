@@ -24,7 +24,8 @@ class AxiosComponentLoaderBasic extends React.Component {
   };
 
   requestDataPromise() {
-    axios.get(decodeURI(this.props.requestURL))
+    axios.get(this.props.requestURL)
+    // axios.get(decodeURI(this.props.requestURL))
       // map the req endpoints to props
       // .then(response => {
       //   response.data.categories.map(category => ({
@@ -70,8 +71,8 @@ class AxiosComponentLoaderBasic extends React.Component {
 
   componentDidMount() {
     console.log('>>>>>>>>>>>>>>>> AxiosComponentLoaderBasic > componentDidMount() <<<<<<<<<<<<<<');
-    // this.requestDataPromise();
-    this.requestDataAsyncAwait();
+    this.requestDataPromise();
+    // this.requestDataAsyncAwait();
   }
 
   componentWillUnmount() {
