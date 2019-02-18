@@ -64,6 +64,7 @@ export default class ReduxAsyncConnect extends Component {
   //   return null;
   // }
 
+  // not called for the initial render
   async componentDidUpdate(prevProps, prevState) {
 
     NProgress.start();

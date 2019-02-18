@@ -1,29 +1,11 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 import PropTypes from 'prop-types';
-
+import NProgress from 'nprogress';
+import Loading from '../Loading/Loading';
 import SearchBar from './components/SearchBar';
 import Tables from './components/Tables';
 
-
-// FilterableTable
-//     SearchBar
-//
-//     Tables (forEach > data > category)
-//        Table
-//          TableHead
-//          TableBody
-
-// React DOM compares the element and its children to the previous one, 
-// and only applies the DOM updates necessary to bring the DOM to the desired state
-
-// only the node whose contents has changed gets updated by React DOM
-// think about how the UI should look at any given moment not how to change it over time
-
-// All React components must act like pure functions with respect to their props
-// State (changes) allows React components to change their output over time in response to user actions, 
-// network responses, and anything else without violating 'pure function' rule
-
-// Active, Default, Primary, Secondary, Success, Danger, Warning, Info, Dark
 
 class FilterableTable extends Component {
 
@@ -33,27 +15,24 @@ class FilterableTable extends Component {
 
     this.state = {
       filterText: '',
-      inStockOnly: false
+      inStockOnly: false,
+      isLoading: true,
+      error: null,
+      externalData: null
     };
 
-    // handle events
-    // events are named using camelCase, rather than lowercase
-    // with JSX you pass a function as the event handler, rather than a string
-    // 'e.preventDefault()' prevents default behavior in React
-    // 'bind(this)' is necessary to make `this` work in the callback
     this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
     this.handleInStockChange = this.handleInStockChange.bind(this);
   }
 
   static propTypes = {
-    content: PropTypes.array.isRequired
+    requestURL: PropTypes.string.isRequired
   };
 
   handleFilterTextChange(filterText) {
-    // console.log('>>>>>>>>>>>>>>> FilterableTable > handleFilterTextChange > filterText1:', filterText);
     this.setState({ filterText: filterText });
   }
-  
+
   handleInStockChange(inStockOnly) {
     this.setState({ inStockOnly: inStockOnly })
   }
@@ -62,44 +41,59 @@ class FilterableTable extends Component {
     console.log('>>>>>>>>>>>>>>>> FilterableTable > componentDidMount() <<<<<<<<<<<<<<');
   }
 
+  componentWillMount() {
+    console.log('>>>>>>>>>>>>>>>> FilterableTable > componentWillMount() <<<<<<<<<<<<<<');
+    this._asyncRequest = axios.get(this.props.requestURL)
+      .then(response => {
+        console.log('>>>>>>>>>>>>>>>> FilterableTable > requestDataPromise() > json > SUCCESS2: ', response.data);
+          this._asyncRequest = null;
+          // this.setState({ externalData: response.data, isLoading: false });
+          this.setIntervalCallbackID = setInterval( () => this.setIntervalCallback(response.data), 5000 );
+      })
+      .catch(error => {
+        if (error.externalData) {
+          // The request was made and the server responded with a status code that falls out of the range of 2xx
+          console.log('>>>>>>>>>>>>>>>> FilterableTable > requestDataPromise() > json > ERROR.response.data: ', error.response.data);
+          console.log('>>>>>>>>>>>>>>>> FilterableTable > requestDataPromise() > json > ERROR.response.status: ', error.response.status);
+          console.log('>>>>>>>>>>>>>>>> FilterableTable > requestDataPromise() > json > ERROR.response.headers: ', error.response.headers);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('>>>>>>>>>>>>>>>> FilterableTable > requestDataPromise() > json > ERROR.message: ', error.message);
+        }
+        console.log('>>>>>>>>>>>>>>>> FilterableTable > requestDataPromise() > json > ERROR.config: ', error.config);
+        this.setState({ error, isLoading: false });
+      });
+  }
+
+  setIntervalCallback = (d) => this.setState({ externalData: d, isLoading: false });
+
   componentWillUnmount() {
     console.log('>>>>>>>>>>>>>>>> FilterableTable > componentWillUnmount() <<<<<<<<<<<<<<');
+    if (this._asyncRequest) {
+      this._asyncRequest.cancel();
+    }
+    clearInterval(this.setIntervalCallbackID);
   }
 
   render() {
 
-    console.log('>>>>>>>>>>>>>>>> FilterableTable > render() > this.props.content: ', this.props.content);
-
     const styles = require('./scss/FilterableTable.scss');
+    const { isLoading, externalData } = this.state;
 
-    return (
+    console.log('>>>>>>>>>>>>>>>> FilterableTable > render() > STATE > isLoading: ', isLoading);
+    console.log('>>>>>>>>>>>>>>>> FilterableTable > render() > STATE > externalData: ', externalData);
 
-      <div className={`container-padding-border-radius-2`}>
+    if (this.state.externalData === null) {
 
-        <div className="container-flex bg-color-ivory container-padding-border-radius-1">
-          <div className="width-400">
+      // Render loading state ...
+      return <Loading text={ 'Render loading state ...' } />;
 
-            <SearchBar 
-              filterText={ this.state.filterText }
-              inStockOnly={ this.state.inStockOnly }
-              onFilterTextChange={ this.handleFilterTextChange }
-              onInStockChange={ this.handleInStockChange }
-            />
-          </div>
-        </div>
+    } else {
 
-        <br />
+      // Render real UI ...
+      return <Loading text={ 'Render real UI ...' } />;
 
-        <div>
-
-          <Tables 
-            tablesData={ this.props.content } 
-            filterText={ this.state.filterText }
-            inStockOnly={ this.state.inStockOnly }
-          />
-        </div>
-      </div>
-    );
+    }
   }
 }
 
