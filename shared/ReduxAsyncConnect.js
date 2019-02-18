@@ -5,41 +5,6 @@ import { trigger } from 'redial';
 import NProgress from 'nprogress';
 import asyncMatchRoutes from '../server/utils/asyncMatchRoutes';
 
-// >>>>>>>>>>>>>>>> ReduxAsyncConnect > componentDidMount() 111111a :  
-// Object { pathname: "/", search: "", hash: "", state: undefined }
-// 
-// >>>>>>>>>>>>>>>> ReduxAsyncConnect > componentDidMount() 222222a :  
-// Object { pathname: "/aboutone", search: "", hash: "", state: undefined, key: "huaezb" }
-// 
-// >>>>>>>>>>>>>>>> ReduxAsyncConnect > componentDidMount() 33333a :  true 
-// >>>>>>>>>>>>>>>> ReduxAsyncConnect > componentDidMount() 444444a :  true
-
-
-// "/" to "/aboutone"
-// >>>>>>>>>>>>>>>> ReduxAsyncConnect > componentDidMount() 111111z :  
-// Object { pathname: "/", search: "", hash: "", state: undefined }
-// 
-// >>>>>>>>>>>>>>>> ReduxAsyncConnect > componentDidMount() 222222z :  
-// Object { pathname: "/aboutone", search: "", hash: "", state: undefined, key: "65av8p" }
-// 
-// >>>>>>>>>>>>>>>> ReduxAsyncConnect > componentDidMount() 33333z :  true
-// >>>>>>>>>>>>>>>> ReduxAsyncConnect > componentDidMount() 444444z :  true
-
-
-// "/aboutone" to "/abouttwo"
-// >>>>>>>>>>>>>>>> ReduxAsyncConnect > componentDidMount() 111111z :  
-// Object { pathname: "/aboutone", search: "", hash: "", state: undefined, key: "65av8p" }
-// 
-// >>>>>>>>>>>>>>>> ReduxAsyncConnect > componentDidMount() 222222z :  
-// Object { pathname: "/abouttwo", search: "", hash: "", state: undefined, key: "cd5wch" }
-// 
-// >>>>>>>>>>>>>>>> ReduxAsyncConnect > componentDidMount() 33333z :  true
-// >>>>>>>>>>>>>>>> ReduxAsyncConnect > componentDidMount() 444444z :  true
-
-// getDerivedStateFromProps
-// render
-// componentDidMount
-
 @withRouter
 
 export default class ReduxAsyncConnect extends Component {
@@ -61,19 +26,15 @@ export default class ReduxAsyncConnect extends Component {
 
   componentDidMount() {
     console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > componentDidMount() <<<<<<<<<<<<<<');
+    NProgress.configure({ trickleSpeed: 200 });
   }
 
   static getDerivedStateFromProps(props, state) {
     console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > getDerivedStateFromProps() <<<<<<<<<<<<<<');
 
-    console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > getDerivedStateFromProps() 111111z : ', state.lastLocation); // <<< pathname: "/"
-    console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > getDerivedStateFromProps() 222222z : ', props.location); // <<< pathname: "/aboutone"
-
     const navigated = props.location !== state.lastLocation;
-    console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > getDerivedStateFromProps() 33333z : ', navigated);
 
     if (navigated) {
-      console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > getDerivedStateFromProps() 444444z : ', navigated);
       // save the location so we can render the old screen
       // >> then: load data while the old screen remains
       return {
@@ -105,11 +66,15 @@ export default class ReduxAsyncConnect extends Component {
 
   async componentDidUpdate(prevProps, prevState) {
 
-    console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > componentDidUpdate() <<<<<<<<<<<<<<');
-    NProgress.configure({ trickleSpeed: 200 });
     NProgress.start();
 
+    if (prevState.previousLocation !== null) {
+      NProgress.done();
+    }
+
     if (prevState.previousLocation === null) {
+
+      NProgress.start();
 
       const { history, location, routes, store, helpers } = this.props;
 
@@ -146,12 +111,12 @@ export default class ReduxAsyncConnect extends Component {
     const { children, location } = this.props;
     const { previousLocation } = this.state;
 
-    console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > render() > children:', children);
-    console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > render() > location:', location);
-    console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > render() > previousLocation:', previousLocation);
+    // console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > render() > children:', children);
+    // console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > render() > location:', location);
+    // console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > render() > previousLocation:', previousLocation);
 
     const theRoute = <Route location={previousLocation || location} render={() => children} />;
-    console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > render() > <Route>:', theRoute);
+    // console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > render() > <Route>:', theRoute);
 
     return <Route location={previousLocation || location} render={() => children} />;
   }
