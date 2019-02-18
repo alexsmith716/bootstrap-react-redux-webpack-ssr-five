@@ -21,6 +21,46 @@ class Loading extends Component {
     NProgress.start();
   }
 
+  // issue with NProgress not showing after 1st render
+  // async componentDidUpdate(prevProps, prevState) {
+
+  //   NProgress.start();
+
+  //   if (prevState.previousLocation !== null) {
+  //     NProgress.done();
+  //   }
+
+  //   if (prevState.previousLocation === null) {
+
+  //     NProgress.start();
+
+  //     const { history, location, routes, store, helpers } = this.props;
+
+  //     this.setState({ previousLocation: location });
+
+  //     // load data while the old screen remains
+  //     const { components, match, params } = await asyncMatchRoutes(routes, this.props.location.pathname);
+
+  //     const triggerLocals = {
+  //       ...helpers,
+  //       store,
+  //       match,
+  //       params,
+  //       history,
+  //       location: this.props.location
+  //     };
+
+  //     console.log('>>>>>>>>>>>>>>>> ReduxAsyncConnect > componentDidUpdate() > triggerLocals: ', triggerLocals);
+
+  //     await trigger('fetch', components, triggerLocals);
+
+  //     if (__CLIENT__) {
+  //       await trigger('defer', components, triggerLocals);
+  //     }
+  //     NProgress.done();
+  //   }
+  // }
+
   componentWillUnmount() {
     console.log('>>>>>>>>>>>>>>>> Loading > componentWillUnmount() <<<<<<<<<<<<<<');
     NProgress.done();
