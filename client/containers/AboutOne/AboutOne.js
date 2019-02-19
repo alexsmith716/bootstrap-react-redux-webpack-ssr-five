@@ -41,8 +41,8 @@ class AboutOne extends Component {
   render() {
 
     const styles = require('./scss/AboutOne.scss');
-    // const uri = encodeURI('/product-categories-small.json');
-    const uri = encodeURI('/product-categories.json');
+    const uri = encodeURI('/product-categories-small.json');
+    // const uri = encodeURI('/product-categories.json');
 
     console.log('>>>>>>>>>>>>>>>> AboutOne > render() <<<<<<<<<<<<<< !!STORE!!: ', this.props.store);
 

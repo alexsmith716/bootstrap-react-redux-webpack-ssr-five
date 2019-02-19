@@ -78,15 +78,13 @@ class FilterableTable extends Component {
   // ================================================================================================
 
   static getDerivedStateFromProps(props, state) {
-    // Store prevId in state so we can compare when props change
-    // Clear out previously-loaded data (so we don't render stale stuff)
     if (props.requestURL !== state.prevId) {
       return {
         externalData: null,
         prevId: props.requestURL,
       };
     }
-    // No state update necessary
+
     return null;
   }
 
@@ -100,6 +98,8 @@ class FilterableTable extends Component {
     console.log('>>>>>>>>>>>>>>>> FilterableTable > componentDidUpdate() <<<<<<<<<<<<<<');
     if (this.state.externalData === null) {
       this.requestDataPromise(this.props.requestURL);
+    } else {
+      clearInterval(this.setIntervalCallbackID);
     }
   }
 
