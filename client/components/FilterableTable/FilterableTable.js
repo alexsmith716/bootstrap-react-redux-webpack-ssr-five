@@ -125,7 +125,38 @@ class FilterableTable extends Component {
     } else {
 
       // Render real UI ...
-      return <Loading text={ 'Render real UI ...' } />;
+      // return <Loading text={ 'Render real UI ...' } />;
+      return (
+
+        <div className={`container-padding-border-radius-2`}>
+
+          <div className="container-flex bg-color-ivory container-padding-border-radius-1">
+            <div className="width-400">
+
+              <SearchBar 
+                filterText={ this.state.filterText }
+                inStockOnly={ this.state.inStockOnly }
+                onFilterTextChange={ this.handleFilterTextChange }
+                onInStockChange={ this.handleInStockChange }
+              />
+
+            </div>
+          </div>
+
+          <br />
+
+          <div>
+
+            <Tables 
+              tablesData={ externalData } 
+              filterText={ this.state.filterText }
+              inStockOnly={ this.state.inStockOnly }
+            />
+
+          </div>
+
+        </div>
+      );
 
     }
   }
