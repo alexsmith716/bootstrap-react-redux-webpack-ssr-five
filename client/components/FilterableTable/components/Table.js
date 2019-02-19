@@ -20,7 +20,7 @@ class Table extends Component {
   };
 
   componentDidMount() {
-    console.log('>>>>>>>>>>>>>>>> TABLE > componentDidMount <<<<<<<<<<<<<<<<<<<<<<');
+    // console.log('>>>>>>>>>>>>>>>> TABLE > componentDidMount <<<<<<<<<<<<<<<<<<<<<<');
   }
 
   componentWillUnmount() {

@@ -137,7 +137,7 @@ class AboutOne extends Component {
                       <div className="container-flex bg-color-ivory container-padding-border-radius-1">
                         <div className="width-400">
                     
-                          <Dropdown title={dropdownTiltle} optionsArray={dropdownOptions}/>
+                          <Dropdown title={dropdownTiltle} optionsArray={dropdownOptions} />
                     
                         </div>
                       </div>

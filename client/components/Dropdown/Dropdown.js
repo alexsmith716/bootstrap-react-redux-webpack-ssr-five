@@ -2,13 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import NProgress from 'nprogress';
 
-  // <div className="form-group">
-  //   <label htmlFor="exampleFormControlSelect1">{ title }</label>
-  //   <select className="form-control" id="exampleFormControlSelect1">
-  //     <option>product-categories-small</option>
-  //     <option>product-categories</option>
-  //   </select>
-  // </div>
+// STATE: private and fully controlled by the component
+// it's input (Prop) that the component can update/change/modify
+// Because: All React components must act like pure functions with respect to their props
+
 
 class Dropdown extends Component {
 

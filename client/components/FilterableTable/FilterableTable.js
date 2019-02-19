@@ -6,6 +6,10 @@ import Loading from '../Loading/Loading';
 import SearchBar from './components/SearchBar';
 import Tables from './components/Tables';
 
+// STATE: private and fully controlled by the component
+// it's input (Prop) that the component can update/change/modify
+// Because: All React components must act like pure functions with respect to their props
+
 
 class FilterableTable extends Component {
 
@@ -42,6 +46,15 @@ class FilterableTable extends Component {
 
   requestDataPromise(requestURL) {
     this._asyncRequest = axios.get(requestURL)
+      // map the req endpoints to props
+      // .then(response => {
+      //   response.data.categories.map(category => ({
+      //     category: `${category.category}`,
+      //     stocked: `${category.login.username}`,
+      //     name: `${category.email}`,
+      //     price: `${category.price}`,
+      //   }))
+      // })
       .then(response => {
         console.log('>>>>>>>>>>>>>>>> FilterableTable > requestDataPromise() > json > SUCCESS2: ', response.data);
           this._asyncRequest = null;
@@ -113,6 +126,7 @@ class FilterableTable extends Component {
 
     const styles = require('./scss/FilterableTable.scss');
     const { isLoading, externalData } = this.state;
+    const loadingText = 'Rendering loading state ...';
 
     console.log('>>>>>>>>>>>>>>>> FilterableTable > render() > STATE > isLoading: ', isLoading);
     console.log('>>>>>>>>>>>>>>>> FilterableTable > render() > STATE > externalData: ', externalData);
@@ -120,12 +134,23 @@ class FilterableTable extends Component {
     if (this.state.externalData === null) {
 
       // Render loading state ...
-      return <Loading text={ 'Render loading state ...' } />;
+      return (
+
+        <div className={`container-padding-border-radius-2`}>
+
+          <div className="container-padding-border-radius-1">
+
+            <Loading text={ loadingText } />
+
+          </div>
+
+        </div>
+
+      );
 
     } else {
 
       // Render real UI ...
-      // return <Loading text={ 'Render real UI ...' } />;
       return (
 
         <div className={`container-padding-border-radius-2`}>
@@ -154,10 +179,8 @@ class FilterableTable extends Component {
             />
 
           </div>
-
         </div>
       );
-
     }
   }
 }

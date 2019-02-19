@@ -24,7 +24,7 @@ class TableRow extends Component {
   // static defaultProps = {};
 
   componentDidMount() {
-    console.log('>>>>>>>>>>>>>>>> TableRow > componentDidMount <<<<<<<<<<<<<<<<<<<<<<');
+    // console.log('>>>>>>>>>>>>>>>> TableRow > componentDidMount <<<<<<<<<<<<<<<<<<<<<<');
     if (this.props.colSpan) {
       this.timerID = setInterval( () => this.getRandomHeadingColor(), 5000 );
     }
