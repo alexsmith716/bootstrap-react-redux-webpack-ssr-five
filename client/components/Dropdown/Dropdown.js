@@ -2,6 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import NProgress from 'nprogress';
 
+  // <div className="form-group">
+  //   <label htmlFor="exampleFormControlSelect1">{ title }</label>
+  //   <select className="form-control" id="exampleFormControlSelect1">
+  //     <option>product-categories-small</option>
+  //     <option>product-categories</option>
+  //   </select>
+  // </div>
 
 class Dropdown extends Component {
 
@@ -12,7 +19,8 @@ class Dropdown extends Component {
   }
 
   static propTypes = {
-    // text: PropTypes.string
+    title: PropTypes.string,
+    optionsArray: PropTypes.array.isRequired
   };
 
   componentDidMount() {
@@ -28,20 +36,26 @@ class Dropdown extends Component {
 
   render() {
 
-    // const t = this.props.text;
+    const { title, optionsArray } = this.props;
 
     return (
 
       <form>
 
         <div className="form-group">
-          <label htmlFor="exampleFormControlSelect1">Product Tables</label>
+
+          <label htmlFor="exampleFormControlSelect1">{ title }</label>
+
           <select className="form-control" id="exampleFormControlSelect1">
-            <option>product-categories-small</option>
-            <option>product-categories</option>
-            <option>product-categories-small</option>
-            <option>product-categories</option>
+
+            {optionsArray.map((option, index) => (
+              <React.Fragment key={index}>
+                <option>{option}</option>
+              </React.Fragment>
+            ))}
+
           </select>
+
         </div>
 
       </form>
