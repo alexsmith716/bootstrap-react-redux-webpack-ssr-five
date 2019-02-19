@@ -36,6 +36,11 @@ class AboutOne extends Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      // externalData: null,
+
+    };
   }
 
   static propTypes = {
@@ -59,6 +64,9 @@ class AboutOne extends Component {
     const styles = require('./scss/AboutOne.scss');
     // const uri = encodeURI('/product-categories-small.json');
     const uri = encodeURI('/product-categories.json');
+
+    const dropdownTiltle = 'Select Product Table';
+    const dropdownOptions = ['/product-categories-small.json', '/product-categories.json', '/product-categories-small2.json', '/product-categories2.json'];
 
     console.log('>>>>>>>>>>>>>>>> AboutOne > render() <<<<<<<<<<<<<< !!STORE!!: ', this.props.store);
 
@@ -116,6 +124,10 @@ class AboutOne extends Component {
 
               <div className="card-body">
 
+                <h5 className="card-title text-center">
+                  Filterable Product Table
+                </h5>
+
                 <div className={`${styles.cardBodyContainer}`}>
 
                   <div className={`${styles.cardBodyContent}`}>
@@ -125,7 +137,7 @@ class AboutOne extends Component {
                       <div className="container-flex bg-color-ivory container-padding-border-radius-1">
                         <div className="width-400">
                     
-                          <Dropdown />
+                          <Dropdown title={dropdownTiltle} optionsArray={dropdownOptions}/>
                     
                         </div>
                       </div>
