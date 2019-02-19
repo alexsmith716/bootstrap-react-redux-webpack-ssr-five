@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 // STATE: private and fully controlled by the component
+// it's input (Prop) that the component can update/change/modify
+// Because: All React components must act like pure functions with respect to their props
 
 class AxiosComponentLoaderBasic extends Component {
   
@@ -45,19 +47,14 @@ class AxiosComponentLoaderBasic extends Component {
     console.log('>>>>>>>>>>>>>>>> AxiosComponentLoaderBasic > render() <<<<<<<<<<<<<<');
 
     let Component = this.props.component;
-    // const u = this.props.requestURL;
-    //const t = 'Loading...';
 
-    //if ( !isLoading ) {
+    return (
 
-      return <Component requestURL={ loaderURI } />;
+      <Component requestURL={ loaderURI } />
 
-    //} else {
-
-      //return <Loading text={ t } />;
-
-    //}
+    );
   }
 }
 
 export default AxiosComponentLoaderBasic;
+

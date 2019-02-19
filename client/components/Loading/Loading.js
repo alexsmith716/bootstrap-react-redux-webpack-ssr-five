@@ -32,7 +32,7 @@ class Loading extends Component {
 
     return (
 
-      <div>{ t }</div>
+      <div className="alert alert-warning text-center" role="alert">{ t }</div>
 
     );
   }
