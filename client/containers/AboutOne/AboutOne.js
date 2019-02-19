@@ -8,9 +8,25 @@ import AxiosComponentLoaderBasic from '../../components/AxiosComponentLoaderBasi
 
 import Clock from '../../components/widgets/Clock/Clock';
 import RandomBootstrapAlert from '../../components/widgets/RandomBootstrapAlert/RandomBootstrapAlert';
+
+import Dropdown from '../../components/Dropdown/Dropdown';
 import FilterableTable from '../../components/FilterableTable/FilterableTable';
 
 import TemperatureCalculator from '../../components/widgets/LiftingStateUp/TemperatureCalculator';
+
+// <div className="card-title">
+
+//   <h5 className="text-center">Filterable Product Table</h5>
+
+//   <p className="container-flex bg-color-ivory container-padding-10-border-1-radius-3">
+//     <div className="width-400">
+
+//       <Dropdown />
+
+//     </div>
+//   </p>
+
+// </div>
 
 // --------------------------------------------------------------------------
 
@@ -41,8 +57,8 @@ class AboutOne extends Component {
   render() {
 
     const styles = require('./scss/AboutOne.scss');
-    const uri = encodeURI('/product-categories-small.json');
-    // const uri = encodeURI('/product-categories.json');
+    // const uri = encodeURI('/product-categories-small.json');
+    const uri = encodeURI('/product-categories.json');
 
     console.log('>>>>>>>>>>>>>>>> AboutOne > render() <<<<<<<<<<<<<< !!STORE!!: ', this.props.store);
 
@@ -100,13 +116,23 @@ class AboutOne extends Component {
 
               <div className="card-body">
 
-                <h5 className="card-title text-center">
-                  Filterable Product Table
-                </h5>
-
                 <div className={`${styles.cardBodyContainer}`}>
 
                   <div className={`${styles.cardBodyContent}`}>
+
+                    <div className={`container-padding-border-radius-2`}>
+                    
+                      <div className="container-flex bg-color-ivory container-padding-border-radius-1">
+                        <div className="width-400">
+                    
+                          <Dropdown />
+                    
+                        </div>
+                      </div>
+                    
+                    </div>
+
+                    <br/>
 
                     <AxiosComponentLoaderBasic component={FilterableTable} requestURL={uri} />
 
