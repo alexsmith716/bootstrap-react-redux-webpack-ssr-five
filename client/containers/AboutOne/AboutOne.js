@@ -37,9 +37,16 @@ class AboutOne extends Component {
   constructor(props) {
     super(props);
 
+    // thinking through react with next cool code change
+    // --------------------------------------------------------------------------
+    // 'AxiosComponentLoaderBasic' will take 'Required' prop 'requestURL' from 'AboutOne's state 'dropDownOptionSelected'
+    // 'Dropdown's 'onChange' event will cause a lifted state change in 'AboutOne' for it's state 'dropDownOptionSelected'
+    // state 'dropDownOptionSelected' is lifted from 'Dropdown' to 'AboutOne'
+    // state 'dropDownOptionSelected', if changed, will cause render of 'AxiosComponentLoaderBasic' with modified 'prop' 'requestURL'
+    // 'Dropdown' will take a 'Required' lifted 'state' and take a prop 'title' and 'Required' prop 'optionsArray'
+    // test it tomorrow (as usual, something like that) 
     this.state = {
-      // externalData: null,
-
+      dropDownOptionSelected: null,
     };
   }
 
@@ -66,9 +73,16 @@ class AboutOne extends Component {
     const uri = encodeURI('/product-categories.json');
 
     const dropdownTiltle = 'Select Product Table';
-    const dropdownOptions = ['/product-categories-small.json', '/product-categories.json', '/product-categories-small2.json', '/product-categories2.json'];
+    const dropdownOptions = ['/product-categories-small.json','/product-categories.json','/product-categories-small2.json','/product-categories2.json'];
 
-    console.log('>>>>>>>>>>>>>>>> AboutOne > render() <<<<<<<<<<<<<< !!STORE!!: ', this.props.store);
+    const ddos = this.state.dropDownOptionSelected;
+    let ft;
+
+    if (ddos) {
+      ft = <LogoutButton onClick={this.handleLogoutClick} />;
+    }
+
+    // console.log('>>>>>>>>>>>>>>>> AboutOne > render() <<<<<<<<<<<<<< !!STORE!!: ', this.props.store);
 
     return (
 
@@ -76,7 +90,7 @@ class AboutOne extends Component {
 
         <Helmet title="About One" />
 
-        <h1 className={styles.uniqueColor}>About One!</h1>
+        <h1 className={styles.uniqueColor}>About One</h1>
 
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, consequuntur, modi mollitia corporis ipsa voluptate corrupti eum ratione ex ea praesentium quibusdam? Aut, in eum facere corrupti necessitatibus perspiciatis quis?</p>
 
