@@ -14,20 +14,6 @@ import FilterableTable from '../../components/FilterableTable/FilterableTable';
 
 import TemperatureCalculator from '../../components/widgets/LiftingStateUp/TemperatureCalculator';
 
-// <div className="card-title">
-
-//   <h5 className="text-center">Filterable Product Table</h5>
-
-//   <p className="container-flex bg-color-ivory container-padding-10-border-1-radius-3">
-//     <div className="width-400">
-
-//       <Dropdown />
-
-//     </div>
-//   </p>
-
-// </div>
-
 // --------------------------------------------------------------------------
 
 @withStore
@@ -46,13 +32,19 @@ class AboutOne extends Component {
     // 'Dropdown' will take a 'Required' lifted 'state' and take a prop 'title' and 'Required' prop 'optionsArray'
     // test it tomorrow (as usual, something like that) 
     this.state = {
-      dropDownOptionSelected: null,
+      dropDownOptionSelected: '',
     };
   }
 
   static propTypes = {
     store: PropTypes.objectOf(PropTypes.any).isRequired
   };
+
+  // static defaultProps = {};
+
+  handleDropdownChange = (dropDownOptionSelected) => {
+    this.setState( { dropDownOptionSelected } );
+  }
 
   componentDidMount() {
     console.log('>>>>>>>>>>>>>>>> AboutOne > componentDidMount() <<<<<<<<<<<<<<');
@@ -70,19 +62,27 @@ class AboutOne extends Component {
 
     const styles = require('./scss/AboutOne.scss');
     // const uri = encodeURI('/product-categories-small.json');
-    const uri = encodeURI('/product-categories.json');
+    // const uri = encodeURI('/product-categories.json');
 
     const dropdownTiltle = 'Select Product Table';
-    const dropdownOptions = ['/product-categories-small.json','/product-categories.json','/product-categories-small2.json','/product-categories2.json'];
 
-    const ddos = this.state.dropDownOptionSelected;
-    let ft;
+    const dropdownOptions = [
+      '/product-categories-small.json',
+      '/product-categories.json',
+      '/product-categories-small.json',
+      '/product-categories.json',
+      '/product-categories-small.json',
+      '/product-categories.json',
+      '/product-categories-small.json',
+      '/product-categories.json'
+    ];
 
-    if (ddos) {
-      ft = <LogoutButton onClick={this.handleLogoutClick} />;
+    const dropDownOptionSelected = this.state.dropDownOptionSelected;
+    let filterableTable;
+
+    if (dropDownOptionSelected !== '') {
+      filterableTable = <FilterableTable requestURL={ dropDownOptionSelected } />;
     }
-
-    // console.log('>>>>>>>>>>>>>>>> AboutOne > render() <<<<<<<<<<<<<< !!STORE!!: ', this.props.store);
 
     return (
 
@@ -151,7 +151,12 @@ class AboutOne extends Component {
                       <div className="container-flex bg-color-ivory container-padding-border-radius-1">
                         <div className="width-400">
                     
-                          <Dropdown title={dropdownTiltle} optionsArray={dropdownOptions} />
+                          <Dropdown
+                            title={dropdownTiltle}
+                            optionsArray={dropdownOptions}
+                            dropDownOptionSelected={dropDownOptionSelected}
+                            onDropdownChange={ this.handleDropdownChange }
+                          />
                     
                         </div>
                       </div>
@@ -160,7 +165,7 @@ class AboutOne extends Component {
 
                     <br/>
 
-                    <AxiosComponentLoaderBasic component={FilterableTable} requestURL={uri} />
+                    { filterableTable }
 
                   </div>
 

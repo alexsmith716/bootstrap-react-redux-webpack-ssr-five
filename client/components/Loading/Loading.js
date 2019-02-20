@@ -15,6 +15,8 @@ class Loading extends Component {
     text: PropTypes.string
   };
 
+  // static defaultProps = {};
+
   componentDidMount() {
     console.log('>>>>>>>>>>>>>>>> Loading > componentDidMount() <<<<<<<<<<<<<<');
     NProgress.configure({ trickleSpeed: 200 });
