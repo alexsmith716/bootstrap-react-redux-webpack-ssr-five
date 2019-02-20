@@ -32,6 +32,8 @@ class FilterableTable extends Component {
     requestURL: PropTypes.string.isRequired
   };
 
+  // static defaultProps = {};
+
   handleFilterTextChange(filterText) {
     this.setState({ filterText: filterText });
   }
@@ -126,7 +128,7 @@ class FilterableTable extends Component {
 
     const styles = require('./scss/FilterableTable.scss');
     const { isLoading, externalData } = this.state;
-    const loadingText = 'Rendering loading state ...';
+    const loadingText = 'Fetching Requested Data ...';
 
     console.log('>>>>>>>>>>>>>>>> FilterableTable > render() > STATE > isLoading: ', isLoading);
     console.log('>>>>>>>>>>>>>>>> FilterableTable > render() > STATE > externalData: ', externalData);
