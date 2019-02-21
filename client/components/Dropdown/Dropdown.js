@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import NProgress from 'nprogress';
 
 // STATE: private and fully controlled by the component
 // it's input (Prop) that the component can update/change/modify
@@ -22,37 +21,33 @@ class Dropdown extends Component {
   static propTypes = {
     title: PropTypes.string,
     optionsArray: PropTypes.array.isRequired,
-    dropDownOptionSelected: PropTypes.string,
-    onDropdownChange: PropTypes.func
+    dropDownOptionSelected: PropTypes.string.isRequired,
+    onDropdownChange: PropTypes.func.isRequired
   };
 
   // static defaultProps = {};
 
   // ================================================================================================
 
-  // 'handleChange' calling prop method 'AboutOne'
   handleChange = (e) => {
     this.props.onDropdownChange(e.target.value);
   }
 
   componentDidMount() {
-    console.log('>>>>>>>>>>>>>>>> Loading > componentDidMount() <<<<<<<<<<<<<<');
-    // NProgress.configure({ trickleSpeed: 200 });
-    // NProgress.start();
+    console.log('>>>>>>>>>>>>>>>> Dropdown > componentDidMount() <<<<<<<<<<<<<<');
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log('>>>>>>>>>>>>>>>> Loading > componentDidUpdate() <<<<<<<<<<<<<<');
+    console.log('>>>>>>>>>>>>>>>> Dropdown > componentDidUpdate() <<<<<<<<<<<<<<');
     if (this.state.value === '') {
-      console.log('>>>>>>>>>>>>>>>> Loading > componentDidUpdate() > handleChange() >  setState1: ', this.state.value);
+      console.log('>>>>>>>>>>>>>>>> Dropdown > componentDidUpdate() > state.value1: ', this.state.value);
     } else {
-      console.log('>>>>>>>>>>>>>>>> Loading > componentDidUpdate() > handleChange() >  setState2: ', this.state.value);
+      console.log('>>>>>>>>>>>>>>>> Dropdown > componentDidUpdate() > state.value2: ', this.state.value);
     }
   }
 
   componentWillUnmount() {
-    console.log('>>>>>>>>>>>>>>>> Loading > componentWillUnmount() <<<<<<<<<<<<<<');
-    // NProgress.done();
+    console.log('>>>>>>>>>>>>>>>> Dropdown > componentWillUnmount() <<<<<<<<<<<<<<');
   }
 
   render() {
@@ -69,8 +64,7 @@ class Dropdown extends Component {
           <label htmlFor="exampleFormControlSelect1">{ title }</label>
 
           <select
-            className="custom-select
-            custom-select-sm"
+            className="custom-select custom-select-sm"
             id="exampleFormControlSelect1"
             value={dropDownOptionSelected}
             onChange={this.handleChange}

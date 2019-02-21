@@ -12,7 +12,7 @@ class Loading extends Component {
   }
 
   static propTypes = {
-    text: PropTypes.string
+    text: PropTypes.string.isRequired
   };
 
   // static defaultProps = {};
@@ -21,6 +21,15 @@ class Loading extends Component {
     console.log('>>>>>>>>>>>>>>>> Loading > componentDidMount() <<<<<<<<<<<<<<');
     NProgress.configure({ trickleSpeed: 200 });
     NProgress.start();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    console.log('>>>>>>>>>>>>>>>> Loading > componentDidUpdate() <<<<<<<<<<<<<<');
+    if (this.props.text === '') {
+      console.log('>>>>>>>>>>>>>>>> Loading > componentDidUpdate() > this.props.text 1');
+    } else {
+      console.log('>>>>>>>>>>>>>>>> Loading > componentDidUpdate() > this.props.text 2');
+    }
   }
 
   componentWillUnmount() {

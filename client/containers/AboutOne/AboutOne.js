@@ -4,8 +4,6 @@ import Helmet from 'react-helmet';
 
 import { withStore } from '../../../hoc';
 
-import AxiosComponentLoaderBasic from '../../components/AxiosComponentLoaderBasic/AxiosComponentLoaderBasic';
-
 import Clock from '../../components/widgets/Clock/Clock';
 import RandomBootstrapAlert from '../../components/widgets/RandomBootstrapAlert/RandomBootstrapAlert';
 
@@ -25,12 +23,7 @@ class AboutOne extends Component {
 
     // thinking through react with next cool code change
     // --------------------------------------------------------------------------
-    // 'AxiosComponentLoaderBasic' will take 'Required' prop 'requestURL' from 'AboutOne's state 'dropDownOptionSelected'
-    // 'Dropdown's 'onChange' event will cause a lifted state change in 'AboutOne' for it's state 'dropDownOptionSelected'
-    // state 'dropDownOptionSelected' is lifted from 'Dropdown' to 'AboutOne'
-    // state 'dropDownOptionSelected', if changed, will cause render of 'AxiosComponentLoaderBasic' with modified 'prop' 'requestURL'
-    // 'Dropdown' will take a 'Required' lifted 'state' and take a prop 'title' and 'Required' prop 'optionsArray'
-    // test it tomorrow (as usual, something like that) 
+
     this.state = {
       dropDownOptionSelected: '',
     };
@@ -66,7 +59,7 @@ class AboutOne extends Component {
 
     const dropdownTiltle = 'Select Product Table';
 
-    const dropdownOptions = [
+    const dropDownOptions = [
       '/product-categories-small.json',
       '/product-categories.json',
       '/product-categories-small.json',
@@ -153,7 +146,7 @@ class AboutOne extends Component {
                     
                           <Dropdown
                             title={dropdownTiltle}
-                            optionsArray={dropdownOptions}
+                            optionsArray={dropDownOptions}
                             dropDownOptionSelected={dropDownOptionSelected}
                             onDropdownChange={ this.handleDropdownChange }
                           />
