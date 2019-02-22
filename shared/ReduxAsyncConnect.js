@@ -7,7 +7,7 @@ import asyncMatchRoutes from '../server/utils/asyncMatchRoutes';
 
 @withRouter
 
-export default class ReduxAsyncConnect extends Component {
+class ReduxAsyncConnect extends Component {
 
   constructor(props) {
 
@@ -122,3 +122,5 @@ export default class ReduxAsyncConnect extends Component {
     return <Route location={previousLocation || location} render={() => children} />;
   }
 }
+
+export default ReduxAsyncConnect;
