@@ -224,10 +224,10 @@ export default ({ clientStats }) => async (req, res) => {
 
     // ------------------------------------------------------------------------------------------------------
 
-    const flushedFiles = flushFiles(clientStats, { chunkNames });
+    // const flushedFiles = flushFiles(clientStats, { chunkNames });
     // const flushedFilesFilter = flushedFiles.filter(file => file.endsWith('.js') || file.endsWith('.css') || file.endsWith('.map'));
 
-    console.log('>>>>>>>>>>>>>>>>> SERVER > flushFiles > flushedFiles: ', flushedFiles);
+    // console.log('>>>>>>>>>>>>>>>>> SERVER > flushFiles > flushedFiles: ', flushedFiles);
     // console.log('>>>>>>>>>>>>>>>>> SERVER > flushFiles > flushedFilesFilter: ', flushedFilesFilter);
 
     // -----------------------------------------------------------------------------
